@@ -26,7 +26,7 @@ object FPasteBin: TFPasteBin
     Left = 8
     Top = 72
     Width = 856
-    Height = 451
+    Height = 434
     Anchors = [akLeft, akTop, akRight, akBottom]
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -34,6 +34,7 @@ object FPasteBin: TFPasteBin
     Font.Name = 'Courier New'
     Font.Style = []
     TabOrder = 1
+    OnClick = syn_codeClick
     Gutter.Font.Charset = DEFAULT_CHARSET
     Gutter.Font.Color = clWindowText
     Gutter.Font.Height = -11
@@ -42,6 +43,7 @@ object FPasteBin: TFPasteBin
     Gutter.LeftOffset = 8
     Gutter.ShowLineNumbers = True
     WantTabs = True
+    OnChange = syn_codeChange
   end
   object pnl_actions: TPanel
     Left = 0
@@ -179,6 +181,19 @@ object FPasteBin: TFPasteBin
       ReadOnly = True
       TabOrder = 4
     end
+  end
+  object sb_info: TsStatusBar
+    Left = 0
+    Top = 512
+    Width = 872
+    Height = 19
+    Panels = <>
+    SimplePanel = True
+    SimpleText = '0'
+    SkinData.SkinSection = 'STATUSBAR'
+    ExplicitLeft = 568
+    ExplicitTop = 504
+    ExplicitWidth = 0
   end
   object HTTP: TIdHTTP
     OnWork = HTTPWork

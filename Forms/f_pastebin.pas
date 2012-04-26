@@ -8,7 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, IdBaseComponent,
   IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, Vcl.Buttons, sSpeedButton,
   Vcl.ImgList, acAlphaImageList, SynEdit, Vcl.ComCtrls, Vcl.Menus, Vcl.StdCtrls,
-  pastebin_tools, Vcl.Clipbrd, uSynEditPopupEdit, funcs, shellapi;
+  pastebin_tools, Vcl.Clipbrd, uSynEditPopupEdit, funcs, shellapi, sStatusBar;
 
 type
   TFPasteBin = class(TForm)
@@ -38,6 +38,7 @@ type
     mm_link: TMenuItem;
     mm_copy: TMenuItem;
     mm_open: TMenuItem;
+    sb_info: TsStatusBar;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -51,6 +52,8 @@ type
     procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode;
       AWorkCount: Int64);
     procedure btn_openClick(Sender: TObject);
+    procedure syn_codeClick(Sender: TObject);
+    procedure syn_codeChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -168,6 +171,7 @@ begin
   for i := 0 to High(PastebinLangs) do
     cbb_syntax.Items.Add(PastebinLangs[i].Caption);
   cbb_syntax.ItemIndex := GSettings.Pastebin.SyntaxIndex;
+  cbb_syntaxChange(nil);
   for i := 0 to High(PastebinExpires) do
     cbb_expire.Items.Add(PastebinExpires[i].Caption);
   cbb_expire.ItemIndex := GSettings.Pastebin.ExpireIndex;
@@ -197,6 +201,16 @@ end;
 procedure TFPasteBin.mm_closeClick(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TFPasteBin.syn_codeChange(Sender: TObject);
+begin
+  sb_info.SimpleText := IntToStr(Length(syn_code.Text));
+end;
+
+procedure TFPasteBin.syn_codeClick(Sender: TObject);
+begin
+  syn_code.SetFocus;
 end;
 
 end.
