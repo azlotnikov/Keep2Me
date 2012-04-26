@@ -11,6 +11,7 @@ type
 
 type
   THotKeyAction = record
+    Enabled: Boolean;
     Caption: String;
     Ctrl: Boolean;
     Alt: Boolean;
@@ -68,8 +69,8 @@ procedure RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer);
 procedure UnRegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle);
 procedure Autorun(Flag: Boolean; NameParam, Path: String);
 procedure AddToRecentFiles(Link, Caption: string; FType: TRecentFileType);
-procedure AddHotKeyAction(_Caption: string; _Ctrl, _Alt, _Shift, _Win: Boolean;
-  _Key: Integer; _Proc: TNotifyEvent);
+procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string;
+  _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer; _Proc: TNotifyEvent);
 procedure LoadRecentFiles;
 function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string)
   : Boolean;
@@ -114,7 +115,7 @@ begin
       if (Components[I] is TForm) then
         if (Components[I] as TForm).Tag = -1 then
         begin
-          (Components[I] as TForm).Visible := True;
+          (Components[I] as TForm).Show;
           (Components[I] as TForm).Tag := 0;
         end;
 
@@ -224,12 +225,13 @@ begin
   GSettings.UpdateRecentFiles(nil);
 end;
 
-procedure AddHotKeyAction(_Caption: string; _Ctrl, _Alt, _Shift, _Win: Boolean;
-  _Key: Integer; _Proc: TNotifyEvent);
+procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string;
+  _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer; _Proc: TNotifyEvent);
 begin
   SetLength(GSettings.Actions, Length(GSettings.Actions) + 1);
   with GSettings.Actions[High(GSettings.Actions)] do
   begin
+    Enabled := _Enabled;
     Caption := _Caption;
     Ctrl := _Ctrl;
     Alt := _Alt;
@@ -242,6 +244,8 @@ end;
 
 procedure UnRegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle);
 begin
+  if not Key.Enabled then
+    Exit;
   UnRegisterHotKey(FHandle, Key^.RegKey);
   GlobalDeleteAtom(Key^.RegKey);
 end;
@@ -250,6 +254,8 @@ procedure RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer);
 var
   Modifiers: UINT;
 begin
+  if not Key.Enabled then
+    Exit;
   Modifiers := 0;
   if Key.Alt then
     Modifiers := Modifiers or MOD_ALT;

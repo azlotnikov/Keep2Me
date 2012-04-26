@@ -64,7 +64,7 @@ object FLoad: TFLoad
     Width = 354
     Height = 90
     ReadOnly = True
-    TabOrder = 1
+    TabOrder = 2
   end
   object cbb_view: TComboBox
     Left = 152
@@ -73,7 +73,7 @@ object FLoad: TFLoad
     Height = 21
     Style = csDropDownList
     ItemIndex = 0
-    TabOrder = 2
+    TabOrder = 1
     Text = #1057#1089#1099#1083#1082#1072
     OnChange = cbb_viewChange
     Items.Strings = (

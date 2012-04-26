@@ -112,6 +112,7 @@ type
     grp_pb_other: TGroupBox;
     cb_pb_copylink: TCheckBox;
     pm_pastebin: TMenuItem;
+    cb_EnableKey: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btn_GetCurrentMonitorClick(Sender: TObject);
     procedure btn_RefreshMonitorsClick(Sender: TObject);
@@ -135,6 +136,8 @@ type
     procedure rb_pb_accountClick(Sender: TObject);
     procedure rb_pb_anonClick(Sender: TObject);
     procedure DoPastebin(Sender: TObject);
+    procedure cb_EnableKeyClick(Sender: TObject);
+    procedure DoShowSettings(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -213,6 +216,7 @@ begin
   cb_ShiftKey.Checked := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Shift;
   cbb_HotKeys.ItemIndex := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Key;
   cb_WinKey.Checked := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Win;
+  cb_EnableKey.Checked := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Enabled;
 end;
 
 procedure TFMain.cbb_HotKeysChange(Sender: TObject);
@@ -228,6 +232,16 @@ end;
 procedure TFMain.cb_CtrlKeyClick(Sender: TObject);
 begin
   tmpHotKeys[cbb_HotKeysActions.ItemIndex].Ctrl := cb_CtrlKey.Checked;
+end;
+
+procedure TFMain.cb_EnableKeyClick(Sender: TObject);
+begin
+  tmpHotKeys[cbb_HotKeysActions.ItemIndex].Enabled := cb_EnableKey.Checked;
+  cb_ShiftKey.Enabled := cb_EnableKey.Checked;
+  cb_WinKey.Enabled := cb_EnableKey.Checked;
+  cb_CtrlKey.Enabled := cb_EnableKey.Checked;
+  cb_AltKey.Enabled := cb_EnableKey.Checked;
+  cbb_HotKeys.Enabled := cb_EnableKey.Checked;
 end;
 
 procedure TFMain.cb_ShiftKeyClick(Sender: TObject);
@@ -308,6 +322,11 @@ begin
   FPoints.Show;
 end;
 
+procedure TFMain.DoShowSettings(Sender: TObject);
+begin
+  Show;
+end;
+
 procedure TFMain.DoWindowSelect(Sender: TObject);
 begin
   TrayIcon.BalloonHint('Подсказка',
@@ -315,7 +334,6 @@ begin
   FSelField.AlphaBlend := false;
   FWindows.StartSelect;
   FWindows.Show;
-
 end;
 
 procedure TFMain.ExitKeep;
@@ -356,14 +374,16 @@ begin
   for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do
     cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
   cbb_ImgExt.ItemIndex := 0;
-  AddHotKeyAction('Выделить область экрана', true, true, false, false, 9,
+  AddHotKeyAction(true, 'Выделить область экрана', true, true, false, false, 5,
     DoScreenSelect);
-  AddHotKeyAction('Отправить из буфера обмена', true, true, false, false, 10,
-    DoBufferSend);
-  AddHotKeyAction('Отправить скриншот окна', true, true, false, false, 11,
+  AddHotKeyAction(false, 'Отправить из буфера обмена', true, true, false, false,
+    6, DoBufferSend);
+  AddHotKeyAction(false, 'Отправить скриншот окна', true, true, false, false, 7,
     DoWindowSelect);
-  AddHotKeyAction('Отправить на Pastebin.com', true, true, false, false, 12,
+  AddHotKeyAction(true, 'Отправить на Pastebin.com', true, true, true, false, 8,
     DoPastebin);
+  AddHotKeyAction(false, 'Показать настройки', true, true, false, false, 9,
+    DoShowSettings);
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
   for i := 0 to High(LoadersArray) do
@@ -455,21 +475,25 @@ begin
     CopyLink := ReadBool('CommonSettings', 'CopyLink', true);
     ImgExtIndex := ReadInteger('CommonSettings', 'ImgExtIndex', 1);
     for i := 0 to High(Actions) do
+      with Actions[i] do
+      begin
+        Enabled := ReadBool('HotKeys' + inttostr(i), 'Enabled', Enabled);
+        Key := ReadInteger('HotKeys' + inttostr(i), 'Key', Key);
+        Ctrl := ReadBool('HotKeys' + inttostr(i), 'Ctrl', Ctrl);
+        Alt := ReadBool('HotKeys' + inttostr(i), 'Alt', Alt);
+        Shift := ReadBool('HotKeys' + inttostr(i), 'Shift', Shift);
+        Win := ReadBool('HotKeys' + inttostr(i), 'Win', Win);
+      end;
+    with Pastebin do
     begin
-      Actions[i].Key := ReadInteger('HotKeys', 'Key' + inttostr(i), 8 + i); // !
-      Actions[i].Ctrl := ReadBool('HotKeys', 'Ctrl' + inttostr(i), true);
-      Actions[i].Alt := ReadBool('HotKeys', 'Alt' + inttostr(i), true);
-      Actions[i].Shift := ReadBool('HotKeys', 'Shift' + inttostr(i), false);
-      Actions[i].Win := ReadBool('HotKeys', 'Win' + inttostr(i), false);
+      Anon := ReadBool('Pastebin', 'Anonimous', true);
+      Login := MyDecrypt(ReadString('Pastebin', 'Login', ''), CRYPT_KEY);
+      Password := MyDecrypt(ReadString('Pastebin', 'Password', ''), CRYPT_KEY);
+      SyntaxIndex := ReadInteger('Pastebin', 'SyntaxIndex', 0);
+      ExpireIndex := ReadInteger('Pastebin', 'ExpireIndex', 0);
+      PrivateIndex := ReadInteger('Pastebin', 'PrivateIndex', 0);
+      CopyLink := ReadBool('Pastebin', 'CopyLink', true);
     end;
-    Pastebin.Anon := ReadBool('Pastebin', 'Anonimous', true);
-    Pastebin.Login := MyDecrypt(ReadString('Pastebin', 'Login', ''), CRYPT_KEY);
-    Pastebin.Password := MyDecrypt(ReadString('Pastebin', 'Password', ''),
-      CRYPT_KEY);
-    Pastebin.SyntaxIndex := ReadInteger('Pastebin', 'SyntaxIndex', 0);
-    Pastebin.ExpireIndex := ReadInteger('Pastebin', 'ExpireIndex', 0);
-    Pastebin.PrivateIndex := ReadInteger('Pastebin', 'PrivateIndex', 0);
-    Pastebin.CopyLink := ReadBool('Pastebin', 'CopyLink', true);
     Free;
   end;
 end;
@@ -534,21 +558,25 @@ begin
     WriteInteger('CommonSettings', 'ImgExtIndex', ImgExtIndex);
     WriteInteger('HotKeys', 'KeyHigh', High(Actions));
     for i := 0 to High(Actions) do
+      with Actions[i] do
+      begin
+        WriteInteger('HotKeys' + inttostr(i), 'Key', Key);
+        WriteBool('HotKeys' + inttostr(i), 'Ctrl', Ctrl);
+        WriteBool('HotKeys' + inttostr(i), 'Alt', Alt);
+        WriteBool('HotKeys' + inttostr(i), 'Shift', Shift);
+        WriteBool('HotKeys' + inttostr(i), 'Win', Win);
+        WriteBool('HotKeys' + inttostr(i), 'Enabled', Enabled);
+      end;
+    with Pastebin do
     begin
-      WriteInteger('HotKeys', 'Key' + inttostr(i), Actions[i].Key);
-      WriteBool('HotKeys', 'Ctrl' + inttostr(i), Actions[i].Ctrl);
-      WriteBool('HotKeys', 'Alt' + inttostr(i), Actions[i].Alt);
-      WriteBool('HotKeys', 'Shift' + inttostr(i), Actions[i].Shift);
-      WriteBool('HotKeys', 'Win' + inttostr(i), Actions[i].Win);
+      WriteBool('Pastebin', 'Anonimous', Anon);
+      WriteString('Pastebin', 'Login', MyEncrypt(Login, CRYPT_KEY));
+      WriteString('Pastebin', 'Password', MyEncrypt(Password, CRYPT_KEY));
+      WriteInteger('Pastebin', 'SyntaxIndex', SyntaxIndex);
+      WriteInteger('Pastebin', 'ExpireIndex', ExpireIndex);
+      WriteInteger('Pastebin', 'PrivateIndex', PrivateIndex);
+      WriteBool('Pastebin', 'CopyLink', CopyLink);
     end;
-    WriteBool('Pastebin', 'Anonimous', Pastebin.Anon);
-    WriteString('Pastebin', 'Login', MyEncrypt(Pastebin.Login, CRYPT_KEY));
-    WriteString('Pastebin', 'Password', MyEncrypt(Pastebin.Password,
-      CRYPT_KEY));
-    WriteInteger('Pastebin', 'SyntaxIndex', Pastebin.SyntaxIndex);
-    WriteInteger('Pastebin', 'ExpireIndex', Pastebin.ExpireIndex);
-    WriteInteger('Pastebin', 'PrivateIndex', Pastebin.PrivateIndex);
-    WriteBool('Pastebin', 'CopyLink', Pastebin.CopyLink);
     Free;
   end;
   for i := 0 to High(GSettings.Actions) do

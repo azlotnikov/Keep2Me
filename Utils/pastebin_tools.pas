@@ -113,37 +113,131 @@ AddPasteBinPrivate('1', 'Не в списке');
 AddPasteBinPrivate('2', 'Приватный (для авторизованных)');
 
 sh_cpp := TSynCppSyn.Create(nil);
-
+with sh_cpp do
+begin
+  AsmAttri.Foreground := clMaroon;
+  CommentAttri.Foreground := clGreen;
+  FloatAttri.Foreground := clRed;
+  HexAttri.Foreground := clOlive;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_fortan := TSynFortranSyn.Create(nil);
-
+with sh_fortan do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_java := TSynJavaSyn.Create(nil);
-
+with sh_java do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_cobol := TSynCobolSyn.Create(nil);
-
+with sh_cobol do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+end;
 sh_csharp := TSynCSSyn.Create(nil);
-
+with sh_csharp do
+begin
+  AsmAttri.Foreground := clMaroon;
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_css := TSynCssSyn.Create(nil);
 
 sh_html := TSynHTMLSyn.Create(nil);
 
 sh_php := TSynPHPSyn.Create(nil);
-
+with sh_php do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_xml := TSynXMLSyn.Create(nil);
 
 sh_perl := TSynPerlSyn.Create(nil);
-
+with sh_perl do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_python := TSynPythonSyn.Create(nil);
-
+with sh_python do
+begin
+  CommentAttri.Foreground := clGreen;
+  FloatAttri.Foreground := clRed;
+  HexAttri.Foreground := clOlive;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_ruby := TSynRubySyn.Create(nil);
-
+with sh_ruby do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_sql := TSynSQLSyn.Create(nil);
-
+with sh_sql do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_acm := TSynAsmSyn.Create(nil);
-
+with sh_acm do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_haskel := TSynHaskellSyn.Create(nil);
-
+with sh_haskel do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_bat := TSynBatSyn.Create(nil);
-
+with sh_bat do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+end;
 sh_pascal := TSynPasSyn.Create(nil);
 with sh_pascal do
 begin
@@ -158,17 +252,57 @@ begin
 end;
 
 sh_ini := TSynIniSyn.Create(nil);
-
+with sh_ini do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_eiffel := TSynEiffelSyn.Create(nil);
-
+with sh_eiffel do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  StringAttri.Foreground := clGreen;
+end;
 sh_jscript := TSynJScriptSyn.Create(nil);
-
+with sh_jscript do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_tcl := TSynTclTkSyn.Create(nil);
-
+with sh_tcl do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_progress := TSynProgressSyn.Create(nil);
-
+with sh_progress do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_vb := TSynVBSyn.Create(nil);
-
+with sh_vb do
+begin
+  CommentAttri.Foreground := clGreen;
+  KeyAttri.Foreground := $00FF0080;
+  NumberAttri.Foreground := clRed;
+  StringAttri.Foreground := clGreen;
+  SymbolAttri.Foreground := clMaroon;
+end;
 sh_general := TSynGeneralSyn.Create(nil);
 
 // GOOG LANGS

@@ -33,7 +33,7 @@ object FPasteBin: TFPasteBin
     Font.Height = -13
     Font.Name = 'Courier New'
     Font.Style = []
-    TabOrder = 0
+    TabOrder = 1
     Gutter.Font.Charset = DEFAULT_CHARSET
     Gutter.Font.Color = clWindowText
     Gutter.Font.Height = -11
@@ -42,8 +42,6 @@ object FPasteBin: TFPasteBin
     Gutter.LeftOffset = 8
     Gutter.ShowLineNumbers = True
     WantTabs = True
-    ExplicitWidth = 829
-    ExplicitHeight = 428
   end
   object pnl_actions: TPanel
     Left = 0
@@ -51,8 +49,7 @@ object FPasteBin: TFPasteBin
     Width = 872
     Height = 66
     Align = alTop
-    TabOrder = 1
-    ExplicitWidth = 845
+    TabOrder = 0
     DesignSize = (
       872
       66)
@@ -155,7 +152,7 @@ object FPasteBin: TFPasteBin
       Top = 38
       Width = 225
       Height = 17
-      TabOrder = 2
+      TabOrder = 5
     end
     object cbb_private: TComboBox
       Left = 446
@@ -163,7 +160,7 @@ object FPasteBin: TFPasteBin
       Width = 167
       Height = 21
       Style = csDropDownList
-      TabOrder = 3
+      TabOrder = 2
     end
     object edt_caption: TEdit
       Left = 648
@@ -171,7 +168,7 @@ object FPasteBin: TFPasteBin
       Width = 216
       Height = 21
       Anchors = [akLeft, akTop, akRight]
-      TabOrder = 4
+      TabOrder = 3
     end
     object edt_link: TEdit
       Left = 447
@@ -180,8 +177,7 @@ object FPasteBin: TFPasteBin
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       ReadOnly = True
-      TabOrder = 5
-      ExplicitWidth = 332
+      TabOrder = 4
     end
   end
   object HTTP: TIdHTTP

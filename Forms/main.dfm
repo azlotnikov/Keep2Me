@@ -3,7 +3,7 @@ object FMain: TFMain
   Top = 0
   Anchors = [akLeft, akTop, akRight]
   Caption = 'Keep2Me '#1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 439
+  ClientHeight = 464
   ClientWidth = 376
   Color = clBtnFace
   Constraints.MinHeight = 477
@@ -19,12 +19,12 @@ object FMain: TFMain
   OnCreate = FormCreate
   DesignSize = (
     376
-    439)
+    464)
   PixelsPerInch = 96
   TextHeight = 13
   object btn_ApplySettings: TsSpeedButton
     Left = 8
-    Top = 407
+    Top = 432
     Width = 360
     Height = 24
     Anchors = [akLeft, akRight, akBottom]
@@ -38,7 +38,7 @@ object FMain: TFMain
     Left = 0
     Top = 0
     Width = 378
-    Height = 401
+    Height = 426
     ActivePage = pg_main
     Anchors = [akLeft, akTop, akRight, akBottom]
     Style = tsFlatButtons
@@ -51,9 +51,9 @@ object FMain: TFMain
       UseCloseBtn = False
       DesignSize = (
         370
-        370)
+        395)
       object grp_Monitors: TGroupBox
-        Left = 4
+        Left = 5
         Top = 3
         Width = 359
         Height = 49
@@ -97,16 +97,16 @@ object FMain: TFMain
         end
       end
       object grp_HotKey: TGroupBox
-        Left = 4
+        Left = 5
         Top = 58
         Width = 359
-        Height = 79
+        Height = 100
         Anchors = [akLeft, akTop, akRight]
         Caption = #1043#1086#1088#1103#1095#1080#1077' '#1082#1083#1072#1074#1080#1096#1080
         TabOrder = 1
         DesignSize = (
           359
-          79)
+          100)
         object lbl_HotKeysActions: TLabel
           Left = 9
           Top = 22
@@ -126,59 +126,70 @@ object FMain: TFMain
         end
         object cb_CtrlKey: TCheckBox
           Left = 9
-          Top = 49
+          Top = 71
           Width = 53
           Height = 17
           Caption = 'CTRL +'
           Checked = True
           State = cbChecked
-          TabOrder = 1
+          TabOrder = 3
           OnClick = cb_CtrlKeyClick
         end
         object cb_AltKey: TCheckBox
           Left = 68
-          Top = 49
+          Top = 71
           Width = 49
           Height = 17
           Caption = 'ALT +'
           Checked = True
           State = cbChecked
-          TabOrder = 2
+          TabOrder = 4
           OnClick = cb_AltKeyClick
         end
         object cbb_HotKeys: TComboBox
           Left = 233
-          Top = 48
+          Top = 70
           Width = 116
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           DropDownCount = 18
-          TabOrder = 3
+          TabOrder = 2
           OnChange = cbb_HotKeysChange
         end
         object cb_ShiftKey: TCheckBox
           Left = 123
-          Top = 49
+          Top = 71
           Width = 62
           Height = 17
           Caption = 'Shift +'
-          TabOrder = 4
+          TabOrder = 5
           OnClick = cb_ShiftKeyClick
         end
         object cb_WinKey: TCheckBox
           Left = 178
-          Top = 49
+          Top = 71
           Width = 49
           Height = 17
           Caption = 'WIN +'
-          TabOrder = 5
+          TabOrder = 6
           OnClick = cb_WinKeyClick
+        end
+        object cb_EnableKey: TCheckBox
+          Left = 9
+          Top = 46
+          Width = 79
+          Height = 17
+          Caption = #1042#1082#1083#1102#1095#1080#1090#1100
+          Checked = True
+          State = cbChecked
+          TabOrder = 1
+          OnClick = cb_EnableKeyClick
         end
       end
       object grp_Hostings: TGroupBox
-        Left = 4
-        Top = 143
+        Left = 5
+        Top = 164
         Width = 359
         Height = 48
         Anchors = [akLeft, akTop, akRight]
@@ -198,8 +209,8 @@ object FMain: TFMain
         end
       end
       object grp_ShortLink: TGroupBox
-        Left = 4
-        Top = 197
+        Left = 5
+        Top = 218
         Width = 359
         Height = 48
         Anchors = [akLeft, akTop, akRight]
@@ -220,9 +231,9 @@ object FMain: TFMain
       end
       object grp_OtherSettings: TGroupBox
         Left = 4
-        Top = 251
+        Top = 272
         Width = 359
-        Height = 116
+        Height = 120
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077' '#1085#1072#1089#1090#1088#1086#1081#1082#1080
         TabOrder = 4
@@ -239,7 +250,7 @@ object FMain: TFMain
           Width = 193
           Height = 17
           Caption = #1055#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1091#1074#1077#1076#1086#1084#1083#1077#1085#1080#1077' '#1074' '#1090#1088#1077#1077
-          TabOrder = 0
+          TabOrder = 1
         end
         object cb_HideLoadForm: TCheckBox
           Left = 9
@@ -247,7 +258,7 @@ object FMain: TFMain
           Width = 184
           Height = 17
           Caption = #1053#1077' '#1087#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1092#1086#1088#1084#1091' '#1079#1072#1075#1088#1091#1079#1082#1080
-          TabOrder = 1
+          TabOrder = 2
         end
         object cb_CopyLink: TCheckBox
           Left = 9
@@ -257,7 +268,7 @@ object FMain: TFMain
           Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1089#1089#1099#1083#1082#1091' '#1074' '#1073#1091#1092#1077#1088
           Checked = True
           State = cbChecked
-          TabOrder = 2
+          TabOrder = 3
         end
         object cbb_ImgExt: TComboBox
           Left = 127
@@ -265,7 +276,7 @@ object FMain: TFMain
           Width = 78
           Height = 21
           Style = csDropDownList
-          TabOrder = 3
+          TabOrder = 4
         end
         object cb_AutoStart: TCheckBox
           Left = 9
@@ -273,7 +284,7 @@ object FMain: TFMain
           Width = 80
           Height = 17
           Caption = #1040#1074#1090#1086#1079#1072#1087#1091#1089#1082
-          TabOrder = 4
+          TabOrder = 0
         end
       end
     end
@@ -284,7 +295,7 @@ object FMain: TFMain
       UseCloseBtn = False
       DesignSize = (
         370
-        370)
+        395)
       object grp_pb_account: TGroupBox
         Left = 3
         Top = 0
@@ -416,7 +427,7 @@ object FMain: TFMain
         Left = 3
         Top = 231
         Width = 364
-        Height = 136
+        Height = 161
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077' '#1086#1087#1094#1080#1080
         TabOrder = 2

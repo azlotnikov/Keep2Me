@@ -8,8 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, IdBaseComponent,
   IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, Vcl.Buttons, sSpeedButton,
   Vcl.ImgList, acAlphaImageList, SynEdit, Vcl.ComCtrls, Vcl.Menus, Vcl.StdCtrls,
-  pastebin_tools, Vcl.Clipbrd, uSynEditPopupEdit, funcs, shellapi,
-  SynEditHighlighter, SynHighlighterHtml, SynHighlighterPas;
+  pastebin_tools, Vcl.Clipbrd, uSynEditPopupEdit, funcs, shellapi;
 
 type
   TFPasteBin = class(TForm)

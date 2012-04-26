@@ -29,7 +29,7 @@ object FImage: TFImage
     Width = 879
     Height = 423
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabOrder = 0
+    TabOrder = 1
     object img: TImage
       Left = 0
       Top = 0
@@ -54,7 +54,7 @@ object FImage: TFImage
     Width = 895
     Height = 37
     Align = alTop
-    TabOrder = 1
+    TabOrder = 0
     DesignSize = (
       895
       37)
