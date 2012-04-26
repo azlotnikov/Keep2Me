@@ -1,0 +1,25 @@
+object FPoints: TFPoints
+  Left = 0
+  Top = 0
+  Cursor = crDrag
+  AlphaBlend = True
+  AlphaBlendValue = 1
+  BorderStyle = bsNone
+  ClientHeight = 338
+  ClientWidth = 651
+  Color = clBtnFace
+  DoubleBuffered = True
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  FormStyle = fsStayOnTop
+  OldCreateOrder = False
+  OnMouseDown = FormMouseDown
+  OnMouseMove = FormMouseMove
+  OnMouseUp = FormMouseUp
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+end
