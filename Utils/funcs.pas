@@ -78,7 +78,7 @@ function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string)
 const
   SETTINGS_FILE_NAME = 'settings.ini';
   RECENT_FILE_NAME = 'recent_files.ini';
-  KEEP_VERSION = '0.3.0';
+  KEEP_VERSION = '0.3.1';
   CRYPT_KEY = 26123;
 
 var
