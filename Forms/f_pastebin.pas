@@ -3,12 +3,35 @@ unit f_pastebin;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, IdBaseComponent,
-  IdComponent, IdTCPConnection, IdTCPClient, IdHTTP, Vcl.Buttons, sSpeedButton,
-  Vcl.ImgList, acAlphaImageList, SynEdit, Vcl.ComCtrls, Vcl.Menus, Vcl.StdCtrls,
-  pastebin_tools, Vcl.Clipbrd, uSynEditPopupEdit, funcs, shellapi, sStatusBar;
+  Winapi.Windows,
+  Winapi.Messages,
+  Winapi.shellapi,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.ExtCtrls,
+  Vcl.ComCtrls,
+  Vcl.Menus,
+  Vcl.StdCtrls,
+  Vcl.ImgList,
+  Vcl.Clipbrd,
+  Vcl.Buttons,
+  IdBaseComponent,
+  IdComponent,
+  IdTCPConnection,
+  IdTCPClient,
+  IdHTTP,
+  SynEdit,
+  uSynEditPopupEdit,
+  acAlphaImageList,
+  sSpeedButton,
+  sStatusBar,
+  pastebin_tools,
+  funcs;
 
 type
   TFPasteBin = class(TForm)
@@ -47,10 +70,8 @@ type
     procedure btn_loadClick(Sender: TObject);
     procedure cbb_syntaxChange(Sender: TObject);
     procedure btn_copyClick(Sender: TObject);
-    procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode;
-      AWorkCountMax: Int64);
-    procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode;
-      AWorkCount: Int64);
+    procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
+    procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
     procedure btn_openClick(Sender: TObject);
     procedure syn_codeClick(Sender: TObject);
     procedure syn_codeChange(Sender: TObject);
@@ -59,9 +80,6 @@ type
   public
     { Public declarations }
   end;
-
-  // var
-  // FPasteBin: TFPasteBin;
 
 implementation
 
@@ -87,17 +105,14 @@ var
   post: TStringList;
   userkey, s, k: string;
 begin
-  if (not GSettings.Pastebin.Anon) and (cbb_private.ItemIndex = 2) then
-  begin
-    ShowMessage
-      ('Приватная загрузка доступна только авторизованным пользователям!');
+  if (not GSettings.Pastebin.Anon) and (cbb_private.ItemIndex = 2) then begin
+    ShowMessage('Приватная загрузка доступна только авторизованным пользователям!');
     exit;
   end;
   btn_load.Enabled := False;
   post := TStringList.Create;
   userkey := '';
-  if not GSettings.Pastebin.Anon then
-  begin
+  if not GSettings.Pastebin.Anon then begin
     post.Add('api_dev_key=' + API_DEV_KEY);
     post.Add('api_user_name=' + GSettings.Pastebin.Login);
     post.Add('api_user_password=' + GSettings.Pastebin.Password);
@@ -105,8 +120,7 @@ begin
       s := HTTP.post('http://pastebin.com/api/api_login.php', post);
     except
     end;
-    if pos('Bad API request', s) > 0 then
-    begin
+    if pos('Bad API request', s) > 0 then begin
       ShowMessage('Login Error:' + s);
       post.Free;
       btn_load.Enabled := true;
@@ -115,33 +129,30 @@ begin
     userkey := s;
     post.Clear;
   end;
-  post.Add('api_option=paste');
-  post.Add('api_dev_key=' + API_DEV_KEY);
-  post.Add('api_paste_code=' + syn_code.Text);
-  post.Add('api_paste_private=' + PastebinPrivates[cbb_private.ItemIndex].Name);
-  post.Add('api_paste_name=' + edt_caption.Text);
-  post.Add('api_paste_expire_date=' + PastebinExpires
-    [cbb_expire.ItemIndex].Name);
-  post.Add('api_paste_format=' + PastebinLangs[cbb_syntax.ItemIndex].Name);
-  post.Add('api_user_key=' + userkey);
+  with post do begin
+    Add('api_option=paste');
+    Add('api_dev_key=' + API_DEV_KEY);
+    Add('api_paste_code=' + syn_code.Text);
+    Add('api_paste_private=' + PastebinPrivates[cbb_private.ItemIndex].Name);
+    Add('api_paste_name=' + edt_caption.Text);
+    Add('api_paste_expire_date=' + PastebinExpires[cbb_expire.ItemIndex].Name);
+    Add('api_paste_format=' + PastebinLangs[cbb_syntax.ItemIndex].Name);
+    Add('api_user_key=' + userkey);
+  end;
   try
     s := HTTP.post('http://pastebin.com/api/api_post.php', post);
   except
   end;
   post.Free;
   btn_load.Enabled := true;
-  if pos('Bad API request', s) > 0 then
-  begin
+  if pos('Bad API request', s) > 0 then begin
     ShowMessage('Load Error:' + s);
     exit;
   end;
   edt_link.Text := s;
-  if GSettings.Pastebin.CopyLink then
-    Clipboard.AsText := s;
-  if edt_caption.Text = '' then
-    k := '...'
-  else
-    k := edt_caption.Text;
+  if GSettings.Pastebin.CopyLink then Clipboard.AsText := s;
+  if edt_caption.Text = '' then k := '...'
+  else k := edt_caption.Text;
   AddToRecentFiles(s, k, rfText);
 end;
 
@@ -168,26 +179,21 @@ begin
   Application.InsertComponent(self);
   HTTP.ReadTimeout := 30000;
   HTTP.ConnectTimeout := 20000;
-  for i := 0 to High(PastebinLangs) do
-    cbb_syntax.Items.Add(PastebinLangs[i].Caption);
+  for i := 0 to High(PastebinLangs) do cbb_syntax.Items.Add(PastebinLangs[i].Caption);
   cbb_syntax.ItemIndex := GSettings.Pastebin.SyntaxIndex;
   cbb_syntaxChange(nil);
-  for i := 0 to High(PastebinExpires) do
-    cbb_expire.Items.Add(PastebinExpires[i].Caption);
+  for i := 0 to High(PastebinExpires) do cbb_expire.Items.Add(PastebinExpires[i].Caption);
   cbb_expire.ItemIndex := GSettings.Pastebin.ExpireIndex;
-  for i := 0 to High(PastebinPrivates) do
-    cbb_private.Items.Add(PastebinPrivates[i].Caption);
+  for i := 0 to High(PastebinPrivates) do cbb_private.Items.Add(PastebinPrivates[i].Caption);
   cbb_private.ItemIndex := GSettings.Pastebin.PrivateIndex;
 end;
 
-procedure TFPasteBin.HTTPWork(ASender: TObject; AWorkMode: TWorkMode;
-  AWorkCount: Int64);
+procedure TFPasteBin.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
 begin
   pb.Position := AWorkCount;
 end;
 
-procedure TFPasteBin.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode;
-  AWorkCountMax: Int64);
+procedure TFPasteBin.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
 begin
   pb.Max := AWorkCountMax;
   pb.Position := 0;

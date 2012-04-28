@@ -2,11 +2,16 @@ unit shortlinks;
 
 interface
 
-uses IdHTTP, System.Classes, Vcl.ComCtrls, IdComponent,
-  IdCookieManager, HTTPApp;
+uses
+  System.Classes,
+  Vcl.ComCtrls,
+  IdHTTP,
+  IdComponent,
+  IdCookieManager,
+  Web.HTTPApp;
 
 type
-  IShorter = class
+  TShorter = class
   private
     HTTP: TidHTTP;
     COO: TIdCookieManager;
@@ -14,8 +19,7 @@ type
     AError: Boolean;
     Link: String;
     Function GetError: Boolean;
-    procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode;
-      AWorkCount: Int64);
+    procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
   public
     property Error: Boolean read GetError;
     function GetLink: string; virtual;
@@ -26,35 +30,35 @@ type
   end;
 
 type
-  IZtAmLoader = class(IShorter)
+  TZtAmLoader = class(TShorter)
   public
     procedure LoadFile(Url: string); override;
   end;
 
 type
-  ITinyUrlLoader = class(IShorter)
+  TTinyUrlLoader = class(TShorter)
   public
     procedure LoadFile(Url: string); override;
   end;
 
 type
-  IIsGdLoader = class(IShorter)
+  TIsGdLoader = class(TShorter)
   public
     procedure LoadFile(Url: string); override;
   end;
 
 type
-  IqikrLoader = class(IShorter)
+  TQikrLoader = class(TShorter)
   public
     procedure LoadFile(Url: string); override;
   end;
 
 type
-  TIShorterClass = class of IShorter;
+  TShorterClass = class of TShorter;
 
 type
   ShortersElement = record
-    L: TIShorterClass;
+    L: TShorterClass;
     C: String;
   end;
 
@@ -72,57 +76,54 @@ end;
 function ParsSubString(defString, LeftString, RightString: string): string;
 begin
   Result := '';
-  if (Pos(LeftString, defString) = 0) or (Pos(RightString, defString) = 0) then
-    Exit;
+  if (Pos(LeftString, defString) = 0) or (Pos(RightString, defString) = 0) then Exit;
   Result := Copy(defString, Pos(LeftString, defString) + Length(LeftString),
-    PosEx(RightString, defString, Pos(LeftString, defString) +
-    Length(LeftString)) - Pos(LeftString, defString) - Length(LeftString));
+    PosEx(RightString, defString, Pos(LeftString, defString) + Length(LeftString)) - Pos(LeftString, defString) -
+    Length(LeftString));
 end;
 { ILoader }
 
-constructor IShorter.Create;
+constructor TShorter.Create;
 begin
   HTTP := TidHTTP.Create;
   HTTP.ReadTimeout := 12000;
   HTTP.ConnectTimeout := 20000;
   HTTP.HandleRedirects := true;
-  HTTP.Request.UserAgent :=
-    'Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/9.0.1';
+  HTTP.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/9.0.1';
   COO := TIdCookieManager.Create(HTTP);
   HTTP.AllowCookies := true;
   HTTP.CookieManager := COO;
 end;
 
-procedure IShorter.Free;
+procedure TShorter.Free;
 begin
   COO.Free;
   HTTP.Free;
 end;
 
-function IShorter.GetError: Boolean;
+function TShorter.GetError: Boolean;
 begin
   Result := AError;
 end;
 
-procedure IShorter.HTTPWork(ASender: TObject; AWorkMode: TWorkMode;
-  AWorkCount: Int64);
+procedure TShorter.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
 begin
   PB.Position := AWorkCount div 1024;
 end;
 
-procedure IShorter.SetLoadBar(sPB: TProgressBar);
+procedure TShorter.SetLoadBar(sPB: TProgressBar);
 begin
   PB := sPB;
   HTTP.OnWork := HTTPWork;
 end;
 
-function IShorter.GetLink: string;
+function TShorter.GetLink: string;
 begin
   Result := Link;
 end;
 { IZhykLoader }
 
-procedure IZtAmLoader.LoadFile(Url: string);
+procedure TZtAmLoader.LoadFile(Url: string);
 var
   s: string;
 begin
@@ -133,15 +134,13 @@ begin
       s := HTTP.get('http://zt.am/go.php?u=' + Url);
     except
     end;
-    if Pos('http', s) > 0 then
-      Link := s
-    else
-      AError := true;
+    if Pos('http', s) > 0 then Link := s
+    else AError := true;
   finally
   end;
 end;
 
-procedure AddShorter(A: TIShorterClass; Caption: String);
+procedure AddShorter(A: TShorterClass; Caption: String);
 begin
   SetLength(ShortersArray, Length(ShortersArray) + 1);
   ShortersArray[High(ShortersArray)].L := A;
@@ -150,7 +149,7 @@ end;
 
 { ITinyCCLoader }
 
-procedure ITinyUrlLoader.LoadFile(Url: string);
+procedure TTinyUrlLoader.LoadFile(Url: string);
 const
   Str = '</b><br><small>[<a href="';
 var
@@ -161,12 +160,10 @@ begin
     Link := '';
     Url := HTTPEncode(Url);
     try
-      s := HTTP.get('http://tinyurl.com/create.php?source=indexpage&url=' + Url
-        + '&submit=Make+TinyURL%21&alias=');
+      s := HTTP.get('http://tinyurl.com/create.php?source=indexpage&url=' + Url + '&submit=Make+TinyURL%21&alias=');
     except
     end;
-    if Pos(Str, s) = 0 then
-    begin
+    if Pos(Str, s) = 0 then begin
       AError := true;
       Exit;
     end;
@@ -177,7 +174,7 @@ end;
 
 { IIsGdlLoader }
 
-procedure IIsGdLoader.LoadFile(Url: string);
+procedure TIsGdLoader.LoadFile(Url: string);
 const
   Str = 'class="tb" id="short_url" value="';
 var
@@ -195,8 +192,7 @@ begin
       s := HTTP.post('http://is.gd/create.php', post);
     except
     end;
-    if Pos(Str, s) = 0 then
-    begin
+    if Pos(Str, s) = 0 then begin
       AError := true;
       Exit;
     end;
@@ -208,7 +204,7 @@ end;
 
 { IAddflyLoader }
 
-procedure IqikrLoader.LoadFile(Url: string);
+procedure TQikrLoader.LoadFile(Url: string);
 const
   Str = '&nbsp;&nbsp;&nbsp;&nbsp;http://qikr.co/';
 var
@@ -222,8 +218,7 @@ begin
       s := HTTP.get('http://qikr.co/submit.php?url=' + Url);
     except
     end;
-    if Pos(Str, s) = 0 then
-    begin
+    if Pos(Str, s) = 0 then begin
       AError := true;
       Exit;
     end;
@@ -234,9 +229,9 @@ end;
 
 initialization
 
-AddShorter(IIsGdLoader, 'is.gd');
-AddShorter(IZtAmLoader, 'zt.am');
-AddShorter(IqikrLoader, 'qikr.co');
-AddShorter(ITinyUrlLoader, 'tinyurl.com');
+AddShorter(TIsGdLoader, 'is.gd');
+AddShorter(TZtAmLoader, 'zt.am');
+AddShorter(TQikrLoader, 'qikr.co');
+AddShorter(TTinyUrlLoader, 'tinyurl.com');
 
 end.

@@ -2,11 +2,16 @@ unit loaders;
 
 interface
 
-uses IdHTTP, System.Classes, Vcl.ComCtrls, IdComponent, IdMultipartFormData,
+uses
+  System.Classes,
+  Vcl.ComCtrls,
+  IdHTTP,
+  IdComponent,
+  IdMultipartFormData,
   IdCookieManager;
 
 type
-  ILoader = class
+  TLoader = class
   private
     HTTP: TidHTTP;
     COO: TIdCookieManager;
@@ -14,8 +19,7 @@ type
     AError: Boolean;
     Link: String;
     Function GetError: Boolean;
-    procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode;
-      AWorkCount: Int64);
+    procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
   public
     property Error: Boolean read GetError;
     function GetLink: string; virtual;
@@ -26,41 +30,41 @@ type
   end;
 
 type
-  IZhykLoader = class(ILoader)
+  TZhykLoader = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
 
 type
-  IHostingKartinokLoader = class(ILoader)
+  THostingKartinokLoader = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
 
 type
-  IImgLinkLoader = class(ILoader)
+  TImgLinkLoader = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
 
 type
-  IImgurLoader = class(ILoader)
+  TImgurLoader = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
 
 type
-  IqikrLoader = class(ILoader)
+  TQikrLoader = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
 
 type
-  TILoaderClass = class of ILoader;
+  TLoaderClass = class of TLoader;
 
 type
   LoadersElement = record
-    L: TILoaderClass;
+    L: TLoaderClass;
     C: String;
   end;
 
@@ -78,57 +82,54 @@ end;
 function ParsSubString(defString, LeftString, RightString: string): string;
 begin
   Result := '';
-  if (Pos(LeftString, defString) = 0) or (Pos(RightString, defString) = 0) then
-    Exit;
+  if (Pos(LeftString, defString) = 0) or (Pos(RightString, defString) = 0) then Exit;
   Result := Copy(defString, Pos(LeftString, defString) + Length(LeftString),
-    PosEx(RightString, defString, Pos(LeftString, defString) +
-    Length(LeftString)) - Pos(LeftString, defString) - Length(LeftString));
+    PosEx(RightString, defString, Pos(LeftString, defString) + Length(LeftString)) - Pos(LeftString, defString) -
+    Length(LeftString));
 end;
 { ILoader }
 
-constructor ILoader.Create;
+constructor TLoader.Create;
 begin
   HTTP := TidHTTP.Create;
   HTTP.ReadTimeout := 30000;
   HTTP.ConnectTimeout := 20000;
   HTTP.HandleRedirects := true;
-  HTTP.Request.UserAgent :=
-    'Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/9.0.1';
+  HTTP.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/9.0.1';
   COO := TIdCookieManager.Create(HTTP);
   HTTP.AllowCookies := true;
   HTTP.CookieManager := COO;
 end;
 
-procedure ILoader.Free;
+procedure TLoader.Free;
 begin
   COO.Free;
   HTTP.Free;
 end;
 
-function ILoader.GetError: Boolean;
+function TLoader.GetError: Boolean;
 begin
   Result := AError;
 end;
 
-procedure ILoader.HTTPWork(ASender: TObject; AWorkMode: TWorkMode;
-  AWorkCount: Int64);
+procedure TLoader.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
 begin
   PB.Position := AWorkCount div 1024;
 end;
 
-procedure ILoader.SetLoadBar(sPB: TProgressBar);
+procedure TLoader.SetLoadBar(sPB: TProgressBar);
 begin
   PB := sPB;
   HTTP.OnWork := HTTPWork;
 end;
 
-function ILoader.GetLink: string;
+function TLoader.GetLink: string;
 begin
   Result := Link;
 end;
 { IZhykLoader }
 
-procedure IZhykLoader.LoadFile(FileName: string);
+procedure TZhykLoader.LoadFile(FileName: string);
 const
   str_ = '<div class="inputshare"><input tabindex="4" value="[img]';
 var
@@ -142,8 +143,7 @@ begin
       s := HTTP.Get('http://i.zhyk.ru/');
     except
     end;
-    if Pos('id="postkey" value="', s) = 0 then
-    begin
+    if Pos('id="postkey" value="', s) = 0 then begin
       AError := true;
       Exit;
     end;
@@ -159,8 +159,7 @@ begin
       AError := true;
       Exit;
     end;
-    if Pos(str_, s) = 0 then
-    begin
+    if Pos(str_, s) = 0 then begin
       Stream.Free;
       AError := true;
       Exit;
@@ -172,7 +171,7 @@ begin
   end;
 end;
 
-procedure AddLoader(A: TILoaderClass; Caption: String);
+procedure AddLoader(A: TLoaderClass; Caption: String);
 begin
   SetLength(LoadersArray, Length(LoadersArray) + 1);
   LoadersArray[High(LoadersArray)].L := A;
@@ -181,7 +180,7 @@ end;
 
 { IHostingKartinokLoader }
 
-procedure IHostingKartinokLoader.LoadFile(FileName: string);
+procedure THostingKartinokLoader.LoadFile(FileName: string);
 const
   Str = '</label><input class="image-link" type="text" size="92" onclick="this.select();" value="';
 var
@@ -201,8 +200,7 @@ begin
       s := HTTP.Post('http://hostingkartinok.com/process.php', Stream);
     except
     end;
-    if (Length(s) = 0) or (Pos(Str, s) = 0) then
-    begin
+    if (Length(s) = 0) or (Pos(Str, s) = 0) then begin
       AError := true;
       Exit;
     end;
@@ -214,7 +212,7 @@ end;
 
 { IImgLinkLoader }
 
-procedure IImgLinkLoader.LoadFile(FileName: string);
+procedure TImgLinkLoader.LoadFile(FileName: string);
 const
   Str = '[URL=http://imglink.ru] [IMG]';
 var
@@ -233,8 +231,7 @@ begin
       s := HTTP.Post('http://imglink.ru/process.php', Stream);
     except
     end;
-    if (Pos(Str, s) = 0) then
-    begin
+    if (Pos(Str, s) = 0) then begin
       AError := true;
       Exit;
     end;
@@ -247,7 +244,7 @@ end;
 
 { IImgur }
 
-procedure IImgurLoader.LoadFile(FileName: string);
+procedure TImgurLoader.LoadFile(FileName: string);
 const
   myAPI = '569c6f649f330f39b23b4612b83f9e3a';
   Str = '<original_image>';
@@ -266,8 +263,7 @@ begin
       s := HTTP.Post('http://imgur.com/api/upload.xml', Stream);
     except
     end;
-    if (Pos(Str, s) = 0) then
-    begin
+    if (Pos(Str, s) = 0) then begin
       AError := true;
       Exit;
     end;
@@ -279,7 +275,7 @@ end;
 
 { IqikrLoader }
 
-procedure IqikrLoader.LoadFile(FileName: string);
+procedure TQikrLoader.LoadFile(FileName: string);
 const
   Str = '][IMG]http://qikr.co/';
 var
@@ -300,8 +296,7 @@ begin
       s := HTTP.Post('http://qikr.co/upload.php', Stream);
     except
     end;
-    if (Pos(Str, s) = 0) then
-    begin
+    if (Pos(Str, s) = 0) then begin
       AError := true;
       Exit;
     end;
@@ -313,10 +308,10 @@ end;
 
 initialization
 
-AddLoader(IHostingKartinokLoader, 'hostingkartinok.com');
-AddLoader(IqikrLoader, 'qikr.co');
-AddLoader(IImgurLoader, 'imgur.com');
-AddLoader(IZhykLoader, 'i.zhyk.ru');
-AddLoader(IImgLinkLoader, 'imglink.ru');
+AddLoader(THostingKartinokLoader, 'hostingkartinok.com');
+AddLoader(TQikrLoader, 'qikr.co');
+AddLoader(TImgurLoader, 'imgur.com');
+AddLoader(TZhykLoader, 'i.zhyk.ru');
+AddLoader(TImgLinkLoader, 'imglink.ru');
 
 end.

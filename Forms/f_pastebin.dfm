@@ -191,9 +191,6 @@ object FPasteBin: TFPasteBin
     SimplePanel = True
     SimpleText = '0'
     SkinData.SkinSection = 'STATUSBAR'
-    ExplicitLeft = 568
-    ExplicitTop = 504
-    ExplicitWidth = 0
   end
   object HTTP: TIdHTTP
     OnWork = HTTPWork

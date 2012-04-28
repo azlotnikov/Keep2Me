@@ -3,12 +3,32 @@ unit f_image;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Menus, Vcl.ImgList,
-  acAlphaImageList, Vcl.Buttons, sSpeedButton, f_load, funcs,
-  Vcl.Imaging.pngimage, JPEG, sDialogs, Vcl.StdCtrls, sEdit, sSpinEdit,
-  imgtools, Vcl.Clipbrd, Vcl.Imaging.GIFImg;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.ExtCtrls,
+  Vcl.Menus,
+  Vcl.ImgList,
+  Vcl.Clipbrd,
+  Vcl.StdCtrls,
+  Vcl.Imaging.GIFImg,
+  Vcl.Buttons,
+  Vcl.Imaging.pngimage,
+  Vcl.Imaging.JPEG,
+  acAlphaImageList,
+  sSpeedButton,
+  sDialogs,
+  sEdit,
+  sSpinEdit,
+  f_load,
+  funcs,
+  imgtools;
 
 type
   TFImage = class(TForm)
@@ -44,15 +64,11 @@ type
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure shp_penMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure shp_brushMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure imgMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure shp_penMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure shp_brushMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure imgMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure imgMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure imgMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure imgMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure mm_CancelClick(Sender: TObject);
     procedure mm_swapcolorsClick(Sender: TObject);
     procedure mm_closeClick(Sender: TObject);
@@ -98,17 +114,13 @@ begin
   result := result + ImgFormatToText(TImgFormats(GSettings.ImgExtIndex));
 end;
 
-procedure TFImage.imgMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TFImage.imgMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   scrlbx.SetFocus;
-  if Button <> mbLeft then
-    exit;
+  if Button <> mbLeft then exit;
   ActiveDraw := true;
-  if btn_Brush.down then
-    tmpShape := TFPencil.Create;
-  if btn_line.down then
-    tmpShape := TFLine.Create;
+  if btn_Brush.down then tmpShape := TFPencil.Create;
+  if btn_line.down then tmpShape := TFLine.Create;
 
   tmpShape.PReDraw := ReDraw;
   tmpShape.StartPoint := Point(X, Y);
@@ -121,20 +133,16 @@ begin
   tmpShape.AddPoint(Point(X, Y), pb.Canvas);
 end;
 
-procedure TFImage.imgMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Integer);
+procedure TFImage.imgMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  if not ActiveDraw then
-    exit;
+  if not ActiveDraw then exit;
 
   tmpShape.AddPoint(Point(X, Y), pb.Canvas);
 end;
 
-procedure TFImage.imgMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TFImage.imgMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if not ActiveDraw then
-    exit;
+  if not ActiveDraw then exit;
   ActiveDraw := false;
   tmpShape.AddPoint(Point(X, Y), pb.Canvas);
   tmpShape.EndPoint := Point(X, Y);
@@ -196,27 +204,23 @@ begin
   ShapeList.DrawAll(img.Canvas);
   try
     case TImgFormats(GSettings.ImgExtIndex) of
-      ifJpg:
-        begin
+      ifJpg: begin
           JPGDest := TJPEGImage.Create;
           JPGDest.Assign(img.Picture.Bitmap);
           JPGDest.CompressionQuality := 100;
           JPGDest.SaveToFile(FSName);
           JPGDest.Free;
         end;
-      ifPng:
-        begin
+      ifPng: begin
           PNGDest := TPNGImage.Create;
           PNGDest.Assign(img.Picture.Bitmap);
           PNGDest.SaveToFile(FSName);
           PNGDest.Free;
         end;
-      ifBmp:
-        begin
+      ifBmp: begin
           img.Picture.SaveToFile(FSName);
         end;
-      ifGif:
-        begin
+      ifGif: begin
           GIFDest := TGIFImage.Create;
           GIFDest.Assign(img.Picture.Bitmap);
           GIFDest.SaveToFile(FSName);
@@ -228,8 +232,7 @@ begin
     exit;
   end;
   img.Picture.Bitmap.FreeImage;
-  with TFLoad.Create(nil) do
-  begin
+  with TFLoad.Create(nil) do begin
     LoadFile(FSName);
   end;
 end;
@@ -246,8 +249,7 @@ end;
 procedure TFImage.pbPaint(Sender: TObject);
 begin
   ShapeList.DrawAll(pb.Canvas);
-  if ActiveDraw then
-    tmpShape.Draw(pb.Canvas);
+  if ActiveDraw then tmpShape.Draw(pb.Canvas);
 end;
 
 procedure TFImage.ReDraw;
@@ -259,14 +261,11 @@ end;
 procedure TFImage.mm_showtoolsClick(Sender: TObject);
 begin
   mm_showtools.Checked := not mm_showtools.Checked;
-  if mm_showtools.Checked then
-  begin
+  if mm_showtools.Checked then begin
     pnl_Tools.Visible := true;
     scrlbx.Top := 43;
     scrlbx.Height := scrlbx.Height - 43 + 8;
-  end
-  else
-  begin
+  end else begin
     pnl_Tools.Visible := false;
     scrlbx.Top := 8;
     scrlbx.Height := scrlbx.Height + 43 - 8;
@@ -286,18 +285,14 @@ begin
   pb.Invalidate;
 end;
 
-procedure TFImage.shp_brushMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TFImage.shp_brushMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if dlg_color.Execute then
-    shp_brush.Brush.Color := dlg_color.Color;
+  if dlg_color.Execute then shp_brush.Brush.Color := dlg_color.Color;
 end;
 
-procedure TFImage.shp_penMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TFImage.shp_penMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if dlg_color.Execute then
-    shp_pen.Brush.Color := dlg_color.Color;
+  if dlg_color.Execute then shp_pen.Brush.Color := dlg_color.Color;
 end;
 
 procedure TFImage.StartWork;

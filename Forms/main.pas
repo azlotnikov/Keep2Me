@@ -5,81 +5,105 @@ interface
 uses
   Winapi.Windows,
   Winapi.Messages,
+  Winapi.ShellAPI,
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.IniFiles,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
   Vcl.Dialogs,
   Vcl.StdCtrls,
-  mons,
+  Vcl.ImgList,
+  Vcl.Clipbrd,
+  Vcl.Menus,
+  Vcl.ExtCtrls,
+  Vcl.IdAntiFreeze,
+  Vcl.ComCtrls,
+  Vcl.Buttons,
+  JvImageList,
   JvExControls,
   JvSpeedButton,
   JvExStdCtrls,
   JvButton,
   JvCtrls,
-  Vcl.ImgList,
-  JvImageList,
-  acAlphaImageList,
-  Vcl.Buttons,
-  sSpeedButton,
-  funcs,
-  loaders,
   JvComponentBase,
   JvTrayIcon,
-  myhotkeys,
-  inifiles,
-  Vcl.Menus,
-  Vcl.ExtCtrls,
-  f_points,
-  f_image,
-  Vcl.Clipbrd,
-  f_about,
-  Winapi.ShellAPI,
-  shortlinks,
   IdHTTP,
-  unitIsAdmin,
   IdBaseComponent,
   IdAntiFreezeBase,
-  Vcl.IdAntiFreeze,
+  acAlphaImageList,
+  sSpeedButton,
+  sPageControl,
+  f_points,
+  f_image,
+  f_about,
   f_windows,
   f_selfield,
-  Vcl.ComCtrls,
-  sPageControl,
-  pastebin_tools,
   f_pastebin,
+  funcs,
+  loaders,
+  myhotkeys,
+  shortlinks,
+  unitIsAdmin,
+  mons,
+  pastebin_tools,
   cript;
 
 type
   TFMain = class(TForm)
     Pages: TsPageControl;
     pg_main: TsTabSheet;
+    pg_pastebin: TsTabSheet;
+
+    grp_pb_account: TGroupBox;
     grp_Monitors: TGroupBox;
+    grp_HotKey: TGroupBox;
+    grp_Hostings: TGroupBox;
+    grp_ShortLink: TGroupBox;
+    grp_OtherSettings: TGroupBox;
+    grp_pb_other: TGroupBox;
+    grp_pb_defsets: TGroupBox;
+
+    btn_ApplySettings: TsSpeedButton;
     btn_RefreshMonitors: TsSpeedButton;
     btn_GetCurrentMonitor: TsSpeedButton;
+
     cbb_Monitors: TComboBox;
-    grp_HotKey: TGroupBox;
-    lbl_HotKeysActions: TLabel;
     cbb_HotKeysActions: TComboBox;
+    cbb_ImgExt: TComboBox;
+    cbb_Hostings: TComboBox;
+    cbb_ShortLink: TComboBox;
+    cbb_HotKeys: TComboBox;
+    cbb_pb_deflang: TComboBox;
+    cbb_pb_private: TComboBox;
+    cbb_pb_expire: TComboBox;
+
+    lbl_HotKeysActions: TLabel;
+    lbl_ImgExt: TLabel;
+    lbl_pb_login: TLabel;
+    lbl_pb_pass: TLabel;
+    lbl_pb_deflang: TLabel;
+    lbl_pb_expire: TLabel;
+    lbl_pb_private: TLabel;
+
     cb_CtrlKey: TCheckBox;
     cb_AltKey: TCheckBox;
-    cbb_HotKeys: TComboBox;
     cb_ShiftKey: TCheckBox;
     cb_WinKey: TCheckBox;
-    grp_Hostings: TGroupBox;
-    cbb_Hostings: TComboBox;
-    grp_ShortLink: TGroupBox;
-    cbb_ShortLink: TComboBox;
-    grp_OtherSettings: TGroupBox;
-    lbl_ImgExt: TLabel;
     cb_ShowInTray: TCheckBox;
     cb_HideLoadForm: TCheckBox;
     cb_CopyLink: TCheckBox;
-    cbb_ImgExt: TComboBox;
     cb_AutoStart: TCheckBox;
+    cb_pb_copylink: TCheckBox;
+    cb_EnableKey: TCheckBox;
+
+    tmr_ExitFromThread: TTimer;
+    AntiFreeze: TIdAntiFreeze;
     Images: TsAlphaImageList;
     TrayIcon: TJvTrayIcon;
+
     pm: TPopupMenu;
     pm_SelectScreen: TMenuItem;
     pm_BufferSend: TMenuItem;
@@ -91,53 +115,47 @@ type
     pm_CheckUpdates: TMenuItem;
     pm_About: TMenuItem;
     pm_exit: TMenuItem;
-    tmr_ExitFromThread: TTimer;
-    AntiFreeze: TIdAntiFreeze;
-    pg_pastebin: TsTabSheet;
-    grp_pb_account: TGroupBox;
+    pm_pastebin: TMenuItem;
+
     rb_pb_anon: TRadioButton;
     rb_pb_account: TRadioButton;
+
     edt_pb_login: TEdit;
-    lbl_pb_login: TLabel;
     edt_pb_pass: TEdit;
-    lbl_pb_pass: TLabel;
-    grp_pb_defsets: TGroupBox;
-    cbb_pb_deflang: TComboBox;
-    lbl_pb_deflang: TLabel;
-    cbb_pb_expire: TComboBox;
-    lbl_pb_expire: TLabel;
-    cbb_pb_private: TComboBox;
-    lbl_pb_private: TLabel;
-    btn_ApplySettings: TsSpeedButton;
-    grp_pb_other: TGroupBox;
-    cb_pb_copylink: TCheckBox;
-    pm_pastebin: TMenuItem;
-    cb_EnableKey: TCheckBox;
+
     procedure FormCreate(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+
     procedure btn_GetCurrentMonitorClick(Sender: TObject);
     procedure btn_RefreshMonitorsClick(Sender: TObject);
-    procedure cbb_HotKeysActionsChange(Sender: TObject);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure pm_exitClick(Sender: TObject);
     procedure btn_ApplySettingsClick(Sender: TObject);
-    procedure DoScreenSelect(Sender: TObject);
-    procedure DoBufferSend(Sender: TObject);
+
+    procedure cbb_HotKeysActionsChange(Sender: TObject);
+    procedure cbb_HotKeysChange(Sender: TObject);
+
     procedure cb_CtrlKeyClick(Sender: TObject);
     procedure cb_AltKeyClick(Sender: TObject);
     procedure cb_ShiftKeyClick(Sender: TObject);
-    procedure cbb_HotKeysChange(Sender: TObject);
+    procedure cb_EnableKeyClick(Sender: TObject);
+    procedure cb_WinKeyClick(Sender: TObject);
+
     procedure pm_SettingsClick(Sender: TObject);
     procedure pm_AboutClick(Sender: TObject);
-    procedure cb_WinKeyClick(Sender: TObject);
     procedure pm_CheckUpdatesClick(Sender: TObject);
-    procedure ExitKeep;
+    procedure pm_exitClick(Sender: TObject);
+
     procedure tmr_ExitFromThreadTimer(Sender: TObject);
-    procedure DoWindowSelect(Sender: TObject);
+
     procedure rb_pb_accountClick(Sender: TObject);
     procedure rb_pb_anonClick(Sender: TObject);
-    procedure DoPastebin(Sender: TObject);
-    procedure cb_EnableKeyClick(Sender: TObject);
+
     procedure DoShowSettings(Sender: TObject);
+    procedure DoScreenSelect(Sender: TObject);
+    procedure DoBufferSend(Sender: TObject);
+    procedure DoPastebin(Sender: TObject);
+    procedure DoWindowSelect(Sender: TObject);
+
+    procedure ExitKeep;
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -163,8 +181,7 @@ procedure TFMain.ApplySettings;
 var
   i: Integer;
 begin
-  with GSettings do
-  begin
+  with GSettings do begin
     cbb_Monitors.ItemIndex := MonIndex;
     cbb_Hostings.ItemIndex := LoaderIndex;
     cbb_ShortLink.ItemIndex := ShortLinkIndex;
@@ -174,10 +191,8 @@ begin
     cb_CopyLink.Checked := CopyLink;
     cbb_ImgExt.ItemIndex := ImgExtIndex;
     SetLength(tmpHotKeys, Length(Actions));
-    for i := 0 to High(Actions) do
-      tmpHotKeys[i] := Actions[i];
-    with Pastebin do
-    begin
+    for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
+    with Pastebin do begin
       rb_pb_anon.Checked := Anon;
       rb_pb_account.Checked := not Anon;
       edt_pb_login.Text := Login;
@@ -200,8 +215,7 @@ end;
 
 procedure TFMain.btn_GetCurrentMonitorClick(Sender: TObject);
 begin
-  cbb_Monitors.ItemIndex := MonitorManager.GetMonitorByPoint
-    (Point(self.Left, self.Top));
+  cbb_Monitors.ItemIndex := MonitorManager.GetMonitorByPoint(Point(self.Left, self.Top));
 end;
 
 procedure TFMain.btn_RefreshMonitorsClick(Sender: TObject);
@@ -261,34 +275,26 @@ var
 begin
   s := '';
   HTTP := tidhttp.Create(nil);
-  HTTP.Request.UserAgent :=
-    'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)';
+  HTTP.Request.UserAgent := 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)';
   try
     s := HTTP.Get('http://keep2.me/lastversion.php');
   except
   end;
-  if (Length(s) = 0) and (OnRun = 0) then
-    ShowMessage('Ошибка соедниния с сервером');
-  if (Length(s) > 0) and (s <> KEEP_VERSION) then
-  begin
-    if MessageDlg('Доступно обновление ' + s + ' (ваша версия: ' + KEEP_VERSION
-      + '). Обновить программу?', mtConfirmation, mbYesNo, 0) <> mrYes then
-    begin
+  if (Length(s) = 0) and (OnRun = 0) then ShowMessage('Ошибка соедниния с сервером');
+  if (Length(s) > 0) and (s <> KEEP_VERSION) then begin
+    if MessageDlg('Доступно обновление ' + s + ' (ваша версия: ' + KEEP_VERSION + '). Обновить программу?',
+      mtConfirmation, mbYesNo, 0) <> mrYes then begin
       HTTP.Free;
       exit;
     end;
-    if not FileExists(ExtractFilePath(ParamStr(0)) + 'updater.exe') then
-    begin
+    if not FileExists(ExtractFilePath(ParamStr(0)) + 'updater.exe') then begin
       ShowMessage('Ошибка: Не удалось найти updater.exe');
       exit;
     end;
-    RunMeAsAdmin(GetDesktopWindow,
-      PChar(ExtractFilePath(ParamStr(0)) + 'updater.exe'), '');
+    RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + 'updater.exe'), '');
     HTTP.Free;
     FMain.tmr_ExitFromThread.Enabled := true;
-  end
-  else if OnRun = 0 then
-  begin
+  end else if OnRun = 0 then begin
     ShowMessage('У вас актуальная версия');
     HTTP.Free;
   end;
@@ -296,23 +302,19 @@ end;
 
 procedure TFMain.DoBufferSend(Sender: TObject);
 begin
-  if (Clipboard.HasFormat(CF_BITMAP)) or (Clipboard.HasFormat(CF_PICTURE)) then
-  begin
-    with TFImage.Create(nil) do
-    begin
+  if (Clipboard.HasFormat(CF_BITMAP)) or (Clipboard.HasFormat(CF_PICTURE)) then begin
+    with TFImage.Create(nil) do begin
       img.Picture.Assign(Clipboard);
       OriginImg.Assign(Clipboard);
       Show;
     end;
   end
-  else
-    TrayIcon.BalloonHint('Keep2Me', 'Содержимое не является изображением');
+  else TrayIcon.BalloonHint('Keep2Me', 'Содержимое не является изображением');
 end;
 
 procedure TFMain.DoPastebin(Sender: TObject);
 begin
-  with TFPasteBin.Create(nil) do
-    Show;
+  with TFPasteBin.Create(nil) do Show;
 end;
 
 procedure TFMain.DoScreenSelect(Sender: TObject);
@@ -329,8 +331,7 @@ end;
 
 procedure TFMain.DoWindowSelect(Sender: TObject);
 begin
-  TrayIcon.BalloonHint('Подсказка',
-    'ПКМ - подсветить окно, ЛКМ - сделать скриншот окна');
+  TrayIcon.BalloonHint('Подсказка', 'ПКМ - подсветить окно, ЛКМ - сделать скриншот окна');
   FSelField.AlphaBlend := false;
   FWindows.StartSelect;
   FWindows.Show;
@@ -340,8 +341,7 @@ procedure TFMain.ExitKeep;
 var
   i: Integer;
 begin
-  for i := 0 to High(GSettings.Actions) do
-    UnRegisterMyHotKey(@GSettings.Actions[i], self.Handle);
+  for i := 0 to High(GSettings.Actions) do UnRegisterMyHotKey(@GSettings.Actions[i], self.Handle);
   Hide;
   Application.Terminate;
   halt(0);
@@ -359,56 +359,38 @@ var
   i: Integer;
   id: longword;
 begin
-  if (not IsUserAnAdmin) then
-    ShowMessage
-      ('Для корректной работы программы необходимы права Администратора');
+  if (not IsUserAnAdmin) then ShowMessage('Для корректной работы программы необходимы права Администратора');
   ForceDirectories(ExtractFilePath(ParamStr(0)) + 'tmpImg\');
   GSettings.TrayIcon := TrayIcon;
   GSettings.UpdateRecentFiles := UpdateRecentFiles;
   LoadRecentFiles;
   if FileExists(ExtractFilePath(ParamStr(0)) + SETTINGS_FILE_NAME) and
-    not((ParamCount > 0) and (ParamStr(1) = 'SHOWSETTINGS')) then
-    Visible := false
-  else
-    Visible := true;
-  for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do
-    cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
+    not((ParamCount > 0) and (ParamStr(1) = 'SHOWSETTINGS')) then Visible := false
+  else Visible := true;
+  for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
   cbb_ImgExt.ItemIndex := 0;
-  AddHotKeyAction(true, 'Выделить область экрана', true, true, false, false, 5,
-    DoScreenSelect);
-  AddHotKeyAction(false, 'Отправить из буфера обмена', true, true, false, false,
-    6, DoBufferSend);
-  AddHotKeyAction(false, 'Отправить скриншот окна', true, true, false, false, 7,
-    DoWindowSelect);
-  AddHotKeyAction(true, 'Отправить на Pastebin.com', true, true, true, false, 8,
-    DoPastebin);
-  AddHotKeyAction(false, 'Показать настройки', true, true, false, false, 9,
-    DoShowSettings);
+  AddHotKeyAction(true, 'Выделить область экрана', true, true, false, false, 5, DoScreenSelect);
+  AddHotKeyAction(false, 'Отправить из буфера обмена', true, true, false, false, 6, DoBufferSend);
+  AddHotKeyAction(false, 'Отправить скриншот окна', true, true, false, false, 7, DoWindowSelect);
+  AddHotKeyAction(true, 'Отправить на Pastebin.com', true, true, true, false, 8, DoPastebin);
+  AddHotKeyAction(false, 'Показать настройки', true, true, false, false, 9, DoShowSettings);
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
-  for i := 0 to High(LoadersArray) do
-    cbb_Hostings.Items.Add(LoadersArray[i].C);
+  for i := 0 to High(LoadersArray) do cbb_Hostings.Items.Add(LoadersArray[i].C);
   cbb_Hostings.ItemIndex := 0;
   cbb_ShortLink.Items.Add('Нет');
-  for i := 0 to High(ShortersArray) do
-    cbb_ShortLink.Items.Add(ShortersArray[i].C);
+  for i := 0 to High(ShortersArray) do cbb_ShortLink.Items.Add(ShortersArray[i].C);
   cbb_ShortLink.ItemIndex := 0;
-  for i := 0 to High(HotKeysArray) do
-    cbb_HotKeys.Items.Add(HotKeysArray[i].Caption);
+  for i := 0 to High(HotKeysArray) do cbb_HotKeys.Items.Add(HotKeysArray[i].Caption);
   cbb_HotKeys.ItemIndex := 0;
-  for i := 0 to High(GSettings.Actions) do
-    cbb_HotKeysActions.Items.Add(GSettings.Actions[i].Caption);
-  for i := 0 to High(PastebinLangs) do
-    cbb_pb_deflang.Items.Add(PastebinLangs[i].Caption);
-  for i := 0 to High(PastebinExpires) do
-    cbb_pb_expire.Items.Add(PastebinExpires[i].Caption);
-  for i := 0 to High(PastebinPrivates) do
-    cbb_pb_private.Items.Add(PastebinPrivates[i].Caption);
+  for i := 0 to High(GSettings.Actions) do cbb_HotKeysActions.Items.Add(GSettings.Actions[i].Caption);
+  for i := 0 to High(PastebinLangs) do cbb_pb_deflang.Items.Add(PastebinLangs[i].Caption);
+  for i := 0 to High(PastebinExpires) do cbb_pb_expire.Items.Add(PastebinExpires[i].Caption);
+  for i := 0 to High(PastebinPrivates) do cbb_pb_private.Items.Add(PastebinPrivates[i].Caption);
   cbb_HotKeysActions.ItemIndex := 0;
   LoadSettings;
   ApplySettings;
-  for i := 0 to High(GSettings.Actions) do
-    RegisterMyHotKey(@GSettings.Actions[i], self.Handle, i);
+  for i := 0 to High(GSettings.Actions) do RegisterMyHotKey(@GSettings.Actions[i], self.Handle, i);
   cbb_HotKeysActionsChange(self);
   UpdateRecentFiles(self);
   beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
@@ -418,8 +400,7 @@ procedure TFMain.GetSettings;
 var
   i: Integer;
 begin
-  with GSettings do
-  begin
+  with GSettings do begin
     MonIndex := cbb_Monitors.ItemIndex;
     LoaderIndex := cbb_Hostings.ItemIndex;
     ShortLinkIndex := cbb_ShortLink.ItemIndex;
@@ -429,10 +410,8 @@ begin
     CopyLink := cb_CopyLink.Checked;
     ImgExtIndex := cbb_ImgExt.ItemIndex;
     SetLength(Actions, Length(tmpHotKeys));
-    for i := 0 to High(tmpHotKeys) do
-      Actions[i] := tmpHotKeys[i];
-    with Pastebin do
-    begin
+    for i := 0 to High(tmpHotKeys) do Actions[i] := tmpHotKeys[i];
+    with Pastebin do begin
       Anon := rb_pb_anon.Checked;
       Login := edt_pb_login.Text;
       Password := edt_pb_pass.Text;
@@ -452,8 +431,7 @@ var
 begin
   cbb_Monitors.Clear;
   t := MonitorManager.GetCaptions;
-  for i := 0 to t.Count - 1 do
-    cbb_Monitors.Items.Add(t[i]);
+  for i := 0 to t.Count - 1 do cbb_Monitors.Items.Add(t[i]);
   cbb_Monitors.ItemIndex := 0;
   t.Free;
 end;
@@ -464,8 +442,7 @@ var
   i: Integer;
 begin
   F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SETTINGS_FILE_NAME);
-  with F, GSettings do
-  begin
+  with F, GSettings do begin
     MonIndex := ReadInteger('CommonSettings', 'MonitorIndex', 0);
     LoaderIndex := ReadInteger('CommonSettings', 'LoaderIndex', 0);
     ShortLinkIndex := ReadInteger('CommonSettings', 'ShortLinkIndex', 0);
@@ -475,8 +452,7 @@ begin
     CopyLink := ReadBool('CommonSettings', 'CopyLink', true);
     ImgExtIndex := ReadInteger('CommonSettings', 'ImgExtIndex', 1);
     for i := 0 to High(Actions) do
-      with Actions[i] do
-      begin
+      with Actions[i] do begin
         Enabled := ReadBool('HotKeys' + inttostr(i), 'Enabled', Enabled);
         Key := ReadInteger('HotKeys' + inttostr(i), 'Key', Key);
         Ctrl := ReadBool('HotKeys' + inttostr(i), 'Ctrl', Ctrl);
@@ -484,8 +460,7 @@ begin
         Shift := ReadBool('HotKeys' + inttostr(i), 'Shift', Shift);
         Win := ReadBool('HotKeys' + inttostr(i), 'Win', Win);
       end;
-    with Pastebin do
-    begin
+    with Pastebin do begin
       Anon := ReadBool('Pastebin', 'Anonimous', true);
       Login := MyDecrypt(ReadString('Pastebin', 'Login', ''), CRYPT_KEY);
       Password := MyDecrypt(ReadString('Pastebin', 'Password', ''), CRYPT_KEY);
@@ -500,9 +475,7 @@ end;
 
 procedure TFMain.OnRecentFileClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open',
-    PChar(GSettings.RecentFiles[(Sender as TMenuItem).Tag].Link), nil,
-    nil, SW_SHOW);
+  ShellExecute(Handle, 'open', PChar(GSettings.RecentFiles[(Sender as TMenuItem).Tag].Link), nil, nil, SW_SHOW);
 end;
 
 procedure TFMain.pm_AboutClick(Sender: TObject);
@@ -546,8 +519,7 @@ var
   i: Integer;
 begin
   F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SETTINGS_FILE_NAME);
-  with F, GSettings do
-  begin
+  with F, GSettings do begin
     WriteInteger('CommonSettings', 'MonitorIndex', MonIndex);
     WriteInteger('CommonSettings', 'LoaderIndex', LoaderIndex);
     WriteInteger('CommonSettings', 'ShortLinkIndex', ShortLinkIndex);
@@ -558,8 +530,7 @@ begin
     WriteInteger('CommonSettings', 'ImgExtIndex', ImgExtIndex);
     WriteInteger('HotKeys', 'KeyHigh', High(Actions));
     for i := 0 to High(Actions) do
-      with Actions[i] do
-      begin
+      with Actions[i] do begin
         WriteInteger('HotKeys' + inttostr(i), 'Key', Key);
         WriteBool('HotKeys' + inttostr(i), 'Ctrl', Ctrl);
         WriteBool('HotKeys' + inttostr(i), 'Alt', Alt);
@@ -567,8 +538,7 @@ begin
         WriteBool('HotKeys' + inttostr(i), 'Win', Win);
         WriteBool('HotKeys' + inttostr(i), 'Enabled', Enabled);
       end;
-    with Pastebin do
-    begin
+    with Pastebin do begin
       WriteBool('Pastebin', 'Anonimous', Anon);
       WriteString('Pastebin', 'Login', MyEncrypt(Login, CRYPT_KEY));
       WriteString('Pastebin', 'Password', MyEncrypt(Password, CRYPT_KEY));
@@ -579,10 +549,8 @@ begin
     end;
     Free;
   end;
-  for i := 0 to High(GSettings.Actions) do
-    UnRegisterMyHotKey(@GSettings.Actions[i], self.Handle);
-  for i := 0 to High(GSettings.Actions) do
-    RegisterMyHotKey(@GSettings.Actions[i], self.Handle, i);
+  for i := 0 to High(GSettings.Actions) do UnRegisterMyHotKey(@GSettings.Actions[i], self.Handle);
+  for i := 0 to High(GSettings.Actions) do RegisterMyHotKey(@GSettings.Actions[i], self.Handle, i);
 end;
 
 procedure TFMain.tmr_ExitFromThreadTimer(Sender: TObject);
@@ -595,19 +563,15 @@ var
   i: Integer;
   M: TMenuItem;
 begin
-  for i := 0 to pm_RecentLoads.Count - 1 do
-    pm_RecentLoads.Delete(0);
-  for i := 0 to High(GSettings.RecentFiles) do
-  begin
+  for i := 0 to pm_RecentLoads.Count - 1 do pm_RecentLoads.Delete(0);
+  for i := 0 to High(GSettings.RecentFiles) do begin
     M := TMenuItem.Create(pm_RecentLoads);
     M.Caption := GSettings.RecentFiles[i].Caption;
     M.OnClick := OnRecentFileClick;
     M.Tag := i;
     case GSettings.RecentFiles[i].LType of
-      rfImg:
-        M.ImageIndex := 10;
-      rfText:
-        M.ImageIndex := 12;
+      rfImg: M.ImageIndex := 10;
+      rfText: M.ImageIndex := 12;
     end;
     pm_RecentLoads.Insert(0, M);
   end;
@@ -618,8 +582,7 @@ var
   i: Integer;
 begin
   for i := 0 to High(GSettings.Actions) do
-    if GSettings.Actions[i].RegKey = Msg.hotkey then
-      GSettings.Actions[i].Proc(self);
+    if GSettings.Actions[i].RegKey = Msg.hotkey then GSettings.Actions[i].Proc(self);
 end;
 
 end.

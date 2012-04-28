@@ -3,19 +3,27 @@ unit f_points;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, funcs, Vcl.ExtCtrls, f_selfield,
-  f_image, f_framsize;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.ExtCtrls,
+  f_selfield,
+  f_image,
+  f_framsize,
+  funcs;
 
 type
   TFPoints = class(TForm)
     procedure FormShow(Sender: TObject);
-    procedure FormMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure FormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     ActiveSelect: Boolean;
     GLx, GLy: Integer;
@@ -32,11 +40,9 @@ implementation
 
 {$R *.dfm}
 
-procedure TFPoints.FormMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TFPoints.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if Button = mbLeft then
-  begin
+  if Button = mbLeft then begin
     Rx := Mouse.CursorPos.X;
     Ry := Mouse.CursorPos.Y;
     bx := X;
@@ -44,8 +50,7 @@ begin
     GLx := X; // координаты начала (Х)
     GLy := Y; // координаты начала (У)
     FSelField.StartSelect;
-    with FSelField.shp_sel do
-    begin
+    with FSelField.shp_sel do begin
       Top := Y; // устанавливаем нашу форму с шэйпом
       Left := X; // в место нажатия мыши и с нулевым размером
       Height := 0;
@@ -57,25 +62,19 @@ begin
     FSelField.Show;
     FFrameSize.Show;
     ActiveSelect := true;
-  end
-  else
-  begin
+  end else begin
     RestoreAllForms;
     Hide;
   end;
 end;
 
-procedure TFPoints.FormMouseMove(Sender: TObject; Shift: TShiftState;
-  X, Y: Integer);
+procedure TFPoints.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  if not ActiveSelect then
-    exit;
+  if not ActiveSelect then exit;
   // X := Mouse.CursorPos.X;
   // Y := Mouse.CursorPos.Y;
-  if (X >= GLx) and (Y >= GLy) then
-  begin
-    with FSelField.shp_sel do
-    begin
+  if (X >= GLx) and (Y >= GLy) then begin
+    with FSelField.shp_sel do begin
       Top := GLy;
       Left := GLx;
       Height := Y - GLy;
@@ -83,11 +82,8 @@ begin
       FFrameSize.Top := Ry - FFrameSize.Height;
       FFrameSize.Left := Rx;
     end;
-  end
-  else if (X > GLx) and (Y <= GLy) then
-  begin
-    with FSelField.shp_sel do
-    begin
+  end else if (X > GLx) and (Y <= GLy) then begin
+    with FSelField.shp_sel do begin
       Top := GLy - (GLy - Y);
       Left := GLx;
       Height := GLy - Y;
@@ -95,11 +91,8 @@ begin
       FFrameSize.Top := Ry;
       FFrameSize.Left := Rx;
     end;
-  end
-  else if (X <= GLx) and (Y <= GLy) then
-  begin
-    with FSelField.shp_sel do
-    begin
+  end else if (X <= GLx) and (Y <= GLy) then begin
+    with FSelField.shp_sel do begin
       Top := Y;
       Left := X;
       Height := GLy - Y;
@@ -107,11 +100,8 @@ begin
       FFrameSize.Top := Ry;
       FFrameSize.Left := Rx - FFrameSize.Width;
     end;
-  end
-  else if (X <= GLx) and (Y > GLy) then
-  begin
-    with FSelField.shp_sel do
-    begin
+  end else if (X <= GLx) and (Y > GLy) then begin
+    with FSelField.shp_sel do begin
       Left := GLx - (GLx - X);
       Top := GLy;
       Width := GLx - X;
@@ -120,12 +110,10 @@ begin
       FFrameSize.Left := Rx - FFrameSize.Width;
     end;
   end;
-  FFrameSize.lbl_size.Caption := inttostr(abs(X - bx)) + 'x' +
-    inttostr(abs(Y - by));
+  FFrameSize.lbl_size.Caption := inttostr(abs(X - bx)) + 'x' + inttostr(abs(Y - by));
 end;
 
-procedure TFPoints.FormMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TFPoints.FormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   dc: HDC;
   bm: TBitMap;
@@ -138,34 +126,25 @@ begin
   FSelField.Hide;
   FFrameSize.Hide;
   Hide;
-  if not(Button = mbLeft) then
-    exit;
+  if not(Button = mbLeft) then exit;
   dc := GetDC(0);
   bm := TBitMap.Create;
   bm.Width := abs(X - GLx);
   bm.Height := abs(Y - GLy);
   dx := 0;
   dy := 0;
-  if GSettings.MonIndex > 0 then
-  begin
+  if GSettings.MonIndex > 0 then begin
     dx := Screen.Monitors[GSettings.MonIndex - 1].Left;;
     dy := Screen.Monitors[GSettings.MonIndex - 1].Top;
   end;
-  if (X >= GLx) and (Y >= GLy) then
-    BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + GLx,
-      dy + GLy, SRCCOPY)
+  if (X >= GLx) and (Y >= GLy) then BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + GLx, dy + GLy, SRCCOPY)
   else if (X <= GLx) and (Y <= GLy) then
-    BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + X,
-      dy + Y, SRCCOPY)
+      BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + X, dy + Y, SRCCOPY)
   else if (X < GLx) and (Y > GLy) then
-    BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + X,
-      dy + GLy, SRCCOPY)
-  else
-    BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + GLx,
-      dy + Y, SRCCOPY);
+      BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + X, dy + GLy, SRCCOPY)
+  else BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + GLx, dy + Y, SRCCOPY);
   RestoreAllForms;
-  with TFImage.Create(nil) do
-  begin
+  with TFImage.Create(nil) do begin
     img.Picture.Assign(bm);
     OriginImg.Assign(bm);
     StartWork;
@@ -179,16 +158,14 @@ var
   i, w, h: Integer;
 begin
   StartSelect;
-  SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, SWP_NOACTIVATE or
-    SWP_NOMOVE or SWP_NOSIZE);
+  SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
 end;
 
 procedure TFPoints.StartSelect;
 var
   i, w, h, d: Integer;
 begin
-  if GSettings.MonIndex > 0 then
-  begin
+  if GSettings.MonIndex > 0 then begin
     Top := Screen.Monitors[GSettings.MonIndex - 1].Top;
     d := Top;
     Left := Screen.Monitors[GSettings.MonIndex - 1].Left;
@@ -197,15 +174,12 @@ begin
     d := Width;
     Height := Screen.Monitors[GSettings.MonIndex - 1].Height;
     d := Height;
-  end
-  else
-  begin
+  end else begin
     Top := 0;
     Left := 0;
     h := 0;
     w := 0;
-    for i := 0 to Screen.MonitorCount - 1 do
-    begin
+    for i := 0 to Screen.MonitorCount - 1 do begin
       Inc(h, Screen.Monitors[i].Height);
       Inc(w, Screen.Monitors[i].Width);
     end;

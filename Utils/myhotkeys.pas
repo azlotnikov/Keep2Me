@@ -2,7 +2,9 @@ unit myhotkeys;
 
 interface
 
-uses Winapi.Windows, System.Classes;
+uses
+  Winapi.Windows,
+  System.Classes;
 
 type
   TMyHotKey = record

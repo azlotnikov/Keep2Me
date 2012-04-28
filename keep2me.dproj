@@ -97,12 +97,16 @@
 			</DelphiCompile>
 			<DCCReference Include="Utils\myhotkeys.pas"/>
 			<DCCReference Include="Utils\funcs.pas"/>
+			<DCCReference Include="Utils\mons.pas"/>
+			<DCCReference Include="Utils\loaders.pas"/>
+			<DCCReference Include="Utils\shortlinks.pas"/>
+			<DCCReference Include="Utils\imgtools.pas"/>
+			<DCCReference Include="Utils\pastebin_tools.pas"/>
+			<DCCReference Include="Utils\uSynEditPopupEdit.pas"/>
+			<DCCReference Include="Utils\cript.pas"/>
+			<DCCReference Include="Utils\unitIsAdmin.pas"/>
 			<DCCReference Include="Forms\main.pas">
 				<Form>FMain</Form>
-			</DCCReference>
-			<DCCReference Include="Utils\mons.pas"/>
-			<DCCReference Include="Utils\loaders.pas">
-				<Form>$R *.res</Form>
 			</DCCReference>
 			<DCCReference Include="Forms\f_load.pas">
 				<Form>FLoad</Form>
@@ -122,20 +126,12 @@
 			<DCCReference Include="Forms\f_framsize.pas">
 				<Form>FFrameSize</Form>
 			</DCCReference>
-			<DCCReference Include="Utils\shortlinks.pas"/>
-			<DCCReference Include="Utils\imgtools.pas"/>
 			<DCCReference Include="Forms\f_windows.pas">
 				<Form>FWindows</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="Forms\f_pastebin.pas">
 				<Form>FPasteBin</Form>
-				<FormType>dfm</FormType>
 			</DCCReference>
-			<DCCReference Include="Utils\pastebin_tools.pas"/>
-			<DCCReference Include="Utils\uSynEditPopupEdit.pas"/>
-			<DCCReference Include="Utils\cript.pas"/>
-			<DCCReference Include="Utils\unitIsAdmin.pas"/>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>

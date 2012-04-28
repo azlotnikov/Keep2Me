@@ -1281,6 +1281,10 @@ object FAbout: TFAbout
       Caption = #1051#1086#1075
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object mmo_logs: TMemo
         Left = 0
         Top = 0
@@ -1348,6 +1352,10 @@ object FAbout: TFAbout
       Caption = #1048#1085#1092#1086#1088#1084#1072#1094#1080#1103
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object mmo_info: TMemo
         Left = 0
         Top = 0

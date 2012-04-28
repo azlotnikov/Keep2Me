@@ -2,7 +2,12 @@ unit imgtools;
 
 interface
 
-uses Windows, SysUtils, Classes, Graphics, Types;
+uses
+  Winapi.Windows,
+  System.SysUtils,
+  System.Classes,
+  System.Types,
+  Vcl.Graphics;
 
 type
   TRPen = record
@@ -65,8 +70,7 @@ procedure TFPencil.AddPoint(P: TPoint; CanvasOut: TCanvas);
 begin
   SetLength(Points, Length(Points) + 1);
   Points[High(Points)] := P;
-  if Length(Points) < 2 then
-    exit;
+  if Length(Points) < 2 then exit;
   CanvasOut.MoveTo(Points[High(Points) - 1].X, Points[High(Points) - 1].Y);
   CanvasOut.LineTo(P.X, P.Y);
 end;
@@ -75,17 +79,14 @@ procedure TFPencil.Draw(CanvasOut: TCanvas);
 var
   i: Integer;
 begin
-  if Length(Points) = 0 then
-    exit;
+  if Length(Points) = 0 then exit;
   SetColors(CanvasOut);
-  if Length(Points) = 1 then
-  begin
+  if Length(Points) = 1 then begin
     SetLength(Points, Length(Points) + 1);
     Points[High(Points)] := Point(Points[0].X + 1, Points[0].Y + 1);
   end;
   CanvasOut.MoveTo(Points[0].X, Points[0].Y);
-  for i := 0 to High(Points) - 1 do
-    CanvasOut.LineTo(Points[i].X, Points[i].Y);
+  for i := 0 to High(Points) - 1 do CanvasOut.LineTo(Points[i].X, Points[i].Y);
 end;
 
 { TFShapeList }
@@ -101,16 +102,14 @@ procedure TFShapeList.Clear;
 var
   i: TFShape;
 begin
-  for i in Shapes do
-    i.Free;
+  for i in Shapes do i.Free;
   SetLength(Shapes, 0);
 end;
 
 function TFShapeList.DeleteLast: Boolean;
 begin
   result := True;
-  if Length(Shapes) = 0 then
-    exit(false);
+  if Length(Shapes) = 0 then exit(false);
   Shapes[High(Shapes)].Free;
   SetLength(Shapes, Length(Shapes) - 1);
 end;
@@ -119,8 +118,7 @@ procedure TFShapeList.DrawAll(CanvasOut: TCanvas);
 var
   i: TFShape;
 begin
-  for i in Shapes do
-    i.Draw(CanvasOut);
+  for i in Shapes do i.Draw(CanvasOut);
 end;
 
 procedure TFShapeList.Free;

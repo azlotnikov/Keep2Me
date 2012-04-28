@@ -2,9 +2,18 @@ unit funcs;
 
 interface
 
-uses Winapi.Windows, System.Classes, System.Win.Registry, myhotkeys,
-  System.SysUtils, loaders, JvTrayIcon, mons, Winapi.ShellAPI, Vcl.Forms,
-  System.IniFiles;
+uses
+  Winapi.Windows,
+  Winapi.ShellAPI,
+  System.Classes,
+  System.Win.Registry,
+  System.IniFiles,
+  System.SysUtils,
+  Vcl.Forms,
+  JvTrayIcon,
+  loaders,
+  mons,
+  myhotkeys;
 
 type
   TImgFormats = (ifJpg, ifPng, ifBmp, ifGif);
@@ -63,17 +72,16 @@ type
   end;
 
 function ImgFormatToText(I: TImgFormats): String;
+function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string): Boolean;
 procedure MinimizeAllForms;
 procedure RestoreAllForms;
 procedure RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer);
 procedure UnRegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle);
 procedure Autorun(Flag: Boolean; NameParam, Path: String);
 procedure AddToRecentFiles(Link, Caption: string; FType: TRecentFileType);
-procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string;
-  _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer; _Proc: TNotifyEvent);
+procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer;
+  _Proc: TNotifyEvent);
 procedure LoadRecentFiles;
-function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string)
-  : Boolean;
 
 const
   SETTINGS_FILE_NAME = 'settings.ini';
@@ -91,12 +99,10 @@ procedure MinimizeAllForms;
 var
   I: Integer;
 begin
-  with Application do
-  begin
+  with Application do begin
     for I := 0 to ComponentCount - 1 do
       if (Components[I] is TForm) then
-        if (Components[I] as TForm).Visible then
-        begin
+        if (Components[I] as TForm).Visible then begin
           (Components[I] as TForm).Tag := -1;
           (Components[I] as TForm).Visible := false;
         end
@@ -109,12 +115,10 @@ procedure RestoreAllForms;
 var
   I: Integer;
 begin
-  with Application do
-  begin
+  with Application do begin
     for I := 0 to ComponentCount - 1 do
       if (Components[I] is TForm) then
-        if (Components[I] as TForm).Tag = -1 then
-        begin
+        if (Components[I] as TForm).Tag = -1 then begin
           (Components[I] as TForm).Show;
           (Components[I] as TForm).Tag := 0;
         end;
@@ -122,8 +126,7 @@ begin
   end;
 end;
 
-function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string)
-  : Boolean;
+function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string): Boolean;
 var
   sei: TShellExecuteInfo;
 begin
@@ -133,10 +136,8 @@ begin
   sei.fMask := SEE_MASK_FLAG_DDEWAIT or SEE_MASK_FLAG_NO_UI;
   sei.lpVerb := PChar('runas');
   sei.lpFile := PChar(filename); // PAnsiChar;
-  if Parameters <> '' then
-    sei.lpParameters := PChar(Parameters)
-  else
-    sei.lpParameters := nil; // PAnsiChar;
+  if Parameters <> '' then sei.lpParameters := PChar(Parameters)
+  else sei.lpParameters := nil; // PAnsiChar;
   sei.nShow := SW_SHOWNORMAL; // Integer;
   Result := ShellExecuteEx(@sei);
 end;
@@ -145,33 +146,25 @@ function ImgFormatToText(I: TImgFormats): String;
 begin
   Result := '';
   case I of
-    ifJpg:
-      Result := '.jpg';
-    ifPng:
-      Result := '.png';
-    ifBmp:
-      Result := '.bmp';
-    ifGif:
-      Result := '.gif';
+    ifJpg: Result := '.jpg';
+    ifPng: Result := '.png';
+    ifBmp: Result := '.bmp';
+    ifGif: Result := '.gif';
   end;
 end;
 
 function RecentFileTypeToString(R: TRecentFileType): string;
 begin
   case R of
-    rfImg:
-      Result := 'img';
-    rfText:
-      Result := 'text';
+    rfImg: Result := 'img';
+    rfText: Result := 'text';
   end;
 end;
 
 function StringToRecentFileType(R: string): TRecentFileType;
 begin
-  if R = 'img' then
-    Result := rfImg
-  else if R = 'text' then
-    Result := rfText;
+  if R = 'img' then Result := rfImg
+  else if R = 'text' then Result := rfText;
 end;
 
 procedure LoadRecentFiles;
@@ -180,20 +173,16 @@ var
   s: TRecentFileType;
   I: Integer;
 begin
-  if Not FileExists(ExtractFilePath(ParamStr(0)) + RECENT_FILE_NAME) then
-    Exit;
+  if Not FileExists(ExtractFilePath(ParamStr(0)) + RECENT_FILE_NAME) then Exit;
   F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + RECENT_FILE_NAME);
   for I := 0 to F.ReadInteger('RecentFiles', 'High', -1) do
-  begin
-    SetLength(GSettings.RecentFiles, Length(GSettings.RecentFiles) + 1);
-    GSettings.RecentFiles[High(GSettings.RecentFiles)].Link :=
-      F.ReadString('RecentFiles', 'Link' + inttostr(I), '');
-    GSettings.RecentFiles[High(GSettings.RecentFiles)].Caption :=
-      F.ReadString('RecentFiles', 'Caption' + inttostr(I), '');
-    GSettings.RecentFiles[High(GSettings.RecentFiles)].LType :=
-      StringToRecentFileType(F.ReadString('RecentFiles',
-      'Type' + inttostr(I), 'img'));
-  end;
+    with GSettings, F do begin
+      SetLength(RecentFiles, Length(RecentFiles) + 1);
+      RecentFiles[High(RecentFiles)].Link := ReadString('RecentFiles', 'Link' + inttostr(I), '');
+      RecentFiles[High(RecentFiles)].Caption := ReadString('RecentFiles', 'Caption' + inttostr(I), '');
+      RecentFiles[High(RecentFiles)].LType :=
+        StringToRecentFileType(ReadString('RecentFiles', 'Type' + inttostr(I), 'img'));
+    end;
   F.Free;
 end;
 
@@ -202,35 +191,30 @@ var
   I: Integer;
   F: TIniFile;
 begin
-  if Length(GSettings.RecentFiles) < 10 then
-    SetLength(GSettings.RecentFiles, Length(GSettings.RecentFiles) + 1)
-  else
-    for I := 0 to High(GSettings.RecentFiles) - 1 do
-      GSettings.RecentFiles[I] := GSettings.RecentFiles[I + 1];
-  GSettings.RecentFiles[High(GSettings.RecentFiles)].Link := Link;
-  GSettings.RecentFiles[High(GSettings.RecentFiles)].Caption := Caption;
-  GSettings.RecentFiles[High(GSettings.RecentFiles)].LType := FType;
-  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + RECENT_FILE_NAME);
-  F.WriteInteger('RecentFiles', 'High', High(GSettings.RecentFiles));
-  for I := 0 to High(GSettings.RecentFiles) do
-  begin
-    F.WriteString('RecentFiles', 'Link' + inttostr(I),
-      GSettings.RecentFiles[I].Link);
-    F.WriteString('RecentFiles', 'Caption' + inttostr(I),
-      GSettings.RecentFiles[I].Caption);
-    F.WriteString('RecentFiles', 'Type' + inttostr(I),
-      RecentFileTypeToString(GSettings.RecentFiles[I].LType));
+  with GSettings do begin
+    if Length(RecentFiles) < 10 then SetLength(RecentFiles, Length(RecentFiles) + 1)
+    else
+      for I := 0 to High(RecentFiles) - 1 do RecentFiles[I] := RecentFiles[I + 1];
+    RecentFiles[High(RecentFiles)].Link := Link;
+    RecentFiles[High(RecentFiles)].Caption := Caption;
+    RecentFiles[High(RecentFiles)].LType := FType;
+    F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + RECENT_FILE_NAME);
+    F.WriteInteger('RecentFiles', 'High', High(RecentFiles));
+    for I := 0 to High(RecentFiles) do begin
+      F.WriteString('RecentFiles', 'Link' + inttostr(I), RecentFiles[I].Link);
+      F.WriteString('RecentFiles', 'Caption' + inttostr(I), RecentFiles[I].Caption);
+      F.WriteString('RecentFiles', 'Type' + inttostr(I), RecentFileTypeToString(RecentFiles[I].LType));
+    end;
+    F.Free;
+    UpdateRecentFiles(nil);
   end;
-  F.Free;
-  GSettings.UpdateRecentFiles(nil);
 end;
 
-procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string;
-  _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer; _Proc: TNotifyEvent);
+procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer;
+  _Proc: TNotifyEvent);
 begin
   SetLength(GSettings.Actions, Length(GSettings.Actions) + 1);
-  with GSettings.Actions[High(GSettings.Actions)] do
-  begin
+  with GSettings.Actions[High(GSettings.Actions)] do begin
     Enabled := _Enabled;
     Caption := _Caption;
     Ctrl := _Ctrl;
@@ -244,8 +228,7 @@ end;
 
 procedure UnRegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle);
 begin
-  if not Key.Enabled then
-    Exit;
+  if not Key.Enabled then Exit;
   UnRegisterHotKey(FHandle, Key^.RegKey);
   GlobalDeleteAtom(Key^.RegKey);
 end;
@@ -254,17 +237,12 @@ procedure RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer);
 var
   Modifiers: UINT;
 begin
-  if not Key.Enabled then
-    Exit;
+  if not Key.Enabled then Exit;
   Modifiers := 0;
-  if Key.Alt then
-    Modifiers := Modifiers or MOD_ALT;
-  if Key.Ctrl then
-    Modifiers := Modifiers or MOD_CONTROL;
-  if Key.Shift then
-    Modifiers := Modifiers or MOD_SHIFT;
-  if Key.Win then
-    Modifiers := Modifiers or MOD_WIN;
+  if Key.Alt then Modifiers := Modifiers or MOD_ALT;
+  if Key.Ctrl then Modifiers := Modifiers or MOD_CONTROL;
+  if Key.Shift then Modifiers := Modifiers or MOD_SHIFT;
+  if Key.Win then Modifiers := Modifiers or MOD_WIN;
   Key.RegKey := GlobalAddAtom(PChar('Keep2MeKey' + inttostr(Num)));
   RegisterHotKey(FHandle, Key^.RegKey, Modifiers, HotKeysArray[Key^.Key].Value);
 end;
@@ -273,16 +251,13 @@ procedure Autorun(Flag: Boolean; NameParam, Path: String);
 var
   Reg: TRegistry;
 begin
-  if Flag then
-  begin
+  if Flag then begin
     Reg := TRegistry.Create;
     Reg.RootKey := HKEY_CURRENT_USER;
     Reg.OpenKey('\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', false);
     Reg.WriteString(NameParam, Path);
     Reg.Free;
-  end
-  else
-  begin
+  end else begin
     Reg := TRegistry.Create;
     Reg.RootKey := HKEY_CURRENT_USER;
     Reg.OpenKey('\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', false);
