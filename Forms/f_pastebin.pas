@@ -109,6 +109,7 @@ begin
     ShowMessage('ѕриватна€ загрузка доступна только авторизованным пользовател€м!');
     exit;
   end;
+  edt_link.Text := '';
   btn_load.Enabled := False;
   post := TStringList.Create;
   userkey := '';
@@ -151,9 +152,11 @@ begin
   end;
   edt_link.Text := s;
   if GSettings.Pastebin.CopyLink then Clipboard.AsText := s;
-  if edt_caption.Text = '' then k := '...'
+  if edt_caption.Text = '' then k := '(Ѕез заголовка) ' + timetostr(now)
   else k := edt_caption.Text;
+  GSettings.TrayIcon.BalloonHint('Pastebin.com', s);
   AddToRecentFiles(s, k, rfText);
+  if GSettings.Pastebin.CloseForm then Close;
 end;
 
 procedure TFPasteBin.btn_openClick(Sender: TObject);

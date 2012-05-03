@@ -10,6 +10,7 @@ uses
   System.Classes,
   Vcl.Graphics,
   Vcl.Controls,
+  Vcl.ExtDlgs,
   Vcl.Forms,
   Vcl.Dialogs,
   Vcl.ExtCtrls,
@@ -60,6 +61,9 @@ type
     pb: TPaintBox;
     mm_view: TMenuItem;
     mm_copyimg: TMenuItem;
+    mm_SaveToFile: TMenuItem;
+    SavePictureDlg: TSavePictureDialog;
+    btn_Rect: TsSpeedButton;
     function GetScreenName: string;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -79,6 +83,7 @@ type
     procedure mm_lineClick(Sender: TObject);
     procedure pbPaint(Sender: TObject);
     procedure mm_copyimgClick(Sender: TObject);
+    procedure mm_SaveToFileClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -91,12 +96,71 @@ type
     procedure StartWork;
   end;
 
-  // var
-  // FImage: TFImage;
-
 implementation
 
 {$R *.dfm}
+
+function SaveJPG(bm: TBitmap; FName: String): Integer;
+var
+  JPGDest: TJPEGImage;
+begin
+  result := 0;
+  try
+    JPGDest := TJPEGImage.Create;
+    with JPGDest do begin
+      Assign(bm);
+      CompressionQuality := 100;
+      SaveToFile(FName);
+    end;
+  except
+    result := 1;
+  end;
+  JPGDest.Free;
+end;
+
+function SavePNG(bm: TBitmap; FName: String): Integer;
+var
+  PNGDest: TPNGImage;
+begin
+  result := 0;
+  try
+    PNGDest := TPNGImage.Create;
+    with PNGDest do begin
+      Assign(bm);
+      SaveToFile(FName);
+    end;
+  except
+    result := 1;
+  end;
+  PNGDest.Free;
+end;
+
+function SaveBMP(bm: TBitmap; FName: String): Integer;
+begin
+  result := 0;
+  try
+    bm.SaveToFile(FName);
+  except
+    result := 1;
+  end;
+end;
+
+function SaveGIF(bm: TBitmap; FName: String): Integer;
+var
+  GIFDest: TGIFImage;
+begin
+  result := 0;
+  try
+    GIFDest := TGIFImage.Create;
+    with GIFDest do begin
+      Assign(bm);
+      SaveToFile(FName);
+    end;
+  except
+    result := 1;
+  end;
+  GIFDest.Free;
+end;
 
 procedure TFImage.CreateParams(var Params: TCreateParams);
 begin
@@ -121,6 +185,7 @@ begin
   ActiveDraw := true;
   if btn_Brush.down then tmpShape := TFPencil.Create;
   if btn_line.down then tmpShape := TFLine.Create;
+  if btn_Rect.down then tmpShape := TFRect.Create;
 
   tmpShape.PReDraw := ReDraw;
   tmpShape.StartPoint := Point(X, Y);
@@ -195,45 +260,48 @@ end;
 procedure TFImage.mm_LoadClick(Sender: TObject);
 var
   FSName: String;
-  PNGDest: TPNGImage;
-  JPGDest: TJPEGImage;
-  GIFDest: TGIFImage;
+  SaveResult: Integer;
 begin
   Hide;
   FSName := ExtractFilePath(paramstr(0)) + GetScreenName;
   ShapeList.DrawAll(img.Canvas);
-  try
-    case TImgFormats(GSettings.ImgExtIndex) of
-      ifJpg: begin
-          JPGDest := TJPEGImage.Create;
-          JPGDest.Assign(img.Picture.Bitmap);
-          JPGDest.CompressionQuality := 100;
-          JPGDest.SaveToFile(FSName);
-          JPGDest.Free;
-        end;
-      ifPng: begin
-          PNGDest := TPNGImage.Create;
-          PNGDest.Assign(img.Picture.Bitmap);
-          PNGDest.SaveToFile(FSName);
-          PNGDest.Free;
-        end;
-      ifBmp: begin
-          img.Picture.SaveToFile(FSName);
-        end;
-      ifGif: begin
-          GIFDest := TGIFImage.Create;
-          GIFDest.Assign(img.Picture.Bitmap);
-          GIFDest.SaveToFile(FSName);
-          GIFDest.Free;
-        end;
-    end;
-  except
+  SaveResult := 1;
+  case TImgFormats(GSettings.ImgExtIndex) of
+    ifJpg: SaveResult := SaveJPG(img.Picture.Bitmap, FSName);
+    ifPng: SaveResult := SavePNG(img.Picture.Bitmap, FSName);
+    ifBmp: SaveResult := SaveBMP(img.Picture.Bitmap, FSName);
+    ifGif: SaveResult := SaveGIF(img.Picture.Bitmap, FSName);
+  end;
+  if SaveResult > 0 then begin
     ShowMessage('Ошибка Сохранения изображения для загрузки');
     exit;
   end;
   img.Picture.Bitmap.FreeImage;
-  with TFLoad.Create(nil) do begin
-    LoadFile(FSName);
+  with TFLoad.Create(nil) do LoadFile(FSName);
+  Close;
+end;
+
+procedure TFImage.mm_SaveToFileClick(Sender: TObject);
+var
+  SaveResult: Integer;
+begin
+  with SavePictureDlg do begin
+    FileName := ExtractFileName(GetScreenName);
+    DefaultExt := ExtractFileName(GetScreenName);
+    FilterIndex := 1 + GSettings.ImgExtIndex;
+    if Execute then begin
+      SaveResult := 1;
+      ShapeList.DrawAll(img.Canvas);
+      case TImgFormats(GSettings.ImgExtIndex) of
+        ifJpg: SaveResult := SaveJPG(img.Picture.Bitmap, FileName);
+        ifPng: SaveResult := SavePNG(img.Picture.Bitmap, FileName);
+        ifBmp: SaveResult := SaveBMP(img.Picture.Bitmap, FileName);
+        ifGif: SaveResult := SaveGIF(img.Picture.Bitmap, FileName);
+      end;
+      img.Picture.Assign(OriginImg);
+      if SaveResult > 0 then ShowMessage('Ошибка Сохранения изображения')
+      else ShowMessage('Изображение сохранено: ' + FileName);
+    end;
   end;
 end;
 
@@ -255,7 +323,6 @@ end;
 procedure TFImage.ReDraw;
 begin
   pb.Invalidate;
-
 end;
 
 procedure TFImage.mm_showtoolsClick(Sender: TObject);

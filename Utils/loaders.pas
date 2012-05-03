@@ -64,8 +64,9 @@ type
 
 type
   LoadersElement = record
-    L: TLoaderClass;
-    C: String;
+    Obj: TLoaderClass;
+    Caption: String;
+    Version: String;
   end;
 
 var
@@ -169,13 +170,6 @@ begin
   finally
     Stream.Free;
   end;
-end;
-
-procedure AddLoader(A: TLoaderClass; Caption: String);
-begin
-  SetLength(LoadersArray, Length(LoadersArray) + 1);
-  LoadersArray[High(LoadersArray)].L := A;
-  LoadersArray[High(LoadersArray)].C := Caption;
 end;
 
 { IHostingKartinokLoader }
@@ -306,12 +300,22 @@ begin
   end;
 end;
 
+procedure AddLoader(AObj: TLoaderClass; ACaption, AVersion: String);
+begin
+  SetLength(LoadersArray, Length(LoadersArray) + 1);
+  with LoadersArray[High(LoadersArray)] do begin
+    Obj := AObj;
+    Caption := ACaption;
+    Version := AVersion;
+  end;
+end;
+
 initialization
 
-AddLoader(THostingKartinokLoader, 'hostingkartinok.com');
-AddLoader(TQikrLoader, 'qikr.co');
-AddLoader(TImgurLoader, 'imgur.com');
-AddLoader(TZhykLoader, 'i.zhyk.ru');
-AddLoader(TImgLinkLoader, 'imglink.ru');
+AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.2');
+AddLoader(TQikrLoader, 'qikr.co', '0.1');
+AddLoader(TImgurLoader, 'imgur.com', '0.1');
+AddLoader(TZhykLoader, 'i.zhyk.ru', '0.2');
+AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
 
 end.

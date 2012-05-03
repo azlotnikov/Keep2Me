@@ -50,6 +50,13 @@ type
     procedure Draw(CanvasOut: TCanvas); override;
   end;
 
+type
+  TFRect = class(TFShape)
+  public
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
+    procedure Draw(CanvasOut: TCanvas); override;
+  end;
+
 Type
   TFShapeList = class
   private
@@ -135,9 +142,13 @@ end;
 
 procedure TFShape.SetColors(CanvasOut: TCanvas);
 begin
-  CanvasOut.Pen.Color := PenF.Color;
-  CanvasOut.Pen.Width := PenF.Width;
-  CanvasOut.Brush.Color := BrushF.Color;
+  with CanvasOut do begin
+    Pen.Color := PenF.Color;
+    Pen.Style := psSolid;
+    Pen.Width := PenF.Width;
+    Brush.Color := BrushF.Color;
+    Brush.Style := bsSolid;
+  end;
 end;
 
 { TFLine }
@@ -154,6 +165,21 @@ begin
   SetColors(CanvasOut);
   CanvasOut.MoveTo(StartPoint.X, StartPoint.Y);
   CanvasOut.LineTo(EndPoint.X, EndPoint.Y);
+end;
+
+{ TFRect }
+
+procedure TFRect.AddPoint(P: TPoint; CanvasOut: TCanvas);
+begin
+  EndPoint := P;
+  PReDraw;
+  Draw(CanvasOut);
+end;
+
+procedure TFRect.Draw(CanvasOut: TCanvas);
+begin
+  SetColors(CanvasOut);
+  CanvasOut.Rectangle(StartPoint.X, StartPoint.Y, EndPoint.X, EndPoint.Y);
 end;
 
 end.

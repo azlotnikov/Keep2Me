@@ -26,7 +26,8 @@ uses
   sSpeedButton,
   loaders,
   funcs,
-  shortlinks;
+  shortlinks,
+  ConstStrings;
 
 type
   TFLoad = class(TForm)
@@ -120,7 +121,7 @@ begin
     btn_Copy.Enabled := false;
     if not GSettings.HideLoadForm then Show
     else Hide;
-    Cloader := LoadersArray[GSettings.LoaderIndex].L.Create;
+    Cloader := LoadersArray[GSettings.LoaderIndex].Obj.Create;
     Cloader.SetLoadBar(pb);
     Cloader.LoadFile(FileName);
   finally
@@ -132,10 +133,10 @@ begin
       r := Cloader.GetLink;
       try
         if GSettings.ShortLinkIndex > 0 then begin
-          CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].L.Create;
+          CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
           CShorter.SetLoadBar(pb);
           CShorter.LoadFile(r);
-          if CShorter.Error then GSettings.TrayIcon.BalloonHint('Keep2Me', 'Не удалось укоротить ссылку')
+          if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')
           else r := CShorter.GetLink;
         end;
       except

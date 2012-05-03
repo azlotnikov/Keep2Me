@@ -1,5 +1,11 @@
 unit main;
 
+{ ***************************** }
+{ Keep2Me }
+{ Z.Razor }
+{ 2012 }
+{ ***************************** }
+
 interface
 
 uses
@@ -49,7 +55,8 @@ uses
   unitIsAdmin,
   mons,
   pastebin_tools,
-  cript;
+  cript,
+  ConstStrings;
 
 type
   TFMain = class(TForm)
@@ -122,6 +129,8 @@ type
 
     edt_pb_login: TEdit;
     edt_pb_pass: TEdit;
+    cb_pb_CloseAfterLoad: TCheckBox;
+    cb_ShowAdmin: TCheckBox;
 
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -156,6 +165,8 @@ type
     procedure DoWindowSelect(Sender: TObject);
 
     procedure ExitKeep;
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure TrayIconDblClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -189,6 +200,7 @@ begin
     cb_HideLoadForm.Checked := HideLoadForm;
     cb_ShowInTray.Checked := ShowInTray;
     cb_CopyLink.Checked := CopyLink;
+    cb_ShowAdmin.Checked := DontShowAdmin;
     cbb_ImgExt.ItemIndex := ImgExtIndex;
     SetLength(tmpHotKeys, Length(Actions));
     for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
@@ -201,8 +213,9 @@ begin
       cbb_pb_expire.ItemIndex := ExpireIndex;
       cbb_pb_private.ItemIndex := PrivateIndex;
       cb_pb_copylink.Checked := CopyLink;
+      cb_pb_CloseAfterLoad.Checked := CloseForm;
     end;
-    Autorun(AutoStart, 'Keep2Me', ParamStr(0));
+    Autorun(AutoStart, SYS_KEEP2ME, ParamStr(0));
   end;
 end;
 
@@ -225,12 +238,14 @@ end;
 
 procedure TFMain.cbb_HotKeysActionsChange(Sender: TObject);
 begin
-  cb_CtrlKey.Checked := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Ctrl;
-  cb_AltKey.Checked := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Alt;
-  cb_ShiftKey.Checked := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Shift;
-  cbb_HotKeys.ItemIndex := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Key;
-  cb_WinKey.Checked := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Win;
-  cb_EnableKey.Checked := tmpHotKeys[cbb_HotKeysActions.ItemIndex].Enabled;
+  with tmpHotKeys[cbb_HotKeysActions.ItemIndex] do begin
+    cb_CtrlKey.Checked := Ctrl;
+    cb_AltKey.Checked := Alt;
+    cb_ShiftKey.Checked := Shift;
+    cbb_HotKeys.ItemIndex := Key;
+    cb_WinKey.Checked := Win;
+    cb_EnableKey.Checked := Enabled;
+  end;
 end;
 
 procedure TFMain.cbb_HotKeysChange(Sender: TObject);
@@ -275,27 +290,28 @@ var
 begin
   s := '';
   HTTP := tidhttp.Create(nil);
-  HTTP.Request.UserAgent := 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)';
+  HTTP.Request.UserAgent := SYS_USERAGENT;
   try
-    s := HTTP.Get('http://keep2.me/lastversion.php');
+    s := HTTP.Get(SYS_UPDATE_CHECK_PAGE);
   except
   end;
-  if (Length(s) = 0) and (OnRun = 0) then ShowMessage('Ошибка соедниния с сервером');
-  if (Length(s) > 0) and (s <> KEEP_VERSION) then begin
-    if MessageDlg('Доступно обновление ' + s + ' (ваша версия: ' + KEEP_VERSION + '). Обновить программу?',
-      mtConfirmation, mbYesNo, 0) <> mrYes then begin
+  if (Length(s) = 0) and (OnRun = 0) then ShowMessage(RU_SERVER_CONNECTION_ERROR);
+  if (Length(s) > 0) and (s <> SYS_KEEP_VERSION) then begin
+
+    if MessageDlg(Format(RU_UPDATE_AVAILABLE, [s, SYS_KEEP_VERSION]), mtConfirmation, mbYesNo, 0) <> mrYes then begin
       HTTP.Free;
       exit;
     end;
-    if not FileExists(ExtractFilePath(ParamStr(0)) + 'updater.exe') then begin
-      ShowMessage('Ошибка: Не удалось найти updater.exe');
+    if not FileExists(ExtractFilePath(ParamStr(0))) then begin
+      ShowMessage(RU_ERROR_FIND_UPDATER + SYS_UPDATER_EXE_NAME);
       exit;
     end;
-    RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + 'updater.exe'), '');
+    RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), '');
     HTTP.Free;
     FMain.tmr_ExitFromThread.Enabled := true;
-  end else if OnRun = 0 then begin
-    ShowMessage('У вас актуальная версия');
+  end
+  else if OnRun = 0 then begin
+    ShowMessage(RU_UPTODATE_VERSION);
     HTTP.Free;
   end;
 end;
@@ -309,7 +325,7 @@ begin
       Show;
     end;
   end
-  else TrayIcon.BalloonHint('Keep2Me', 'Содержимое не является изображением');
+  else TrayIcon.BalloonHint(SYS_KEEP2ME, RU_NOT_AN_IMAGE_CONTENT);
 end;
 
 procedure TFMain.DoPastebin(Sender: TObject);
@@ -331,7 +347,7 @@ end;
 
 procedure TFMain.DoWindowSelect(Sender: TObject);
 begin
-  TrayIcon.BalloonHint('Подсказка', 'ПКМ - подсветить окно, ЛКМ - сделать скриншот окна');
+  TrayIcon.BalloonHint(RU_HINT, RU_SELECTWINDOW_HINT);
   FSelField.AlphaBlend := false;
   FWindows.StartSelect;
   FWindows.Show;
@@ -347,10 +363,17 @@ begin
   halt(0);
 end;
 
+procedure TFMain.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caHide;
+end;
+
 procedure TFMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  CanClose := false;
   LoadSettings;
+  ApplySettings;
+  cbb_HotKeysActionsChange(self);
+  CanClose := false;
   Hide;
 end;
 
@@ -359,34 +382,29 @@ var
   i: Integer;
   id: longword;
 begin
-  if (not IsUserAnAdmin) then ShowMessage('Для корректной работы программы необходимы права Администратора');
-  ForceDirectories(ExtractFilePath(ParamStr(0)) + 'tmpImg\');
+  ForceDirectories(ExtractFilePath(ParamStr(0)) + SYS_TMP_IMG_FOLDER);
   GSettings.TrayIcon := TrayIcon;
   GSettings.UpdateRecentFiles := UpdateRecentFiles;
   LoadRecentFiles;
-  if FileExists(ExtractFilePath(ParamStr(0)) + SETTINGS_FILE_NAME) and
-    not((ParamCount > 0) and (ParamStr(1) = 'SHOWSETTINGS')) then Visible := false
+  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME) and
+    not((ParamCount > 0) and (ParamStr(1) = SYS_SHOW_SETTINGS_PARAM)) then Visible := false
   else Visible := true;
   for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
-  cbb_ImgExt.ItemIndex := 0;
-  AddHotKeyAction(true, 'Выделить область экрана', true, true, false, false, 5, DoScreenSelect);
-  AddHotKeyAction(false, 'Отправить из буфера обмена', true, true, false, false, 6, DoBufferSend);
-  AddHotKeyAction(false, 'Отправить скриншот окна', true, true, false, false, 7, DoWindowSelect);
-  AddHotKeyAction(true, 'Отправить на Pastebin.com', true, true, true, false, 8, DoPastebin);
-  AddHotKeyAction(false, 'Показать настройки', true, true, false, false, 9, DoShowSettings);
+  AddHotKeyAction(true, RU_SELECT_SCREEN_PART, true, true, false, false, 5, DoScreenSelect);
+  AddHotKeyAction(false, RU_SEND_FROM_BUFFER, true, true, false, false, 6, DoBufferSend);
+  AddHotKeyAction(false, RU_SEND_WINDOW_SCREEN, true, true, false, false, 7, DoWindowSelect);
+  AddHotKeyAction(true, RU_SEND_TO_PASTEBIN, true, true, true, false, 8, DoPastebin);
+  AddHotKeyAction(false, RU_SHOW_SETTNGS, true, true, false, false, 9, DoShowSettings);
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
-  for i := 0 to High(LoadersArray) do cbb_Hostings.Items.Add(LoadersArray[i].C);
-  cbb_Hostings.ItemIndex := 0;
-  cbb_ShortLink.Items.Add('Нет');
-  for i := 0 to High(ShortersArray) do cbb_ShortLink.Items.Add(ShortersArray[i].C);
-  cbb_ShortLink.ItemIndex := 0;
+  cbb_ShortLink.Items.Add(RU_NO);
+  for i := 0 to High(ShortersArray) do cbb_ShortLink.Items.Add(ShortersArray[i].Caption);
   for i := 0 to High(HotKeysArray) do cbb_HotKeys.Items.Add(HotKeysArray[i].Caption);
-  cbb_HotKeys.ItemIndex := 0;
   for i := 0 to High(GSettings.Actions) do cbb_HotKeysActions.Items.Add(GSettings.Actions[i].Caption);
   for i := 0 to High(PastebinLangs) do cbb_pb_deflang.Items.Add(PastebinLangs[i].Caption);
   for i := 0 to High(PastebinExpires) do cbb_pb_expire.Items.Add(PastebinExpires[i].Caption);
   for i := 0 to High(PastebinPrivates) do cbb_pb_private.Items.Add(PastebinPrivates[i].Caption);
+  for i := 0 to High(LoadersArray) do cbb_Hostings.Items.Add(LoadersArray[i].Caption);
   cbb_HotKeysActions.ItemIndex := 0;
   LoadSettings;
   ApplySettings;
@@ -394,6 +412,7 @@ begin
   cbb_HotKeysActionsChange(self);
   UpdateRecentFiles(self);
   beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
+  if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
 end;
 
 procedure TFMain.GetSettings;
@@ -408,6 +427,7 @@ begin
     HideLoadForm := cb_HideLoadForm.Checked;
     ShowInTray := cb_ShowInTray.Checked;
     CopyLink := cb_CopyLink.Checked;
+    DontShowAdmin := cb_ShowAdmin.Checked;
     ImgExtIndex := cbb_ImgExt.ItemIndex;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to High(tmpHotKeys) do Actions[i] := tmpHotKeys[i];
@@ -419,8 +439,8 @@ begin
       ExpireIndex := cbb_pb_expire.ItemIndex;
       PrivateIndex := cbb_pb_private.ItemIndex;
       CopyLink := cb_pb_copylink.Checked;
+      CloseForm := cb_pb_CloseAfterLoad.Checked;
     end;
-
   end;
 end;
 
@@ -441,33 +461,35 @@ var
   F: TIniFile;
   i: Integer;
 begin
-  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SETTINGS_FILE_NAME);
+  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
   with F, GSettings do begin
-    MonIndex := ReadInteger('CommonSettings', 'MonitorIndex', 0);
-    LoaderIndex := ReadInteger('CommonSettings', 'LoaderIndex', 0);
-    ShortLinkIndex := ReadInteger('CommonSettings', 'ShortLinkIndex', 0);
-    AutoStart := ReadBool('CommonSettings', 'AutoStart', false);
-    ShowInTray := ReadBool('CommonSettings', 'ShowInTray', true);
-    HideLoadForm := ReadBool('CommonSettings', 'HideLoadForm', false);
-    CopyLink := ReadBool('CommonSettings', 'CopyLink', true);
-    ImgExtIndex := ReadInteger('CommonSettings', 'ImgExtIndex', 1);
+    MonIndex := ReadInteger(INI_COMMON_SETTINGS, 'MonitorIndex', 0);
+    LoaderIndex := ReadInteger(INI_COMMON_SETTINGS, 'LoaderIndex', 0);
+    ShortLinkIndex := ReadInteger(INI_COMMON_SETTINGS, 'ShortLinkIndex', 0);
+    AutoStart := ReadBool(INI_COMMON_SETTINGS, 'AutoStart', false);
+    ShowInTray := ReadBool(INI_COMMON_SETTINGS, 'ShowInTray', true);
+    HideLoadForm := ReadBool(INI_COMMON_SETTINGS, 'HideLoadForm', false);
+    CopyLink := ReadBool(INI_COMMON_SETTINGS, 'CopyLink', true);
+    DontShowAdmin := ReadBool(INI_COMMON_SETTINGS, 'DontShowAdmin', false);
+    ImgExtIndex := ReadInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', 1);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
-        Enabled := ReadBool('HotKeys' + inttostr(i), 'Enabled', Enabled);
-        Key := ReadInteger('HotKeys' + inttostr(i), 'Key', Key);
-        Ctrl := ReadBool('HotKeys' + inttostr(i), 'Ctrl', Ctrl);
-        Alt := ReadBool('HotKeys' + inttostr(i), 'Alt', Alt);
-        Shift := ReadBool('HotKeys' + inttostr(i), 'Shift', Shift);
-        Win := ReadBool('HotKeys' + inttostr(i), 'Win', Win);
+        Enabled := ReadBool(INI_HOT_KEYS + inttostr(i), 'Enabled', Enabled);
+        Key := ReadInteger(INI_HOT_KEYS + inttostr(i), 'Key', Key);
+        Ctrl := ReadBool(INI_HOT_KEYS + inttostr(i), 'Ctrl', Ctrl);
+        Alt := ReadBool(INI_HOT_KEYS + inttostr(i), 'Alt', Alt);
+        Shift := ReadBool(INI_HOT_KEYS + inttostr(i), 'Shift', Shift);
+        Win := ReadBool(INI_HOT_KEYS + inttostr(i), 'Win', Win);
       end;
     with Pastebin do begin
-      Anon := ReadBool('Pastebin', 'Anonimous', true);
-      Login := MyDecrypt(ReadString('Pastebin', 'Login', ''), CRYPT_KEY);
-      Password := MyDecrypt(ReadString('Pastebin', 'Password', ''), CRYPT_KEY);
-      SyntaxIndex := ReadInteger('Pastebin', 'SyntaxIndex', 0);
-      ExpireIndex := ReadInteger('Pastebin', 'ExpireIndex', 0);
-      PrivateIndex := ReadInteger('Pastebin', 'PrivateIndex', 0);
-      CopyLink := ReadBool('Pastebin', 'CopyLink', true);
+      Anon := ReadBool(INI_PASTEBIN, 'Anonimous', true);
+      Login := MyDecrypt(ReadString(INI_PASTEBIN, 'Login', ''), CRYPT_KEY);
+      Password := MyDecrypt(ReadString(INI_PASTEBIN, 'Password', ''), CRYPT_KEY);
+      SyntaxIndex := ReadInteger(INI_PASTEBIN, 'SyntaxIndex', 0);
+      ExpireIndex := ReadInteger(INI_PASTEBIN, 'ExpireIndex', 0);
+      PrivateIndex := ReadInteger(INI_PASTEBIN, 'PrivateIndex', 0);
+      CopyLink := ReadBool(INI_PASTEBIN, 'CopyLink', true);
+      CloseForm := ReadBool(INI_PASTEBIN, 'CloseForm', false);
     end;
     Free;
   end;
@@ -518,34 +540,35 @@ var
   F: TIniFile;
   i: Integer;
 begin
-  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SETTINGS_FILE_NAME);
+  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
   with F, GSettings do begin
-    WriteInteger('CommonSettings', 'MonitorIndex', MonIndex);
-    WriteInteger('CommonSettings', 'LoaderIndex', LoaderIndex);
-    WriteInteger('CommonSettings', 'ShortLinkIndex', ShortLinkIndex);
-    WriteBool('CommonSettings', 'AutoStart', AutoStart);
-    WriteBool('CommonSettings', 'ShowInTray', ShowInTray);
-    WriteBool('CommonSettings', 'HideLoadForm', HideLoadForm);
-    WriteBool('CommonSettings', 'CopyLink', CopyLink);
-    WriteInteger('CommonSettings', 'ImgExtIndex', ImgExtIndex);
-    WriteInteger('HotKeys', 'KeyHigh', High(Actions));
+    WriteInteger(INI_COMMON_SETTINGS, 'MonitorIndex', MonIndex);
+    WriteInteger(INI_COMMON_SETTINGS, 'LoaderIndex', LoaderIndex);
+    WriteInteger(INI_COMMON_SETTINGS, 'ShortLinkIndex', ShortLinkIndex);
+    WriteBool(INI_COMMON_SETTINGS, 'AutoStart', AutoStart);
+    WriteBool(INI_COMMON_SETTINGS, 'ShowInTray', ShowInTray);
+    WriteBool(INI_COMMON_SETTINGS, 'HideLoadForm', HideLoadForm);
+    WriteBool(INI_COMMON_SETTINGS, 'CopyLink', CopyLink);
+    WriteBool(INI_COMMON_SETTINGS, 'DontShowAdmin', DontShowAdmin);
+    WriteInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', ImgExtIndex);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
-        WriteInteger('HotKeys' + inttostr(i), 'Key', Key);
-        WriteBool('HotKeys' + inttostr(i), 'Ctrl', Ctrl);
-        WriteBool('HotKeys' + inttostr(i), 'Alt', Alt);
-        WriteBool('HotKeys' + inttostr(i), 'Shift', Shift);
-        WriteBool('HotKeys' + inttostr(i), 'Win', Win);
-        WriteBool('HotKeys' + inttostr(i), 'Enabled', Enabled);
+        WriteInteger(INI_HOT_KEYS + inttostr(i), 'Key', Key);
+        WriteBool(INI_HOT_KEYS + inttostr(i), 'Ctrl', Ctrl);
+        WriteBool(INI_HOT_KEYS + inttostr(i), 'Alt', Alt);
+        WriteBool(INI_HOT_KEYS + inttostr(i), 'Shift', Shift);
+        WriteBool(INI_HOT_KEYS + inttostr(i), 'Win', Win);
+        WriteBool(INI_HOT_KEYS + inttostr(i), 'Enabled', Enabled);
       end;
     with Pastebin do begin
-      WriteBool('Pastebin', 'Anonimous', Anon);
-      WriteString('Pastebin', 'Login', MyEncrypt(Login, CRYPT_KEY));
-      WriteString('Pastebin', 'Password', MyEncrypt(Password, CRYPT_KEY));
-      WriteInteger('Pastebin', 'SyntaxIndex', SyntaxIndex);
-      WriteInteger('Pastebin', 'ExpireIndex', ExpireIndex);
-      WriteInteger('Pastebin', 'PrivateIndex', PrivateIndex);
-      WriteBool('Pastebin', 'CopyLink', CopyLink);
+      WriteBool(INI_PASTEBIN, 'Anonimous', Anon);
+      WriteString(INI_PASTEBIN, 'Login', MyEncrypt(Login, CRYPT_KEY));
+      WriteString(INI_PASTEBIN, 'Password', MyEncrypt(Password, CRYPT_KEY));
+      WriteInteger(INI_PASTEBIN, 'SyntaxIndex', SyntaxIndex);
+      WriteInteger(INI_PASTEBIN, 'ExpireIndex', ExpireIndex);
+      WriteInteger(INI_PASTEBIN, 'PrivateIndex', PrivateIndex);
+      WriteBool(INI_PASTEBIN, 'CopyLink', CopyLink);
+      WriteBool(INI_PASTEBIN, 'CloseForm', CloseForm);
     end;
     Free;
   end;
@@ -556,6 +579,11 @@ end;
 procedure TFMain.tmr_ExitFromThreadTimer(Sender: TObject);
 begin
   ExitKeep;
+end;
+
+procedure TFMain.TrayIconDblClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  Show;
 end;
 
 procedure TFMain.UpdateRecentFiles(Sender: TObject);

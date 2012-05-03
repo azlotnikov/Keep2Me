@@ -16,6 +16,7 @@ uses
   uSynEditPopupEdit in 'Utils\uSynEditPopupEdit.pas',
   cript in 'Utils\cript.pas',
   unitIsAdmin in 'Utils\unitIsAdmin.pas',
+  ConstStrings in 'Utils\ConstStrings.pas',
   main in 'Forms\main.pas' {FMain} ,
   f_load in 'Forms\f_load.pas' {FLoad} ,
   f_points in 'Forms\f_points.pas' {FPoints} ,
@@ -33,10 +34,11 @@ begin
     ShowMessage('Keep2Me уже запущен!');
     Halt(0);
   end;
+
   Application.Initialize;
+  Application.Title := 'Keep2Me';
   Application.ShowMainForm := false;
   Application.MainFormOnTaskbar := True;
-  Application.Title := 'Keep2Me';
   Application.CreateForm(TFMain, FMain);
   Application.CreateForm(TFWindows, FWindows);
   Application.CreateForm(TFPoints, FPoints);

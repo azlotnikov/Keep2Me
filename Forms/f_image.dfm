@@ -117,6 +117,16 @@ object FImage: TFImage
       ImageIndex = 7
       Images = Images
     end
+    object btn_Rect: TsSpeedButton
+      Left = 257
+      Top = 6
+      Width = 23
+      Height = 25
+      GroupIndex = 1
+      Flat = True
+      SkinData.SkinSection = 'SPEEDBUTTON'
+      Images = Images
+    end
     object spin_penwidth: TsSpinEdit
       Left = 130
       Top = 8
@@ -143,8 +153,8 @@ object FImage: TFImage
   end
   object mm: TMainMenu
     Images = Images
-    Left = 408
-    Top = 160
+    Left = 248
+    Top = 56
     object mm_menu: TMenuItem
       Caption = #1052#1077#1085#1102
       object mm_Load: TMenuItem
@@ -152,6 +162,11 @@ object FImage: TFImage
         ImageIndex = 1
         ShortCut = 32781
         OnClick = mm_LoadClick
+      end
+      object mm_SaveToFile: TMenuItem
+        Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100' '#1074' '#1092#1072#1081#1083
+        ShortCut = 16467
+        OnClick = mm_SaveToFileClick
       end
       object mm_copyimg: TMenuItem
         Caption = #1057#1082#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077
@@ -468,12 +483,21 @@ object FImage: TFImage
           02F2E072118BE7B516FC8FAD57B1C830ACCBBF020C00345C0E1A8D63C0FB0000
           000049454E44AE426082}
       end>
-    Left = 432
-    Top = 200
+    Left = 288
+    Top = 56
     Bitmap = {}
   end
   object dlg_color: TsColorDialog
     Left = 112
     Top = 168
+  end
+  object SavePictureDlg: TSavePictureDialog
+    DefaultExt = '.jpg'
+    Filter = 
+      'Any file (*.*)|*.*|JPG File (*.jpg)|*.jpg|PNG File (*.png)|*.png' +
+      '|GIF File (*.gif)|*.gif'
+    FilterIndex = 2
+    Left = 344
+    Top = 56
   end
 end

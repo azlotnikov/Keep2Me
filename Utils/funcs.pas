@@ -13,7 +13,8 @@ uses
   JvTrayIcon,
   loaders,
   mons,
-  myhotkeys;
+  myhotkeys,
+  ConstStrings;
 
 type
   TImgFormats = (ifJpg, ifPng, ifBmp, ifGif);
@@ -52,6 +53,7 @@ type
     ExpireIndex: Integer;
     PrivateIndex: Integer;
     CopyLink: Boolean;
+    CloseForm: Boolean;
   end;
 
 type
@@ -68,6 +70,7 @@ type
     TrayIcon: TJvTrayIcon;
     RecentFiles: array of TRecentFile;
     UpdateRecentFiles: TNotifyEvent;
+    DontShowAdmin: Boolean;
     Pastebin: TPasteBinSettings;
   end;
 
@@ -84,9 +87,6 @@ procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shi
 procedure LoadRecentFiles;
 
 const
-  SETTINGS_FILE_NAME = 'settings.ini';
-  RECENT_FILE_NAME = 'recent_files.ini';
-  KEEP_VERSION = '0.3.1';
   CRYPT_KEY = 26123;
 
 var
@@ -173,15 +173,15 @@ var
   s: TRecentFileType;
   I: Integer;
 begin
-  if Not FileExists(ExtractFilePath(ParamStr(0)) + RECENT_FILE_NAME) then Exit;
-  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + RECENT_FILE_NAME);
-  for I := 0 to F.ReadInteger('RecentFiles', 'High', -1) do
+  if Not FileExists(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME) then Exit;
+  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME);
+  for I := 0 to F.ReadInteger(INI_RECENTFILES, 'Length', -1) - 1 do
     with GSettings, F do begin
       SetLength(RecentFiles, Length(RecentFiles) + 1);
-      RecentFiles[High(RecentFiles)].Link := ReadString('RecentFiles', 'Link' + inttostr(I), '');
-      RecentFiles[High(RecentFiles)].Caption := ReadString('RecentFiles', 'Caption' + inttostr(I), '');
-      RecentFiles[High(RecentFiles)].LType :=
-        StringToRecentFileType(ReadString('RecentFiles', 'Type' + inttostr(I), 'img'));
+      RecentFiles[High(RecentFiles)].Link := ReadString(INI_RECENTFILES + inttostr(I), 'Link', '');
+      RecentFiles[High(RecentFiles)].Caption := ReadString(INI_RECENTFILES + inttostr(I), 'Caption', '');
+      RecentFiles[High(RecentFiles)].LType := StringToRecentFileType(ReadString(INI_RECENTFILES + inttostr(I),
+        'Type', 'img'));
     end;
   F.Free;
 end;
@@ -198,12 +198,12 @@ begin
     RecentFiles[High(RecentFiles)].Link := Link;
     RecentFiles[High(RecentFiles)].Caption := Caption;
     RecentFiles[High(RecentFiles)].LType := FType;
-    F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + RECENT_FILE_NAME);
-    F.WriteInteger('RecentFiles', 'High', High(RecentFiles));
+    F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME);
+    F.WriteInteger(INI_RECENTFILES, 'Length', Length(RecentFiles));
     for I := 0 to High(RecentFiles) do begin
-      F.WriteString('RecentFiles', 'Link' + inttostr(I), RecentFiles[I].Link);
-      F.WriteString('RecentFiles', 'Caption' + inttostr(I), RecentFiles[I].Caption);
-      F.WriteString('RecentFiles', 'Type' + inttostr(I), RecentFileTypeToString(RecentFiles[I].LType));
+      F.WriteString(INI_RECENTFILES + inttostr(I), 'Link', RecentFiles[I].Link);
+      F.WriteString(INI_RECENTFILES + inttostr(I), 'Caption', RecentFiles[I].Caption);
+      F.WriteString(INI_RECENTFILES + inttostr(I), 'Type', RecentFileTypeToString(RecentFiles[I].LType));
     end;
     F.Free;
     UpdateRecentFiles(nil);

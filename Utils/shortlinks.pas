@@ -58,8 +58,9 @@ type
 
 type
   ShortersElement = record
-    L: TShorterClass;
-    C: String;
+    Obj: TShorterClass;
+    Caption: String;
+    Version: String;
   end;
 
 var
@@ -138,13 +139,6 @@ begin
     else AError := true;
   finally
   end;
-end;
-
-procedure AddShorter(A: TShorterClass; Caption: String);
-begin
-  SetLength(ShortersArray, Length(ShortersArray) + 1);
-  ShortersArray[High(ShortersArray)].L := A;
-  ShortersArray[High(ShortersArray)].C := Caption;
 end;
 
 { ITinyCCLoader }
@@ -227,11 +221,21 @@ begin
   end;
 end;
 
+procedure AddShorter(AObj: TShorterClass; ACaption, AVersion: String);
+begin
+  SetLength(ShortersArray, Length(ShortersArray) + 1);
+  with ShortersArray[High(ShortersArray)] do begin
+    Obj := AObj;
+    Caption := ACaption;
+    Version := AVersion;
+  end;
+end;
+
 initialization
 
-AddShorter(TIsGdLoader, 'is.gd');
-AddShorter(TZtAmLoader, 'zt.am');
-AddShorter(TQikrLoader, 'qikr.co');
-AddShorter(TTinyUrlLoader, 'tinyurl.com');
+AddShorter(TIsGdLoader, 'is.gd', '0.1');
+AddShorter(TZtAmLoader, 'zt.am', '0.1');
+AddShorter(TQikrLoader, 'qikr.co', '0.1');
+AddShorter(TTinyUrlLoader, 'tinyurl.com', '0.1');
 
 end.

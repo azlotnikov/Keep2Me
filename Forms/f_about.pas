@@ -3,10 +3,24 @@ unit f_about;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls, funcs,
-  Vcl.Imaging.jpeg, Vcl.ComCtrls, sPageControl;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.Imaging.jpeg,
+  Vcl.ComCtrls,
+  sPageControl,
+  funcs,
+  ConstStrings,
+  loaders,
+  shortlinks;
 
 type
   TFAbout = class(TForm)
@@ -19,6 +33,8 @@ type
     mmo_logs: TMemo;
     pg_thanks: TsTabSheet;
     mmo_info: TMemo;
+    pg_Plugins: TsTabSheet;
+    mmo_modules: TMemo;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -43,8 +59,17 @@ begin
 end;
 
 procedure TFAbout.FormCreate(Sender: TObject);
+var
+  i: integer;
 begin
-  lbl_version.Caption := KEEP_VERSION;
+  lbl_version.Caption := SYS_KEEP_VERSION;
+  with mmo_modules do begin
+    Clear;
+    for i := 0 to High(LoadersArray) do
+        Lines.Add(Format('Имя: %s Версия: %s', [LoadersArray[i].Caption, LoadersArray[i].Version]));
+    for i := 0 to High(LoadersArray) do
+        Lines.Add(Format('Имя: %s Версия: %s', [ShortersArray[i].Caption, ShortersArray[i].Version]));
+  end;
 end;
 
 end.
