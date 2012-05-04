@@ -20,7 +20,7 @@ uses
   Vcl.StdCtrls,
   Vcl.Imaging.GIFImg,
   Vcl.Buttons,
-  Vcl.Imaging.pngimage,
+  Vcl.Imaging.PNGImage,
   Vcl.Imaging.JPEG,
   acAlphaImageList,
   sSpeedButton,
@@ -64,6 +64,7 @@ type
     mm_SaveToFile: TMenuItem;
     SavePictureDlg: TSavePictureDialog;
     btn_Rect: TsSpeedButton;
+    mm_rect: TMenuItem;
     function GetScreenName: string;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -84,6 +85,7 @@ type
     procedure pbPaint(Sender: TObject);
     procedure mm_copyimgClick(Sender: TObject);
     procedure mm_SaveToFileClick(Sender: TObject);
+    procedure mm_rectClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -279,6 +281,11 @@ begin
   img.Picture.Bitmap.FreeImage;
   with TFLoad.Create(nil) do LoadFile(FSName);
   Close;
+end;
+
+procedure TFImage.mm_rectClick(Sender: TObject);
+begin
+  btn_Rect.down := true;
 end;
 
 procedure TFImage.mm_SaveToFileClick(Sender: TObject);

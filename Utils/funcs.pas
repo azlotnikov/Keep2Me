@@ -81,7 +81,7 @@ procedure RestoreAllForms;
 procedure RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer);
 procedure UnRegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle);
 procedure Autorun(Flag: Boolean; NameParam, Path: String);
-procedure AddToRecentFiles(Link, Caption: string; FType: TRecentFileType);
+procedure AddToRecentFiles(ALink, ACaption: string; ALType: TRecentFileType);
 procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer;
   _Proc: TNotifyEvent);
 procedure LoadRecentFiles;
@@ -178,15 +178,16 @@ begin
   for I := 0 to F.ReadInteger(INI_RECENTFILES, 'Length', -1) - 1 do
     with GSettings, F do begin
       SetLength(RecentFiles, Length(RecentFiles) + 1);
-      RecentFiles[High(RecentFiles)].Link := ReadString(INI_RECENTFILES + inttostr(I), 'Link', '');
-      RecentFiles[High(RecentFiles)].Caption := ReadString(INI_RECENTFILES + inttostr(I), 'Caption', '');
-      RecentFiles[High(RecentFiles)].LType := StringToRecentFileType(ReadString(INI_RECENTFILES + inttostr(I),
-        'Type', 'img'));
+      with RecentFiles[High(RecentFiles)] do begin
+        Link := ReadString(INI_RECENTFILES + inttostr(I), 'Link', '');
+        Caption := ReadString(INI_RECENTFILES + inttostr(I), 'Caption', '');
+        LType := StringToRecentFileType(ReadString(INI_RECENTFILES + inttostr(I), 'Type', 'img'));
+      end;
     end;
   F.Free;
 end;
 
-procedure AddToRecentFiles(Link, Caption: string; FType: TRecentFileType);
+procedure AddToRecentFiles(ALink, ACaption: string; ALType: TRecentFileType);
 var
   I: Integer;
   F: TIniFile;
@@ -195,9 +196,11 @@ begin
     if Length(RecentFiles) < 10 then SetLength(RecentFiles, Length(RecentFiles) + 1)
     else
       for I := 0 to High(RecentFiles) - 1 do RecentFiles[I] := RecentFiles[I + 1];
-    RecentFiles[High(RecentFiles)].Link := Link;
-    RecentFiles[High(RecentFiles)].Caption := Caption;
-    RecentFiles[High(RecentFiles)].LType := FType;
+    with RecentFiles[High(RecentFiles)] do begin
+      Link := ALink;
+      Caption := ACaption;
+      LType := ALType;
+    end;
     F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME);
     F.WriteInteger(INI_RECENTFILES, 'Length', Length(RecentFiles));
     for I := 0 to High(RecentFiles) do begin
@@ -251,19 +254,12 @@ procedure Autorun(Flag: Boolean; NameParam, Path: String);
 var
   Reg: TRegistry;
 begin
-  if Flag then begin
-    Reg := TRegistry.Create;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.OpenKey('\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', false);
-    Reg.WriteString(NameParam, Path);
-    Reg.Free;
-  end else begin
-    Reg := TRegistry.Create;
-    Reg.RootKey := HKEY_CURRENT_USER;
-    Reg.OpenKey('\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', false);
-    Reg.DeleteValue(NameParam);
-    Reg.Free;
-  end;
+  Reg := TRegistry.Create;
+  Reg.RootKey := HKEY_CURRENT_USER;
+  Reg.OpenKey('\SOFTWARE\Microsoft\Windows\CurrentVersion\Run', false);
+  if Flag then Reg.WriteString(NameParam, Path)
+  else Reg.DeleteValue(NameParam);
+  Reg.Free;
 end;
 
 end.

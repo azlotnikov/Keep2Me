@@ -28,6 +28,10 @@ uses
   Vcl.IdAntiFreeze,
   Vcl.ComCtrls,
   Vcl.Buttons,
+  Vcl.ExtDlgs,
+  Vcl.Imaging.GIFImg,
+  Vcl.Imaging.PNGImage,
+  Vcl.Imaging.JPEG,
   JvImageList,
   JvExControls,
   JvSpeedButton,
@@ -131,6 +135,8 @@ type
     edt_pb_pass: TEdit;
     cb_pb_CloseAfterLoad: TCheckBox;
     cb_ShowAdmin: TCheckBox;
+    mm_LoadImageFromFile: TMenuItem;
+    OpenImageDlg: TOpenPictureDialog;
 
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -163,6 +169,7 @@ type
     procedure DoBufferSend(Sender: TObject);
     procedure DoPastebin(Sender: TObject);
     procedure DoWindowSelect(Sender: TObject);
+    procedure DoOpenAndSendImage(Sender: TObject);
 
     procedure ExitKeep;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -177,6 +184,7 @@ type
     procedure ApplySettings;
     procedure UpdateRecentFiles(Sender: TObject);
     procedure OnRecentFileClick(Sender: TObject);
+    procedure UpdateActions;
   public
     { Public declarations }
   end;
@@ -187,6 +195,12 @@ var
 implementation
 
 {$R *.dfm}
+
+function BoolToCheckedAction(B: Boolean): String;
+begin
+  Result := '[  ]';
+  if B then Result := '[#]';
+end;
 
 procedure TFMain.ApplySettings;
 var
@@ -328,6 +342,21 @@ begin
   else TrayIcon.BalloonHint(SYS_KEEP2ME, RU_NOT_AN_IMAGE_CONTENT);
 end;
 
+procedure TFMain.DoOpenAndSendImage(Sender: TObject);
+begin
+  if OpenImageDlg.Execute then
+    with TFImage.Create(nil) do
+      try
+        img.Picture.LoadFromFile(OpenImageDlg.FileName);
+        StartWork;
+      except
+        On E: Exception do begin
+          ShowMessage(RU_IMG_LOAD_ERROR + E.Message);
+          Free;
+        end;
+      end;
+end;
+
 procedure TFMain.DoPastebin(Sender: TObject);
 begin
   with TFPasteBin.Create(nil) do Show;
@@ -390,22 +419,22 @@ begin
     not((ParamCount > 0) and (ParamStr(1) = SYS_SHOW_SETTINGS_PARAM)) then Visible := false
   else Visible := true;
   for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
-  AddHotKeyAction(true, RU_SELECT_SCREEN_PART, true, true, false, false, 5, DoScreenSelect);
-  AddHotKeyAction(false, RU_SEND_FROM_BUFFER, true, true, false, false, 6, DoBufferSend);
-  AddHotKeyAction(false, RU_SEND_WINDOW_SCREEN, true, true, false, false, 7, DoWindowSelect);
-  AddHotKeyAction(true, RU_SEND_TO_PASTEBIN, true, true, true, false, 8, DoPastebin);
-  AddHotKeyAction(false, RU_SHOW_SETTNGS, true, true, false, false, 9, DoShowSettings);
+  AddHotKeyAction(true, RU_SELECT_SCREEN_PART, true, true, false, false, 4, DoScreenSelect);
+  AddHotKeyAction(false, RU_SEND_FROM_BUFFER, true, true, false, false, 5, DoBufferSend);
+  AddHotKeyAction(false, RU_SEND_WINDOW_SCREEN, true, true, false, false, 6, DoWindowSelect);
+  AddHotKeyAction(true, RU_SEND_TO_PASTEBIN, true, true, true, false, 7, DoPastebin);
+  AddHotKeyAction(false, RU_SHOW_SETTNGS, true, true, false, false, 8, DoShowSettings);
+  AddHotKeyAction(false, RU_OPEN_IMAGE_AND_LOAD, true, true, false, false, 9, DoOpenAndSendImage);
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
+  UpdateActions;
   cbb_ShortLink.Items.Add(RU_NO);
   for i := 0 to High(ShortersArray) do cbb_ShortLink.Items.Add(ShortersArray[i].Caption);
   for i := 0 to High(HotKeysArray) do cbb_HotKeys.Items.Add(HotKeysArray[i].Caption);
-  for i := 0 to High(GSettings.Actions) do cbb_HotKeysActions.Items.Add(GSettings.Actions[i].Caption);
   for i := 0 to High(PastebinLangs) do cbb_pb_deflang.Items.Add(PastebinLangs[i].Caption);
   for i := 0 to High(PastebinExpires) do cbb_pb_expire.Items.Add(PastebinExpires[i].Caption);
   for i := 0 to High(PastebinPrivates) do cbb_pb_private.Items.Add(PastebinPrivates[i].Caption);
   for i := 0 to High(LoadersArray) do cbb_Hostings.Items.Add(LoadersArray[i].Caption);
-  cbb_HotKeysActions.ItemIndex := 0;
   LoadSettings;
   ApplySettings;
   for i := 0 to High(GSettings.Actions) do RegisterMyHotKey(@GSettings.Actions[i], self.Handle, i);
@@ -493,6 +522,7 @@ begin
     end;
     Free;
   end;
+  UpdateActions;
 end;
 
 procedure TFMain.OnRecentFileClick(Sender: TObject);
@@ -584,6 +614,17 @@ end;
 procedure TFMain.TrayIconDblClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   Show;
+end;
+
+procedure TFMain.UpdateActions;
+var
+  i: Integer;
+begin
+  cbb_HotKeysActions.Clear;
+  with GSettings do
+    for i := 0 to High(Actions) do
+        cbb_HotKeysActions.Items.Add(BoolToCheckedAction(Actions[i].Enabled) + ' ' + Actions[i].Caption);
+  cbb_HotKeysActions.ItemIndex := 0;
 end;
 
 procedure TFMain.UpdateRecentFiles(Sender: TObject);

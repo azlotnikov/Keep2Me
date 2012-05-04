@@ -96,7 +96,6 @@ begin
       OriginImg.Assign(tBmp);
       tBmp.Free;
       StartWork;
-
     end;
   end;
 end;
