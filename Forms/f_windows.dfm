@@ -17,6 +17,8 @@ object FWindows: TFWindows
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poScreenCenter
+  OnClose = FormClose
+  OnCreate = FormCreate
   OnMouseDown = FormMouseDown
   OnShow = FormShow
   PixelsPerInch = 96

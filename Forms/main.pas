@@ -137,6 +137,7 @@ type
     cb_ShowAdmin: TCheckBox;
     mm_LoadImageFromFile: TMenuItem;
     OpenImageDlg: TOpenPictureDialog;
+    cb_FastLoad: TCheckBox;
 
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -174,6 +175,7 @@ type
     procedure ExitKeep;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure TrayIconDblClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure FormShow(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -216,6 +218,7 @@ begin
     cb_CopyLink.Checked := CopyLink;
     cb_ShowAdmin.Checked := DontShowAdmin;
     cbb_ImgExt.ItemIndex := ImgExtIndex;
+    cb_FastLoad.Checked := FastLoad;
     SetLength(tmpHotKeys, Length(Actions));
     for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
     with Pastebin do begin
@@ -231,6 +234,7 @@ begin
     end;
     Autorun(AutoStart, SYS_KEEP2ME, ParamStr(0));
   end;
+  UpdateActions;
 end;
 
 procedure TFMain.btn_ApplySettingsClick(Sender: TObject);
@@ -365,8 +369,8 @@ end;
 procedure TFMain.DoScreenSelect(Sender: TObject);
 begin
   MinimizeAllForms;
-  FSelField.AlphaBlend := true;
-  FPoints.Show;
+  // FSelField.AlphaBlend := true;
+  TFPoints.Create(nil).Show;
 end;
 
 procedure TFMain.DoShowSettings(Sender: TObject);
@@ -377,15 +381,18 @@ end;
 procedure TFMain.DoWindowSelect(Sender: TObject);
 begin
   TrayIcon.BalloonHint(RU_HINT, RU_SELECTWINDOW_HINT);
-  FSelField.AlphaBlend := false;
-  FWindows.StartSelect;
-  FWindows.Show;
+  // FSelField.AlphaBlend := false;
+  with TFWindows.Create(nil) do begin
+    StartSelect;
+    Show;
+  end;
 end;
 
 procedure TFMain.ExitKeep;
 var
   i: Integer;
 begin
+
   for i := 0 to High(GSettings.Actions) do UnRegisterMyHotKey(@GSettings.Actions[i], self.Handle);
   Hide;
   Application.Terminate;
@@ -444,6 +451,11 @@ begin
   if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
 end;
 
+procedure TFMain.FormShow(Sender: TObject);
+begin
+  ApplySettings;
+end;
+
 procedure TFMain.GetSettings;
 var
   i: Integer;
@@ -458,6 +470,7 @@ begin
     CopyLink := cb_CopyLink.Checked;
     DontShowAdmin := cb_ShowAdmin.Checked;
     ImgExtIndex := cbb_ImgExt.ItemIndex;
+    FastLoad := cb_FastLoad.Checked;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to High(tmpHotKeys) do Actions[i] := tmpHotKeys[i];
     with Pastebin do begin
@@ -500,6 +513,7 @@ begin
     HideLoadForm := ReadBool(INI_COMMON_SETTINGS, 'HideLoadForm', false);
     CopyLink := ReadBool(INI_COMMON_SETTINGS, 'CopyLink', true);
     DontShowAdmin := ReadBool(INI_COMMON_SETTINGS, 'DontShowAdmin', false);
+    FastLoad := ReadBool(INI_COMMON_SETTINGS, 'FastLoad', false);
     ImgExtIndex := ReadInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', 1);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
@@ -522,7 +536,6 @@ begin
     end;
     Free;
   end;
-  UpdateActions;
 end;
 
 procedure TFMain.OnRecentFileClick(Sender: TObject);
@@ -580,6 +593,7 @@ begin
     WriteBool(INI_COMMON_SETTINGS, 'HideLoadForm', HideLoadForm);
     WriteBool(INI_COMMON_SETTINGS, 'CopyLink', CopyLink);
     WriteBool(INI_COMMON_SETTINGS, 'DontShowAdmin', DontShowAdmin);
+    WriteBool(INI_COMMON_SETTINGS, 'FastLoad', FastLoad);
     WriteInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', ImgExtIndex);
     for i := 0 to High(Actions) do
       with Actions[i] do begin

@@ -3,7 +3,7 @@ object FMain: TFMain
   Top = 0
   Anchors = [akLeft, akTop, akRight]
   Caption = 'Keep2Me '#1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 482
+  ClientHeight = 495
   ClientWidth = 390
   Color = clBtnFace
   Constraints.MinHeight = 520
@@ -18,14 +18,15 @@ object FMain: TFMain
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnShow = FormShow
   DesignSize = (
     390
-    482)
+    495)
   PixelsPerInch = 96
   TextHeight = 13
   object btn_ApplySettings: TsSpeedButton
     Left = 8
-    Top = 450
+    Top = 463
     Width = 374
     Height = 24
     Anchors = [akLeft, akRight, akBottom]
@@ -34,26 +35,29 @@ object FMain: TFMain
     SkinData.SkinSection = 'SPEEDBUTTON'
     ImageIndex = 2
     Images = Images
+    ExplicitTop = 450
     ExplicitWidth = 365
   end
   object Pages: TsPageControl
     Left = 0
     Top = 0
     Width = 392
-    Height = 444
+    Height = 457
     ActivePage = pg_main
     Anchors = [akLeft, akTop, akRight, akBottom]
     Style = tsFlatButtons
     TabOrder = 0
     SkinData.SkinSection = 'PAGECONTROL'
+    ExplicitHeight = 444
     object pg_main: TsTabSheet
       Caption = #1054#1089#1085#1086#1074#1085#1099#1077
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
+      ExplicitHeight = 413
       DesignSize = (
         384
-        413)
+        426)
       object grp_Monitors: TGroupBox
         Left = 5
         Top = 3
@@ -235,13 +239,14 @@ object FMain: TFMain
         Left = 3
         Top = 272
         Width = 373
-        Height = 138
+        Height = 151
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077' '#1085#1072#1089#1090#1088#1086#1081#1082#1080
         TabOrder = 4
+        ExplicitHeight = 138
         object lbl_ImgExt: TLabel
-          Left = 8
-          Top = 112
+          Left = 10
+          Top = 126
           Width = 112
           Height = 13
           Caption = #1060#1086#1088#1084#1072#1090' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1103':'
@@ -273,12 +278,12 @@ object FMain: TFMain
           TabOrder = 3
         end
         object cbb_ImgExt: TComboBox
-          Left = 126
-          Top = 109
+          Left = 128
+          Top = 123
           Width = 78
           Height = 21
           Style = csDropDownList
-          TabOrder = 5
+          TabOrder = 6
         end
         object cb_AutoStart: TCheckBox
           Left = 9
@@ -296,6 +301,14 @@ object FMain: TFMain
           Caption = #1053#1077' '#1087#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1091#1074#1077#1076#1086#1084#1083#1077#1085#1080#1077' '#1086#1073' '#1086#1090#1089#1091#1090#1089#1090#1074#1080#1080' '#1087#1088#1072#1074' '#1040#1076#1084#1080#1085#1080#1089#1090#1088#1072#1090#1086#1088#1072
           TabOrder = 4
         end
+        object cb_FastLoad: TCheckBox
+          Left = 9
+          Top = 105
+          Width = 328
+          Height = 17
+          Caption = #1053#1077' '#1087#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1088#1077#1076#1072#1082#1090#1086#1088' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1081' ('#1073#1099#1089#1090#1088#1072#1103' '#1079#1072#1075#1088#1091#1079#1082#1072')'
+          TabOrder = 5
+        end
       end
     end
     object pg_pastebin: TsTabSheet
@@ -303,9 +316,10 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
+      ExplicitHeight = 413
       DesignSize = (
         384
-        413)
+        426)
       object grp_pb_account: TGroupBox
         Left = 3
         Top = 0
@@ -437,10 +451,11 @@ object FMain: TFMain
         Left = 3
         Top = 231
         Width = 378
-        Height = 179
+        Height = 192
         Anchors = [akLeft, akTop, akRight, akBottom]
         Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077' '#1086#1087#1094#1080#1080
         TabOrder = 2
+        ExplicitHeight = 179
         object cb_pb_copylink: TCheckBox
           Left = 16
           Top = 24
@@ -832,8 +847,8 @@ object FMain: TFMain
     IconIndex = 0
     PopupMenu = pm
     OnDblClick = TrayIconDblClick
-    Left = 200
-    Top = 65531
+    Left = 184
+    Top = 3
   end
   object pm: TPopupMenu
     Images = Images
@@ -904,8 +919,7 @@ object FMain: TFMain
   end
   object AntiFreeze: TIdAntiFreeze
     OnlyWhenIdle = False
-    Left = 160
-    Top = 65528
+    Left = 144
   end
   object OpenImageDlg: TOpenPictureDialog
     Filter = 

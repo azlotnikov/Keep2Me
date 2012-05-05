@@ -132,41 +132,30 @@ end;
 
 procedure TZhykLoader.LoadFile(FileName: string);
 const
-  str_ = '<div class="inputshare"><input tabindex="4" value="[img]';
+  Str = '<img_url>';
 var
   Stream: TIdMultipartFormDataStream;
-  s, key, r: string;
+  s: string;
 begin
   try
     Link := '';
     AError := false;
-    try
-      s := HTTP.Get('http://i.zhyk.ru/');
-    except
-    end;
-    if Pos('id="postkey" value="', s) = 0 then begin
-      AError := true;
-      Exit;
-    end;
-    key := ParsSubString(s, 'id="postkey" value="', '"');
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFormField('postkey', key);
-    Stream.AddFile('fileup', FileName, 'image/png');
+    Stream.AddFormField('key', 'Jk8hh9L');
+    Stream.AddFile('upload', FileName, 'application/octet-stream');
+    Stream.AddFormField('format', 'xml');
     PB.Max := Stream.Size div 1024;
     try
-      s := HTTP.Post('http://i.zhyk.ru/', Stream);
+      s := HTTP.Post('http://i.zhyk.ru/api', Stream);
     except
-      Stream.Free;
       AError := true;
       Exit;
     end;
-    if Pos(str_, s) = 0 then begin
-      Stream.Free;
+    if Pos(Str, s) = 0 then begin
       AError := true;
       Exit;
     end;
-    r := ParsSubString(s, str_, '[');
-    Link := r;
+    Link := ParsSubString(s, Str, '<');
   finally
     Stream.Free;
   end;
@@ -315,7 +304,7 @@ initialization
 AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.2');
 AddLoader(TQikrLoader, 'qikr.co', '0.1');
 AddLoader(TImgurLoader, 'imgur.com', '0.1');
-AddLoader(TZhykLoader, 'i.zhyk.ru', '0.2');
+AddLoader(TZhykLoader, 'i.zhyk.ru', '0.3');
 AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
 
 end.

@@ -66,9 +66,9 @@ begin
   with mmo_modules do begin
     Clear;
     for i := 0 to High(LoadersArray) do
-        Lines.Add(Format('Имя: %s Версия: %s', [LoadersArray[i].Caption, LoadersArray[i].Version]));
+        Lines.Add(Format('Имя: %s | Версия: %s', [LoadersArray[i].Caption, LoadersArray[i].Version]));
     for i := 0 to High(ShortersArray) do
-        Lines.Add(Format('Имя: %s Версия: %s', [ShortersArray[i].Caption, ShortersArray[i].Version]));
+        Lines.Add(Format('Имя: %s | Версия: %s', [ShortersArray[i].Caption, ShortersArray[i].Version]));
   end;
 end;
 

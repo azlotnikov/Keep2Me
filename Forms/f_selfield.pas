@@ -21,18 +21,21 @@ type
     shp_wnd: TShape;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
     procedure StartSelect(Full: Boolean = False);
   end;
 
-var
-  FSelField: TFSelField;
-
 implementation
 
 {$R *.dfm}
+
+procedure TFSelField.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
 
 procedure TFSelField.FormCreate(Sender: TObject);
 begin

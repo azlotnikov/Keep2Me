@@ -40,11 +40,7 @@ begin
   Application.ShowMainForm := false;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFMain, FMain);
-  Application.CreateForm(TFWindows, FWindows);
-  Application.CreateForm(TFPoints, FPoints);
-  Application.CreateForm(TFSelField, FSelField);
   Application.CreateForm(TFAbout, FAbout);
-  Application.CreateForm(TFFrameSize, FFrameSize);
   Application.Run;
 
 end.

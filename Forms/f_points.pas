@@ -24,21 +24,33 @@ type
     procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   private
     ActiveSelect: Boolean;
     GLx, GLy: Integer;
     Rx, Ry: Integer;
     bx, by: Integer;
+    FSelField: TFSelField;
+    FFrameSize: TFFrameSize;
   public
     procedure StartSelect;
   end;
 
-var
-  FPoints: TFPoints;
-
 implementation
 
 {$R *.dfm}
+
+procedure TFPoints.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
+procedure TFPoints.FormCreate(Sender: TObject);
+begin
+  FSelField := TFSelField.Create(nil);
+  FFrameSize := TFFrameSize.Create(nil);
+end;
 
 procedure TFPoints.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
@@ -65,6 +77,7 @@ begin
   end else begin
     RestoreAllForms;
     Hide;
+    Close;
   end;
 end;
 
@@ -82,7 +95,8 @@ begin
       FFrameSize.Top := Ry - FFrameSize.Height;
       FFrameSize.Left := Rx;
     end;
-  end else if (X > GLx) and (Y <= GLy) then begin
+  end
+  else if (X > GLx) and (Y <= GLy) then begin
     with FSelField.shp_sel do begin
       Top := GLy - (GLy - Y);
       Left := GLx;
@@ -91,7 +105,8 @@ begin
       FFrameSize.Top := Ry;
       FFrameSize.Left := Rx;
     end;
-  end else if (X <= GLx) and (Y <= GLy) then begin
+  end
+  else if (X <= GLx) and (Y <= GLy) then begin
     with FSelField.shp_sel do begin
       Top := Y;
       Left := X;
@@ -100,7 +115,8 @@ begin
       FFrameSize.Top := Ry;
       FFrameSize.Left := Rx - FFrameSize.Width;
     end;
-  end else if (X <= GLx) and (Y > GLy) then begin
+  end
+  else if (X <= GLx) and (Y > GLy) then begin
     with FSelField.shp_sel do begin
       Left := GLx - (GLx - X);
       Top := GLy;
@@ -151,6 +167,7 @@ begin
   end;
   bm.FreeImage;
   bm.Free;
+  Close;
 end;
 
 procedure TFPoints.FormShow(Sender: TObject);

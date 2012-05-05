@@ -51,9 +51,6 @@ type
     procedure LoadFile(FileName: string);
   end;
 
-  // var
-  // FLoad: TFLoad;
-
 implementation
 
 {$R *.dfm}
@@ -65,17 +62,17 @@ end;
 
 procedure TFLoad.btn_OpenClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', PChar(OriginLink), nil, nil, SW_SHOW)
+  ShellExecute(Handle, 'open', PChar(OriginLink), nil, nil, SW_SHOW);
 end;
 
 procedure TFLoad.cbb_viewChange(Sender: TObject);
 begin
   case cbb_view.ItemIndex of
     0: mmo_Link.Text := OriginLink;
-    1: mmo_Link.Text := '[IMG]' + OriginLink + '[/IMG]';
-    2: mmo_Link.Text := '[URL]' + OriginLink + '[/URL]';
-    3: mmo_Link.Text := '<img>' + OriginLink + '</img>';
-    4: mmo_Link.Text := '<a href="' + OriginLink + '">' + OriginLink + '</a>';
+    1: mmo_Link.Text := Format('[IMG]%s[/IMG]', [OriginLink]);
+    2: mmo_Link.Text := Format('[URL]%s[/URL]', [OriginLink]);
+    3: mmo_Link.Text := Format('<img>%s</img>', [OriginLink]);
+    4: mmo_Link.Text := Format('<a href="%s">%s</a>', [OriginLink, OriginLink]);
   end;
 end;
 
@@ -106,6 +103,12 @@ procedure TFLoad.LoadFile(FileName: string);
       Hide;
     end;
   end;
+  procedure EnableBtns(B: Boolean);
+  begin
+    cbb_view.Enabled := B;
+    btn_Open.Enabled := B;
+    btn_Copy.Enabled := B;
+  end;
 
 var
   Cloader: TLoader;
@@ -116,9 +119,7 @@ begin
     mmo_Link.Clear;
     OriginLink := '';
     cbb_view.ItemIndex := 0;
-    cbb_view.Enabled := false;
-    btn_Open.Enabled := false;
-    btn_Copy.Enabled := false;
+    EnableBtns(false);
     if not GSettings.HideLoadForm then Show
     else Hide;
     Cloader := LoadersArray[GSettings.LoaderIndex].Obj.Create;
@@ -140,17 +141,15 @@ begin
           else r := CShorter.GetLink;
         end;
       except
-        CShorter.Free;
+        FreeAndNil(CShorter);
       end;
       AddToRecentFiles(r, ExtractFileName(FileName), rfImg);
       OriginLink := r;
       mmo_Link.Text := r;
       if GSettings.CopyLink then Clipboard.AsText := r;
-      Cloader.Free;
+      FreeAndNil(Cloader);
       pb.Position := pb.Max;
-      cbb_view.Enabled := true;
-      btn_Open.Enabled := true;
-      btn_Copy.Enabled := true;
+      EnableBtns(true);
       if GSettings.ShowInTray then GSettings.TrayIcon.BalloonHint('Файл загружен', r);
     end;
   end;

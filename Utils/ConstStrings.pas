@@ -5,7 +5,7 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.4.1';
+  SYS_KEEP_VERSION = '0.4.2';
 
   SYS_SETTINGS_FILE_NAME = 'settings.ini';
   SYS_RECENT_FILE_NAME = 'recent_files.ini';
@@ -14,8 +14,7 @@ const
   SYS_KEEP2ME = 'Keep2Me';
   SYS_USERAGENT = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)';
   SYS_UPDATE_CHECK_PAGE = 'http://keep2.me/lastversion.php';
-  SYS_UPDATER_EXE_NAME = ' updater.exe';
-
+  SYS_UPDATER_EXE_NAME = 'updater.exe';
   INI_COMMON_SETTINGS = 'CommonSettings';
   INI_HOT_KEYS = 'HotKeys';
   INI_PASTEBIN = 'Pastebin';

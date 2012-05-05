@@ -65,7 +65,6 @@ type
     SavePictureDlg: TSavePictureDialog;
     btn_Rect: TsSpeedButton;
     mm_rect: TMenuItem;
-    function GetScreenName: string;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -92,6 +91,7 @@ type
     ActiveDraw: Boolean;
     tmpShape: TFShape;
     procedure ReDraw;
+    function GetScreenName: string;
   public
     OriginImg: TBitmap;
     ShapeList: TFShapeList;
@@ -372,10 +372,14 @@ end;
 procedure TFImage.StartWork;
 begin
   ShapeList.Clear;
-  Show;
-  BringToFront;
   pb.Height := img.Height;
   pb.Width := img.Width;
+  if GSettings.FastLoad then begin
+    mm_LoadClick(nil);
+  end else begin
+    BringToFront;
+    Show;
+  end;
 end;
 
 end.

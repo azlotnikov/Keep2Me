@@ -22,14 +22,13 @@ type
   TFWindows = class(TForm)
     procedure FormShow(Sender: TObject);
     procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure FormCreate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-    { Private declarations }
+    FSelField: TFSelField;
   public
     procedure StartSelect;
   end;
-
-var
-  FWindows: TFWindows;
 
 implementation
 
@@ -57,7 +56,17 @@ begin
       end;
     end;
   end;
-end; (* WindowSnap *)
+end;
+
+procedure TFWindows.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
+procedure TFWindows.FormCreate(Sender: TObject);
+begin
+  FSelField := TFSelField.Create(nil);
+end;
 
 procedure TFWindows.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
@@ -79,14 +88,15 @@ begin
       Height := R.Height - 14;
       Visible := true;
     end;
-  end else if Button = mbLeft then begin
+  end
+  else if Button = mbLeft then begin
     Hide;
     FSelField.Hide;
     H := WindowFromPoint(Mouse.CursorPos);
     H := GetAncestor(H, GA_ROOTOWNER);
     GetWindowRect(H, R);
     FSelField.shp_wnd.Visible := False;
-    FSelField.AlphaBlendValue := 100;
+    // FSelField.AlphaBlendValue := 100;
     tBmp := TBitmap.Create;
     with TFImage.Create(nil) do begin
       WindowSnap(H, tBmp);
@@ -129,7 +139,7 @@ begin
     Visible := true;
   end;
   FSelField.StartSelect(true);
-  FSelField.AlphaBlendValue := 200;
+  // FSelField.AlphaBlendValue := 200;
   // FSelField.Show;
 end;
 

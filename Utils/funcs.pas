@@ -71,6 +71,7 @@ type
     RecentFiles: array of TRecentFile;
     UpdateRecentFiles: TNotifyEvent;
     DontShowAdmin: Boolean;
+    FastLoad: Boolean;
     Pastebin: TPasteBinSettings;
   end;
 
