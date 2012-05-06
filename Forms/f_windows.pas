@@ -60,6 +60,7 @@ end;
 
 procedure TFWindows.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  FSelField.Close;
   Action := caFree;
 end;
 
@@ -107,6 +108,7 @@ begin
       tBmp.Free;
       StartWork;
     end;
+    Close;
   end;
 end;
 
@@ -119,28 +121,8 @@ procedure TFWindows.StartSelect;
 var
   i, w, H: Integer;
 begin
-  begin
-    Top := 0;
-    Left := 0;
-    H := 0;
-    w := 0;
-    for i := 0 to Screen.MonitorCount - 1 do begin
-      Inc(H, Screen.Monitors[i].Height);
-      Inc(w, Screen.Monitors[i].Width);
-    end;
-    Width := w;
-    Height := H;
-  end;
-  with FSelField.shp_wnd do begin
-    Top := 0; // устанавливаем нашу форму с шэйпом
-    Left := 0; // в место нажатия мыши и с нулевым размером
-    Height := 0;
-    Width := 0;
-    Visible := true;
-  end;
+  BoundsRect := MonitorManager.GetRect(GSettings.MonIndex);
   FSelField.StartSelect(true);
-  // FSelField.AlphaBlendValue := 200;
-  // FSelField.Show;
 end;
 
 end.

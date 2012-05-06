@@ -51,28 +51,8 @@ begin
 end;
 
 procedure TFSelField.StartSelect(Full: Boolean = False);
-var
-  i, w, h: Integer;
 begin
-  if (GSettings.MonIndex > 0) and (not Full) then
-    with GSettings do begin
-      Top := Screen.Monitors[MonIndex - 1].Top;
-      Left := Screen.Monitors[MonIndex - 1].Left;
-      Width := Screen.Monitors[MonIndex - 1].Width;
-      Height := Screen.Monitors[MonIndex - 1].Height;
-    end
-  else begin
-    Top := 0;
-    Left := 0;
-    h := 0;
-    w := 0;
-    for i := 0 to Screen.MonitorCount - 1 do begin
-      Inc(h, Screen.Monitors[i].Height);
-      Inc(w, Screen.Monitors[i].Width);
-    end;
-    Width := w;
-    Height := h;
-  end;
+  BoundsRect := MonitorManager.GetRect(GSettings.MonIndex);
 end;
 
 end.

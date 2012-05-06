@@ -43,6 +43,8 @@ implementation
 
 procedure TFPoints.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  FSelField.Close;
+  FFrameSize.Close;
   Action := caFree;
 end;
 
@@ -76,7 +78,6 @@ begin
     ActiveSelect := true;
   end else begin
     RestoreAllForms;
-    Hide;
     Close;
   end;
 end;
@@ -145,12 +146,12 @@ begin
   if not(Button = mbLeft) then exit;
   dc := GetDC(0);
   bm := TBitMap.Create;
-  bm.Width := abs(X - GLx);
-  bm.Height := abs(Y - GLy);
+  bm.Width := FSelField.shp_sel.Width;
+  bm.Height := FSelField.shp_sel.Height;
   dx := 0;
   dy := 0;
   if GSettings.MonIndex > 0 then begin
-    dx := Screen.Monitors[GSettings.MonIndex - 1].Left;;
+    dx := Screen.Monitors[GSettings.MonIndex - 1].Left;
     dy := Screen.Monitors[GSettings.MonIndex - 1].Top;
   end;
   if (X >= GLx) and (Y >= GLy) then BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + GLx, dy + GLy, SRCCOPY)
@@ -179,31 +180,8 @@ begin
 end;
 
 procedure TFPoints.StartSelect;
-var
-  i, w, h, d: Integer;
 begin
-  if GSettings.MonIndex > 0 then begin
-    Top := Screen.Monitors[GSettings.MonIndex - 1].Top;
-    d := Top;
-    Left := Screen.Monitors[GSettings.MonIndex - 1].Left;
-    d := Left;
-    Width := Screen.Monitors[GSettings.MonIndex - 1].Width;
-    d := Width;
-    Height := Screen.Monitors[GSettings.MonIndex - 1].Height;
-    d := Height;
-  end else begin
-    Top := 0;
-    Left := 0;
-    h := 0;
-    w := 0;
-    for i := 0 to Screen.MonitorCount - 1 do begin
-      Inc(h, Screen.Monitors[i].Height);
-      Inc(w, Screen.Monitors[i].Width);
-    end;
-    Width := w;
-    Height := h;
-  end;
-
+  BoundsRect := MonitorManager.GetRect(GSettings.MonIndex);
 end;
 
 end.

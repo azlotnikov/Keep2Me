@@ -15,6 +15,7 @@ type
   public
     function GetMonitorByPoint(P: TPoint): Integer;
     function GetCaptions: TStringList;
+    function GetRect(Index: Integer): TRect;
   end;
 
 implementation
@@ -38,6 +39,15 @@ begin
   result := 0;
   for i := 0 to Screen.MonitorCount - 1 do
     if PtInRect(Screen.Monitors[i].WorkareaRect, P) then exit(i + 1);
+end;
+
+function TMonitorManager.GetRect(Index: Integer): TRect;
+begin
+  if Index > 0 then result := Screen.Monitors[Index - 1].WorkareaRect
+  else
+    with Screen do
+        result := Rect(0, 0, Monitors[MonitorCount - 1].Left + Monitors[MonitorCount - 1].Width,
+        Monitors[MonitorCount - 1].Top + Monitors[MonitorCount - 1].Height);
 end;
 
 end.

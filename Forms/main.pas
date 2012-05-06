@@ -138,6 +138,10 @@ type
     mm_LoadImageFromFile: TMenuItem;
     OpenImageDlg: TOpenPictureDialog;
     cb_FastLoad: TCheckBox;
+    btn_Cancel: TsSpeedButton;
+    btn_ImgHostSettings: TsSpeedButton;
+    btn_ShortLinkSettings: TsSpeedButton;
+    btn_CheckHotKey: TsSpeedButton;
 
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -174,8 +178,10 @@ type
 
     procedure ExitKeep;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure TrayIconDblClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormShow(Sender: TObject);
+    procedure btn_CancelClick(Sender: TObject);
+    procedure btn_CheckHotKeyClick(Sender: TObject);
+    procedure TrayIconClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -201,7 +207,7 @@ implementation
 function BoolToCheckedAction(B: Boolean): String;
 begin
   Result := '[  ]';
-  if B then Result := '[#]';
+  if B then Result := '[*]';
 end;
 
 procedure TFMain.ApplySettings;
@@ -242,6 +248,26 @@ begin
   GetSettings;
   SaveSettings;
   Hide;
+end;
+
+procedure TFMain.btn_CancelClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TFMain.btn_CheckHotKeyClick(Sender: TObject);
+begin
+  if CompareHotKeys(@tmpHotKeys[cbb_HotKeysActions.ItemIndex], @GSettings.Actions[cbb_HotKeysActions.ItemIndex]) then
+  begin
+    ShowMessage(RU_HOTKEYS_ARE_EQUAL);
+    Exit;
+  end;
+  if RegisterMyHotKey(@tmpHotKeys[cbb_HotKeysActions.ItemIndex], self.Handle, cbb_HotKeysActions.ItemIndex, true) then
+  begin
+    UnRegisterMyHotKey(@tmpHotKeys[cbb_HotKeysActions.ItemIndex], self.Handle);
+    ShowMessage(RU_HOTKEY_IS_FREE);
+  end
+  else ShowMessage(RU_HOTKEY_IS_BUSY);
 end;
 
 procedure TFMain.btn_GetCurrentMonitorClick(Sender: TObject);
@@ -318,11 +344,11 @@ begin
 
     if MessageDlg(Format(RU_UPDATE_AVAILABLE, [s, SYS_KEEP_VERSION]), mtConfirmation, mbYesNo, 0) <> mrYes then begin
       HTTP.Free;
-      exit;
+      Exit;
     end;
-    if not FileExists(ExtractFilePath(ParamStr(0))) then begin
+    if not FileExists(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME) then begin
       ShowMessage(RU_ERROR_FIND_UPDATER + SYS_UPDATER_EXE_NAME);
-      exit;
+      Exit;
     end;
     RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), '');
     HTTP.Free;
@@ -392,7 +418,6 @@ procedure TFMain.ExitKeep;
 var
   i: Integer;
 begin
-
   for i := 0 to High(GSettings.Actions) do UnRegisterMyHotKey(@GSettings.Actions[i], self.Handle);
   Hide;
   Application.Terminate;
@@ -489,11 +514,10 @@ end;
 procedure TFMain.InitMonitors;
 var
   t: TStringList;
-  i: Integer;
 begin
   cbb_Monitors.Clear;
   t := MonitorManager.GetCaptions;
-  for i := 0 to t.Count - 1 do cbb_Monitors.Items.Add(t[i]);
+  cbb_Monitors.Items.Assign(t);
   cbb_Monitors.ItemIndex := 0;
   t.Free;
 end;
@@ -526,8 +550,8 @@ begin
       end;
     with Pastebin do begin
       Anon := ReadBool(INI_PASTEBIN, 'Anonimous', true);
-      Login := MyDecrypt(ReadString(INI_PASTEBIN, 'Login', ''), CRYPT_KEY);
-      Password := MyDecrypt(ReadString(INI_PASTEBIN, 'Password', ''), CRYPT_KEY);
+      Login := MyDecrypt(ReadString(INI_PASTEBIN, 'Login', ''), SYS_CRYPT_KEY);
+      Password := MyDecrypt(ReadString(INI_PASTEBIN, 'Password', ''), SYS_CRYPT_KEY);
       SyntaxIndex := ReadInteger(INI_PASTEBIN, 'SyntaxIndex', 0);
       ExpireIndex := ReadInteger(INI_PASTEBIN, 'ExpireIndex', 0);
       PrivateIndex := ReadInteger(INI_PASTEBIN, 'PrivateIndex', 0);
@@ -606,8 +630,8 @@ begin
       end;
     with Pastebin do begin
       WriteBool(INI_PASTEBIN, 'Anonimous', Anon);
-      WriteString(INI_PASTEBIN, 'Login', MyEncrypt(Login, CRYPT_KEY));
-      WriteString(INI_PASTEBIN, 'Password', MyEncrypt(Password, CRYPT_KEY));
+      WriteString(INI_PASTEBIN, 'Login', MyEncrypt(Login, SYS_CRYPT_KEY));
+      WriteString(INI_PASTEBIN, 'Password', MyEncrypt(Password, SYS_CRYPT_KEY));
       WriteInteger(INI_PASTEBIN, 'SyntaxIndex', SyntaxIndex);
       WriteInteger(INI_PASTEBIN, 'ExpireIndex', ExpireIndex);
       WriteInteger(INI_PASTEBIN, 'PrivateIndex', PrivateIndex);
@@ -625,9 +649,9 @@ begin
   ExitKeep;
 end;
 
-procedure TFMain.TrayIconDblClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TFMain.TrayIconClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  Show;
+  if Button = mbLeft then DoScreenSelect(self);
 end;
 
 procedure TFMain.UpdateActions;

@@ -65,6 +65,8 @@ type
     SavePictureDlg: TSavePictureDialog;
     btn_Rect: TsSpeedButton;
     mm_rect: TMenuItem;
+    btn_SelPen: TsSpeedButton;
+    mm_SelPen: TMenuItem;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -85,12 +87,12 @@ type
     procedure mm_copyimgClick(Sender: TObject);
     procedure mm_SaveToFileClick(Sender: TObject);
     procedure mm_rectClick(Sender: TObject);
+    procedure mm_SelPenClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
     ActiveDraw: Boolean;
     tmpShape: TFShape;
-    procedure ReDraw;
     function GetScreenName: string;
   public
     OriginImg: TBitmap;
@@ -188,8 +190,9 @@ begin
   if btn_Brush.down then tmpShape := TFPencil.Create;
   if btn_line.down then tmpShape := TFLine.Create;
   if btn_Rect.down then tmpShape := TFRect.Create;
+  if btn_SelPen.down then tmpShape := TFSelPencil.Create;
 
-  tmpShape.PReDraw := ReDraw;
+  tmpShape.pb := pb;
   tmpShape.StartPoint := Point(X, Y);
   pb.Canvas.Pen.Color := shp_pen.Brush.Color;
   pb.Canvas.Pen.Width := spin_penwidth.Value;
@@ -239,7 +242,7 @@ end;
 procedure TFImage.mm_CancelClick(Sender: TObject);
 begin
   ShapeList.DeleteLast;
-  ReDraw;
+  pb.Invalidate;
 end;
 
 procedure TFImage.mm_DefaultColorClick(Sender: TObject);
@@ -251,7 +254,7 @@ end;
 procedure TFImage.mm_deleteallClick(Sender: TObject);
 begin
   ShapeList.Clear;
-  ReDraw;
+  pb.Invalidate;
 end;
 
 procedure TFImage.mm_lineClick(Sender: TObject);
@@ -321,15 +324,15 @@ begin
   shp_pen.Brush.Color := t;
 end;
 
+procedure TFImage.mm_SelPenClick(Sender: TObject);
+begin
+  btn_SelPen.down := true;
+end;
+
 procedure TFImage.pbPaint(Sender: TObject);
 begin
   ShapeList.DrawAll(pb.Canvas);
   if ActiveDraw then tmpShape.Draw(pb.Canvas);
-end;
-
-procedure TFImage.ReDraw;
-begin
-  pb.Invalidate;
 end;
 
 procedure TFImage.mm_showtoolsClick(Sender: TObject);

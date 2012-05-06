@@ -79,22 +79,33 @@ function ImgFormatToText(I: TImgFormats): String;
 function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string): Boolean;
 procedure MinimizeAllForms;
 procedure RestoreAllForms;
-procedure RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer);
+function RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer; Check: Boolean = false): Boolean;
 procedure UnRegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle);
 procedure Autorun(Flag: Boolean; NameParam, Path: String);
 procedure AddToRecentFiles(ALink, ACaption: string; ALType: TRecentFileType);
 procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer;
   _Proc: TNotifyEvent);
 procedure LoadRecentFiles;
-
-const
-  CRYPT_KEY = 26123;
+function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
 
 var
   GSettings: TSettings;
   MonitorManager: TMonitorManager;
 
 implementation
+
+
+
+function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
+begin
+  Result := false;
+  if Key1^.Ctrl <> Key2^.Ctrl then Exit;
+  if Key1^.Alt <> Key2^.Alt then Exit;
+  if Key1^.Win <> Key2^.Win then Exit;
+  if Key1^.Shift <> Key2^.Shift then Exit;
+  if Key1^.Key <> Key2^.Key then Exit;
+  Result := true;
+end;
 
 procedure MinimizeAllForms;
 var
@@ -237,18 +248,19 @@ begin
   GlobalDeleteAtom(Key^.RegKey);
 end;
 
-procedure RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer);
+function RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer; Check: Boolean = false): Boolean;
 var
   Modifiers: UINT;
 begin
-  if not Key.Enabled then Exit;
+  Result := false;
+  if (not Key.Enabled) and (not Check) then Exit;
   Modifiers := 0;
   if Key.Alt then Modifiers := Modifiers or MOD_ALT;
   if Key.Ctrl then Modifiers := Modifiers or MOD_CONTROL;
   if Key.Shift then Modifiers := Modifiers or MOD_SHIFT;
   if Key.Win then Modifiers := Modifiers or MOD_WIN;
   Key.RegKey := GlobalAddAtom(PChar('Keep2MeKey' + inttostr(Num)));
-  RegisterHotKey(FHandle, Key^.RegKey, Modifiers, HotKeysArray[Key^.Key].Value);
+  Result := RegisterHotKey(FHandle, Key^.RegKey, Modifiers, HotKeysArray[Key^.Key].Value);
 end;
 
 procedure Autorun(Flag: Boolean; NameParam, Path: String);

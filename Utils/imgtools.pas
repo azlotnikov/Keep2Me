@@ -7,7 +7,8 @@ uses
   System.SysUtils,
   System.Classes,
   System.Types,
-  Vcl.Graphics;
+  Vcl.Graphics,
+  Vcl.ExtCtrls;
 
 type
   TRPen = record
@@ -25,7 +26,7 @@ type
   public
     PenF: TRPen;
     BrushF: TRBrush;
-    PReDraw: procedure of object;
+    PB: TPaintBox;
     StartPoint: TPoint;
     EndPoint: TPoint;
     procedure SetColors(CanvasOut: TCanvas); virtual;
@@ -36,6 +37,15 @@ type
 
 Type
   TFPencil = class(TFShape) // Карандаш
+  private
+    Points: array of TPoint;
+  public
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
+    procedure Draw(CanvasOut: TCanvas); override;
+  end;
+
+Type
+  TFSelPencil = class(TFPencil) // Карандаш
   private
     Points: array of TPoint;
   public
@@ -78,8 +88,8 @@ begin
   SetLength(Points, Length(Points) + 1);
   Points[High(Points)] := P;
   if Length(Points) < 2 then exit;
-  CanvasOut.MoveTo(Points[High(Points) - 1].X, Points[High(Points) - 1].Y);
-  CanvasOut.LineTo(P.X, P.Y);
+  CanvasOut.MoveTo(Points[High(Points) - 1].x, Points[High(Points) - 1].y);
+  CanvasOut.LineTo(P.x, P.y);
 end;
 
 procedure TFPencil.Draw(CanvasOut: TCanvas);
@@ -90,10 +100,10 @@ begin
   SetColors(CanvasOut);
   if Length(Points) = 1 then begin
     SetLength(Points, Length(Points) + 1);
-    Points[High(Points)] := Point(Points[0].X + 1, Points[0].Y + 1);
+    Points[High(Points)] := Point(Points[0].x + 1, Points[0].y + 1);
   end;
-  CanvasOut.MoveTo(Points[0].X, Points[0].Y);
-  for i := 0 to High(Points) - 1 do CanvasOut.LineTo(Points[i].X, Points[i].Y);
+  CanvasOut.MoveTo(Points[0].x, Points[0].y);
+  for i := 0 to High(Points) - 1 do CanvasOut.LineTo(Points[i].x, Points[i].y);
 end;
 
 { TFShapeList }
@@ -115,7 +125,7 @@ end;
 
 function TFShapeList.DeleteLast: Boolean;
 begin
-  result := True;
+  Result := True;
   if Length(Shapes) = 0 then exit(false);
   Shapes[High(Shapes)].Free;
   SetLength(Shapes, Length(Shapes) - 1);
@@ -156,15 +166,15 @@ end;
 procedure TFLine.AddPoint(P: TPoint; CanvasOut: TCanvas);
 begin
   EndPoint := P;
-  PReDraw;
+  PB.Invalidate;
   Draw(CanvasOut);
 end;
 
 procedure TFLine.Draw(CanvasOut: TCanvas);
 begin
   SetColors(CanvasOut);
-  CanvasOut.MoveTo(StartPoint.X, StartPoint.Y);
-  CanvasOut.LineTo(EndPoint.X, EndPoint.Y);
+  CanvasOut.MoveTo(StartPoint.x, StartPoint.y);
+  CanvasOut.LineTo(EndPoint.x, EndPoint.y);
 end;
 
 { TFRect }
@@ -172,14 +182,30 @@ end;
 procedure TFRect.AddPoint(P: TPoint; CanvasOut: TCanvas);
 begin
   EndPoint := P;
-  PReDraw;
+  PB.Invalidate;
   Draw(CanvasOut);
 end;
 
 procedure TFRect.Draw(CanvasOut: TCanvas);
 begin
   SetColors(CanvasOut);
-  CanvasOut.Rectangle(StartPoint.X, StartPoint.Y, EndPoint.X, EndPoint.Y);
+  CanvasOut.Rectangle(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+end;
+
+{ TFSelPencil }
+
+procedure TFSelPencil.AddPoint(P: TPoint; CanvasOut: TCanvas);
+begin
+  CanvasOut.Pen.Mode := pmMerge;
+  inherited;
+  CanvasOut.Pen.Mode := pmCopy;
+end;
+
+procedure TFSelPencil.Draw(CanvasOut: TCanvas);
+begin
+  CanvasOut.Pen.Mode := pmMerge;
+  inherited;
+  CanvasOut.Pen.Mode := pmCopy;
 end;
 
 end.

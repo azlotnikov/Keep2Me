@@ -5,7 +5,8 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.4.2';
+  SYS_KEEP_VERSION = '0.4.4';
+  SYS_CRYPT_KEY = 26123;
 
   SYS_SETTINGS_FILE_NAME = 'settings.ini';
   SYS_RECENT_FILE_NAME = 'recent_files.ini';
@@ -32,10 +33,13 @@ const
   RU_SELECTWINDOW_HINT = 'ПКМ - подсветить окно, ЛКМ - сделать скриншот окна';
   RU_NOT_AN_IMAGE_CONTENT = 'Содержимое не является изображением';
   RU_SERVER_CONNECTION_ERROR = 'Ошибка соедниния с сервером';
-  RU_UPDATE_AVAILABLE = 'Доступно обновление  %s (ваша версия: %s). Обновить программу?';
+  RU_UPDATE_AVAILABLE = 'Keep2Me: Доступно обновление  %s (ваша версия: %s). Обновить программу?';
   RU_ERROR_FIND_UPDATER = 'Ошибка: Не удалось найти ';
   RU_UPTODATE_VERSION = 'У вас актуальная версия';
   RU_IMG_LOAD_ERROR = 'Ошибка загрузки изображения: ';
+  RU_HOTKEYS_ARE_EQUAL = 'Эта комбинация уже зарегестрирована для текущего действия!';
+  RU_HOTKEY_IS_FREE = 'Комбинация свободна!';
+  RU_HOTKEY_IS_BUSY = 'Комбинация занята!';
 
 implementation
 
