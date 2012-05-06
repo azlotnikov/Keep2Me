@@ -5,7 +5,7 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.4.4';
+  SYS_KEEP_VERSION = '0.4.5';
   SYS_CRYPT_KEY = 26123;
 
   SYS_SETTINGS_FILE_NAME = 'settings.ini';

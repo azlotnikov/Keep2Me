@@ -37,7 +37,7 @@ type
     img: TImage;
     mm: TMainMenu;
     mm_menu: TMenuItem;
-    mm_Cancel: TMenuItem;
+    mm_undo: TMenuItem;
     mm_Load: TMenuItem;
     pnl_Tools: TPanel;
     btn_Brush: TsSpeedButton;
@@ -67,6 +67,12 @@ type
     mm_rect: TMenuItem;
     btn_SelPen: TsSpeedButton;
     mm_SelPen: TMenuItem;
+    mm_redo: TMenuItem;
+    mm_colors: TMenuItem;
+    mm_pencolor: TMenuItem;
+    mm_brushcolor: TMenuItem;
+    btn_Ellipse: TsSpeedButton;
+    mm_ellipse: TMenuItem;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -75,7 +81,7 @@ type
     procedure imgMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure imgMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure imgMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure mm_CancelClick(Sender: TObject);
+    procedure mm_undoClick(Sender: TObject);
     procedure mm_swapcolorsClick(Sender: TObject);
     procedure mm_closeClick(Sender: TObject);
     procedure mm_DefaultColorClick(Sender: TObject);
@@ -88,6 +94,10 @@ type
     procedure mm_SaveToFileClick(Sender: TObject);
     procedure mm_rectClick(Sender: TObject);
     procedure mm_SelPenClick(Sender: TObject);
+    procedure mm_pencolorClick(Sender: TObject);
+    procedure mm_brushcolorClick(Sender: TObject);
+    procedure mm_redoClick(Sender: TObject);
+    procedure mm_ellipseClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -191,6 +201,7 @@ begin
   if btn_line.down then tmpShape := TFLine.Create;
   if btn_Rect.down then tmpShape := TFRect.Create;
   if btn_SelPen.down then tmpShape := TFSelPencil.Create;
+  if btn_Ellipse.down then tmpShape := TFEllipse.Create;
 
   tmpShape.pb := pb;
   tmpShape.StartPoint := Point(X, Y);
@@ -239,10 +250,14 @@ begin
   btn_Brush.down := true;
 end;
 
-procedure TFImage.mm_CancelClick(Sender: TObject);
+procedure TFImage.mm_brushcolorClick(Sender: TObject);
 begin
-  ShapeList.DeleteLast;
-  pb.Invalidate;
+  shp_brushMouseDown(self, mbLeft, [], 1, 1);
+end;
+
+procedure TFImage.mm_undoClick(Sender: TObject);
+begin
+  if ShapeList.Undo then pb.Invalidate;
 end;
 
 procedure TFImage.mm_DefaultColorClick(Sender: TObject);
@@ -255,6 +270,11 @@ procedure TFImage.mm_deleteallClick(Sender: TObject);
 begin
   ShapeList.Clear;
   pb.Invalidate;
+end;
+
+procedure TFImage.mm_ellipseClick(Sender: TObject);
+begin
+  btn_Ellipse.down := true;
 end;
 
 procedure TFImage.mm_lineClick(Sender: TObject);
@@ -286,9 +306,19 @@ begin
   Close;
 end;
 
+procedure TFImage.mm_pencolorClick(Sender: TObject);
+begin
+  shp_penMouseDown(self, mbLeft, [], 1, 1);
+end;
+
 procedure TFImage.mm_rectClick(Sender: TObject);
 begin
   btn_Rect.down := true;
+end;
+
+procedure TFImage.mm_redoClick(Sender: TObject);
+begin
+  if ShapeList.Redo then pb.Invalidate;
 end;
 
 procedure TFImage.mm_SaveToFileClick(Sender: TObject);

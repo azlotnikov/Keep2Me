@@ -67,16 +67,25 @@ type
     procedure Draw(CanvasOut: TCanvas); override;
   end;
 
+type
+  TFEllipse = class(TFShape)
+  public
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
+    procedure Draw(CanvasOut: TCanvas); override;
+  end;
+
 Type
   TFShapeList = class
   private
+    UndoIndex: Integer;
     Shapes: array of TFShape;
   public
     procedure AddShape(S: TFShape);
     procedure DrawAll(CanvasOut: TCanvas);
     procedure Clear;
     procedure Free;
-    function DeleteLast: Boolean;
+    function Undo: Boolean;
+    function Redo: Boolean;
   end;
 
 implementation
@@ -109,8 +118,12 @@ end;
 { TFShapeList }
 
 procedure TFShapeList.AddShape(S: TFShape);
+var
+  i: Integer;
 begin
-
+  for i := High(Shapes) - UndoIndex + 1 to High(Shapes) do Shapes[i].Free;
+  SetLength(Shapes, Length(Shapes) - UndoIndex);
+  UndoIndex := 0;
   SetLength(Shapes, Length(Shapes) + 1);
   Shapes[High(Shapes)] := S;
 end;
@@ -123,24 +136,31 @@ begin
   SetLength(Shapes, 0);
 end;
 
-function TFShapeList.DeleteLast: Boolean;
+function TFShapeList.Undo: Boolean;
 begin
-  Result := True;
+  Result := true;
   if Length(Shapes) = 0 then exit(false);
-  Shapes[High(Shapes)].Free;
-  SetLength(Shapes, Length(Shapes) - 1);
+  if UndoIndex < Length(Shapes) then Inc(UndoIndex)
+  else exit(false);
 end;
 
 procedure TFShapeList.DrawAll(CanvasOut: TCanvas);
 var
-  i: TFShape;
+  i: Integer;
 begin
-  for i in Shapes do i.Draw(CanvasOut);
+  for i := 0 to High(Shapes) - UndoIndex do Shapes[i].Draw(CanvasOut);
 end;
 
 procedure TFShapeList.Free;
 begin
   Clear;
+end;
+
+function TFShapeList.Redo: Boolean;
+begin
+  Result := true;
+  if UndoIndex > 0 then Dec(UndoIndex)
+  else exit(false);
 end;
 
 { TFShape }
@@ -206,6 +226,21 @@ begin
   CanvasOut.Pen.Mode := pmMerge;
   inherited;
   CanvasOut.Pen.Mode := pmCopy;
+end;
+
+{ TFEllipse }
+
+procedure TFEllipse.AddPoint(P: TPoint; CanvasOut: TCanvas);
+begin
+  EndPoint := P;
+  PB.Invalidate;
+  Draw(CanvasOut);
+end;
+
+procedure TFEllipse.Draw(CanvasOut: TCanvas);
+begin
+  SetColors(CanvasOut);
+  CanvasOut.Ellipse(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
 end;
 
 end.
