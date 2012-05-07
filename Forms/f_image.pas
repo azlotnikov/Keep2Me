@@ -60,7 +60,6 @@ type
     btn_line: TsSpeedButton;
     mm_deleteall: TMenuItem;
     mm_line: TMenuItem;
-    pb: TPaintBox;
     mm_view: TMenuItem;
     mm_copyimg: TMenuItem;
     mm_SaveToFile: TMenuItem;
@@ -81,6 +80,9 @@ type
     btn_ellipseclear: TsSpeedButton;
     mm_rectclear: TMenuItem;
     mm_ellipseclear: TMenuItem;
+    btn_Blur: TsSpeedButton;
+    mm_blur: TMenuItem;
+    pb: TPaintBox;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -97,7 +99,6 @@ type
     procedure mm_brushClick(Sender: TObject);
     procedure mm_deleteallClick(Sender: TObject);
     procedure mm_lineClick(Sender: TObject);
-    procedure pbPaint(Sender: TObject);
     procedure mm_copyimgClick(Sender: TObject);
     procedure mm_SaveToFileClick(Sender: TObject);
     procedure mm_rectClick(Sender: TObject);
@@ -109,6 +110,8 @@ type
     procedure mm_textClick(Sender: TObject);
     procedure mm_rectclearClick(Sender: TObject);
     procedure mm_ellipseclearClick(Sender: TObject);
+    procedure mm_blurClick(Sender: TObject);
+    procedure pbPaint(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -208,7 +211,6 @@ procedure TFImage.imgMouseDown(Sender: TObject; Button: TMouseButton; Shift: TSh
 begin
   scrlbx.SetFocus;
   if Button <> mbLeft then exit;
-  ActiveDraw := true;
   if btn_Brush.down then tmpShape := TFPencil.Create;
   if btn_line.down then tmpShape := TFLine.Create;
   if btn_Rect.down then tmpShape := TFRect.Create;
@@ -217,7 +219,12 @@ begin
   if btn_Ellipse.down then tmpShape := TFEllipse.Create;
   if btn_ellipseclear.down then tmpShape := TFEllipseClear.Create;
   if btn_Text.down then tmpShape := TFText.Create;
+  if btn_Blur.down then tmpShape := TFBlurRect.Create;
 
+  pb.Invalidate;
+  ShapeList.DrawAll(img.Canvas);
+  ActiveDraw := true;
+  // tmpShape.imgCanvas := img.Picture.Bitmap.Canvas;
   tmpShape.IsDrawing := true;
   tmpShape.pb := pb;
   tmpShape.StartPoint := Point(X, Y);
@@ -234,6 +241,7 @@ procedure TFImage.imgMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Intege
 begin
   if not ActiveDraw then exit;
   tmpShape.AddPoint(Point(X, Y), pb.Canvas);
+  pb.Invalidate;
 end;
 
 procedure TFImage.imgMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -246,16 +254,17 @@ begin
   if tmpShape is TFText then begin
     Enabled := false;
     with TFTextEdit.Create(nil) do begin
-      Left := Mouse.CursorPos.X - 20;
-      Top := Mouse.CursorPos.Y - 20;
+      // Left := Mouse.CursorPos.X - 20;
+      // Top := Mouse.CursorPos.Y - 20;
       OnClose := TextEditFormClose;
       mmo_text.Font.Color := tmpShape.PenF.Color;
       Show;
     end
   end
   else tmpShape.IsDrawing := false;
-
   ShapeList.AddShape(tmpShape);
+  img.Picture.Assign(OriginImg);
+  pb.Invalidate;
 end;
 
 procedure TFImage.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -270,6 +279,11 @@ begin
   OriginImg := TBitmap.Create;
   ShapeList := TFShapeList.Create;
   Application.InsertComponent(self);
+end;
+
+procedure TFImage.mm_blurClick(Sender: TObject);
+begin
+  btn_Blur.down := true;
 end;
 
 procedure TFImage.mm_brushClick(Sender: TObject);
@@ -403,8 +417,8 @@ end;
 
 procedure TFImage.pbPaint(Sender: TObject);
 begin
-  ShapeList.DrawAll(pb.Canvas);
-  if ActiveDraw then tmpShape.Draw(pb.Canvas);
+  if ActiveDraw then tmpShape.Draw(pb.Canvas)
+  else ShapeList.DrawAll(pb.Canvas);
 end;
 
 procedure TFImage.mm_showtoolsClick(Sender: TObject);

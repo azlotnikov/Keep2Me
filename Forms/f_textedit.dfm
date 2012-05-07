@@ -16,7 +16,7 @@ object FTextEdit: TFTextEdit
   FormStyle = fsStayOnTop
   Menu = mm
   OldCreateOrder = False
-  Position = poScreenCenter
+  Position = poDesigned
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (

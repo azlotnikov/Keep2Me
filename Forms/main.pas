@@ -366,7 +366,7 @@ begin
     with TFImage.Create(nil) do begin
       img.Picture.Assign(Clipboard);
       OriginImg.Assign(Clipboard);
-      Show;
+      StartWork;
     end;
   end
   else TrayIcon.BalloonHint(SYS_KEEP2ME, RU_NOT_AN_IMAGE_CONTENT);

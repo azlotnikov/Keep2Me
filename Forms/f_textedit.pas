@@ -3,9 +3,23 @@ unit f_textedit;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Menus, Vcl.ComCtrls, Vcl.ImgList, acAlphaImageList,
-  Vcl.Buttons, sSpeedButton, Vcl.Samples.Spin;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.StdCtrls,
+  Vcl.Menus,
+  Vcl.ComCtrls,
+  Vcl.ImgList,
+  Vcl.Buttons,
+  Vcl.Samples.Spin,
+  sSpeedButton,
+  acAlphaImageList;
 
 type
   TFTextEdit = class(TForm)
@@ -99,6 +113,8 @@ end;
 procedure TFTextEdit.FormShow(Sender: TObject);
 begin
   SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+  Left := Mouse.CursorPos.X - 10;
+  Top := Mouse.CursorPos.Y - 10;
   mmo_text.SetFocus;
 end;
 

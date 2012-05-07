@@ -43,7 +43,7 @@ end;
 
 function TMonitorManager.GetRect(Index: Integer): TRect;
 begin
-  if Index > 0 then result := Screen.Monitors[Index - 1].WorkareaRect
+  if Index > 0 then result := Screen.Monitors[Index - 1].BoundsRect
   else
     with Screen do
         result := Rect(0, 0, Monitors[MonitorCount - 1].Left + Monitors[MonitorCount - 1].Width,
