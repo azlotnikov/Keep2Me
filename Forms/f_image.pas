@@ -28,8 +28,10 @@ uses
   sEdit,
   sSpinEdit,
   f_load,
+  f_textedit,
   funcs,
-  imgtools;
+  imgtools,
+  ConstStrings;
 
 type
   TFImage = class(TForm)
@@ -73,6 +75,12 @@ type
     mm_brushcolor: TMenuItem;
     btn_Ellipse: TsSpeedButton;
     mm_ellipse: TMenuItem;
+    btn_Text: TsSpeedButton;
+    mm_text: TMenuItem;
+    btn_rectclear: TsSpeedButton;
+    btn_ellipseclear: TsSpeedButton;
+    mm_rectclear: TMenuItem;
+    mm_ellipseclear: TMenuItem;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -98,12 +106,16 @@ type
     procedure mm_brushcolorClick(Sender: TObject);
     procedure mm_redoClick(Sender: TObject);
     procedure mm_ellipseClick(Sender: TObject);
+    procedure mm_textClick(Sender: TObject);
+    procedure mm_rectclearClick(Sender: TObject);
+    procedure mm_ellipseclearClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
     ActiveDraw: Boolean;
     tmpShape: TFShape;
     function GetScreenName: string;
+    procedure TextEditFormClose(Sender: TObject; var Action: TCloseAction);
   public
     OriginImg: TBitmap;
     ShapeList: TFShapeList;
@@ -185,7 +197,7 @@ end;
 
 function TFImage.GetScreenName: string;
 begin
-  result := 'tmpImg\';
+  result := SYS_TMP_IMG_FOLDER;
   result := result + timetostr(now) + '-' + datetostr(now);
   result := StringReplace(result, ':', '.', [rfReplaceAll]);
   result := StringReplace(result, '/', '.', [rfReplaceAll]);
@@ -200,9 +212,13 @@ begin
   if btn_Brush.down then tmpShape := TFPencil.Create;
   if btn_line.down then tmpShape := TFLine.Create;
   if btn_Rect.down then tmpShape := TFRect.Create;
+  if btn_rectclear.down then tmpShape := TFRectClear.Create;
   if btn_SelPen.down then tmpShape := TFSelPencil.Create;
   if btn_Ellipse.down then tmpShape := TFEllipse.Create;
+  if btn_ellipseclear.down then tmpShape := TFEllipseClear.Create;
+  if btn_Text.down then tmpShape := TFText.Create;
 
+  tmpShape.IsDrawing := true;
   tmpShape.pb := pb;
   tmpShape.StartPoint := Point(X, Y);
   pb.Canvas.Pen.Color := shp_pen.Brush.Color;
@@ -217,18 +233,29 @@ end;
 procedure TFImage.imgMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
   if not ActiveDraw then exit;
-
   tmpShape.AddPoint(Point(X, Y), pb.Canvas);
 end;
 
 procedure TFImage.imgMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if not ActiveDraw then exit;
+
   ActiveDraw := false;
   tmpShape.AddPoint(Point(X, Y), pb.Canvas);
   tmpShape.EndPoint := Point(X, Y);
-  ShapeList.AddShape(tmpShape);
+  if tmpShape is TFText then begin
+    Enabled := false;
+    with TFTextEdit.Create(nil) do begin
+      Left := Mouse.CursorPos.X - 20;
+      Top := Mouse.CursorPos.Y - 20;
+      OnClose := TextEditFormClose;
+      mmo_text.Font.Color := tmpShape.PenF.Color;
+      Show;
+    end
+  end
+  else tmpShape.IsDrawing := false;
 
+  ShapeList.AddShape(tmpShape);
 end;
 
 procedure TFImage.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -272,6 +299,11 @@ begin
   pb.Invalidate;
 end;
 
+procedure TFImage.mm_ellipseclearClick(Sender: TObject);
+begin
+  btn_ellipseclear.down := true;
+end;
+
 procedure TFImage.mm_ellipseClick(Sender: TObject);
 begin
   btn_Ellipse.down := true;
@@ -309,6 +341,11 @@ end;
 procedure TFImage.mm_pencolorClick(Sender: TObject);
 begin
   shp_penMouseDown(self, mbLeft, [], 1, 1);
+end;
+
+procedure TFImage.mm_rectclearClick(Sender: TObject);
+begin
+  btn_rectclear.down := true;
 end;
 
 procedure TFImage.mm_rectClick(Sender: TObject);
@@ -352,6 +389,11 @@ begin
   t := shp_brush.Brush.Color;
   shp_brush.Brush.Color := shp_pen.Brush.Color;
   shp_pen.Brush.Color := t;
+end;
+
+procedure TFImage.mm_textClick(Sender: TObject);
+begin
+  btn_Text.down := true;
 end;
 
 procedure TFImage.mm_SelPenClick(Sender: TObject);
@@ -413,6 +455,19 @@ begin
     BringToFront;
     Show;
   end;
+end;
+
+procedure TFImage.TextEditFormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if (Sender as TFTextEdit).NAdd then begin
+    (tmpShape as TFText).Text := (Sender as TFTextEdit).NText;
+    (tmpShape as TFText).Styles := (Sender as TFTextEdit).mmo_text.Font.Style;
+    (tmpShape as TFText).FSize := (Sender as TFTextEdit).mmo_text.Font.Size;
+    (tmpShape as TFText).IsDrawing := false;
+  end
+  else ShapeList.DeleteLast;
+  Action := caFree;
+  Enabled := true;
 end;
 
 end.

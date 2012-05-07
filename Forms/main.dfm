@@ -951,8 +951,8 @@ object FMain: TFMain
           BFFBB6AD51DC1F0C06BBE48B7FEFFC9A079E42F68B7E74B2398F84C08C04777F
           0B3000E8124202BF43365F0000000049454E44AE426082}
       end>
-    Left = 280
-    Top = 65531
+    Left = 144
+    Top = 16
     Bitmap = {}
   end
   object TrayIcon: TJvTrayIcon
@@ -960,13 +960,13 @@ object FMain: TFMain
     IconIndex = 0
     PopupMenu = pm
     OnClick = TrayIconClick
-    Left = 184
-    Top = 3
+    Left = 48
+    Top = 16
   end
   object pm: TPopupMenu
     Images = Images
-    Left = 240
-    Top = 65528
+    Left = 112
+    Top = 16
     object pm_SelectScreen: TMenuItem
       Caption = #1042#1099#1076#1077#1083#1080#1090#1100' '#1086#1073#1083#1072#1089#1090#1100' '#1101#1082#1088#1072#1085#1072
       ImageIndex = 8
@@ -1028,11 +1028,13 @@ object FMain: TFMain
     Enabled = False
     Interval = 500
     OnTimer = tmr_ExitFromThreadTimer
-    Left = 328
+    Left = 176
+    Top = 16
   end
   object AntiFreeze: TIdAntiFreeze
     OnlyWhenIdle = False
-    Left = 144
+    Left = 16
+    Top = 16
   end
   object OpenImageDlg: TOpenPictureDialog
     Filter = 
@@ -1041,6 +1043,7 @@ object FMain: TFMain
       '.png|JPEG Image File (*.jpg)|*.jpg|JPEG Image File (*.jpeg)|*.jp' +
       'eg|Bitmaps (*.bmp)|*.bmp'
     Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
-    Left = 112
+    Left = 80
+    Top = 16
   end
 end

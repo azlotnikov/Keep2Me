@@ -19,6 +19,7 @@ type
 type
   TRBrush = record
     Color: TColor;
+    Style: TBrushStyle;
   end;
 
 type
@@ -29,10 +30,21 @@ type
     PB: TPaintBox;
     StartPoint: TPoint;
     EndPoint: TPoint;
+    IsDrawing: Boolean;
     procedure SetColors(CanvasOut: TCanvas); virtual;
     procedure Draw(CanvasOut: TCanvas); virtual; abstract;
     procedure AddPoint(P: TPoint; CanvasOut: TCanvas); virtual; abstract;
     constructor Create;
+  end;
+
+type
+  TFText = class(TFShape)
+  public
+    Text: String;
+    Styles: TFontStyles;
+    FSize: Integer;
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
+    procedure Draw(CanvasOut: TCanvas); override;
   end;
 
 Type
@@ -68,7 +80,21 @@ type
   end;
 
 type
+  TFRectClear = class(TFRect)
+  public
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
+    procedure Draw(CanvasOut: TCanvas); override;
+  end;
+
+type
   TFEllipse = class(TFShape)
+  public
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
+    procedure Draw(CanvasOut: TCanvas); override;
+  end;
+
+type
+  TFEllipseClear = class(TFEllipse)
   public
     procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
     procedure Draw(CanvasOut: TCanvas); override;
@@ -84,6 +110,7 @@ Type
     procedure DrawAll(CanvasOut: TCanvas);
     procedure Clear;
     procedure Free;
+    procedure DeleteLast;
     function Undo: Boolean;
     function Redo: Boolean;
   end;
@@ -144,6 +171,13 @@ begin
   else exit(false);
 end;
 
+procedure TFShapeList.DeleteLast;
+begin
+  if Length(Shapes) = 0 then exit;
+  Shapes[High(Shapes)].Free;
+  SetLength(Shapes, Length(Shapes) - 1);
+end;
+
 procedure TFShapeList.DrawAll(CanvasOut: TCanvas);
 var
   i: Integer;
@@ -167,7 +201,7 @@ end;
 
 constructor TFShape.Create;
 begin
-
+  BrushF.Style := bsSolid;
 end;
 
 procedure TFShape.SetColors(CanvasOut: TCanvas);
@@ -177,7 +211,7 @@ begin
     Pen.Style := psSolid;
     Pen.Width := PenF.Width;
     Brush.Color := BrushF.Color;
-    Brush.Style := bsSolid;
+    Brush.Style := BrushF.Style;
   end;
 end;
 
@@ -241,6 +275,66 @@ procedure TFEllipse.Draw(CanvasOut: TCanvas);
 begin
   SetColors(CanvasOut);
   CanvasOut.Ellipse(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+end;
+
+{ TFText }
+
+procedure TFText.AddPoint(P: TPoint; CanvasOut: TCanvas);
+begin
+  EndPoint := P;
+  PB.Invalidate;
+  CanvasOut.Brush.Style := bsClear;
+  CanvasOut.Pen.Color := clRed;
+  CanvasOut.Pen.Width := 1;
+  CanvasOut.Pen.Style := psDashDot;
+  CanvasOut.Rectangle(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+end;
+
+procedure TFText.Draw(CanvasOut: TCanvas);
+var
+  MRect: TRect;
+begin
+  if IsDrawing then AddPoint(EndPoint, CanvasOut)
+  else begin
+    MRect := Rect(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+
+    SetColors(CanvasOut);
+    CanvasOut.Brush.Style := bsClear;
+    CanvasOut.Font.Color := PenF.Color;
+    CanvasOut.Font.Style := Styles;
+    CanvasOut.Font.Size := FSize;
+    if (StartPoint.x = EndPoint.x) or (StartPoint.y = EndPoint.y) then
+        CanvasOut.TextOut(StartPoint.x, StartPoint.y, Text)
+    else CanvasOut.TextRect(MRect, Text, [tfWordBreak, tfWordEllipsis]);
+  end;
+end;
+
+{ TFRectClear }
+
+procedure TFRectClear.AddPoint(P: TPoint; CanvasOut: TCanvas);
+begin
+  BrushF.Style := bsClear;
+  inherited;
+end;
+
+procedure TFRectClear.Draw(CanvasOut: TCanvas);
+begin
+  BrushF.Style := bsClear;
+  inherited;
+end;
+
+{ TFEllipseClear }
+
+procedure TFEllipseClear.AddPoint(P: TPoint; CanvasOut: TCanvas);
+begin
+  BrushF.Style := bsClear;
+  inherited;
+end;
+
+procedure TFEllipseClear.Draw(CanvasOut: TCanvas);
+begin
+  BrushF.Style := bsClear;
+  inherited;
 end;
 
 end.
