@@ -3,25 +3,23 @@ object FTextEdit: TFTextEdit
   Top = 0
   BorderStyle = bsSizeToolWin
   Caption = #1042#1074#1077#1076#1080#1090#1077' '#1090#1077#1082#1089#1090
-  ClientHeight = 177
-  ClientWidth = 404
+  ClientHeight = 156
+  ClientWidth = 424
   Color = clBtnFace
-  Constraints.MinHeight = 231
-  Constraints.MinWidth = 404
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  FormStyle = fsStayOnTop
   Menu = mm
   OldCreateOrder = False
   Position = poDesigned
+  OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    404
-    177)
+    424
+    156)
   PixelsPerInch = 96
   TextHeight = 13
   object btn_bold: TsSpeedButton
@@ -74,14 +72,14 @@ object FTextEdit: TFTextEdit
     Images = Images
   end
   object lbl_fontsize: TLabel
-    Left = 128
+    Left = 158
     Top = 8
     Width = 40
     Height = 13
     Caption = #1064#1088#1080#1092#1090':'
   end
   object btn_EnterText: TsSpeedButton
-    Left = 237
+    Left = 257
     Top = 4
     Width = 159
     Height = 24
@@ -91,28 +89,53 @@ object FTextEdit: TFTextEdit
     SkinData.SkinSection = 'SPEEDBUTTON'
     ImageIndex = 1
     Images = Images
+    ExplicitLeft = 237
+  end
+  object btn_font: TsSpeedButton
+    Left = 124
+    Top = 4
+    Width = 23
+    Height = 24
+    AllowAllUp = True
+    GroupIndex = 5
+    OnClick = btn_fontClick
+    SkinData.SkinSection = 'SPEEDBUTTON'
+    ImageIndex = 6
+    Images = Images
   end
   object mmo_text: TMemo
     Left = 8
     Top = 32
-    Width = 388
-    Height = 137
+    Width = 408
+    Height = 116
     Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssBoth
-    TabOrder = 1
-    ExplicitWidth = 372
-    ExplicitHeight = 116
+    TabOrder = 2
   end
   object se_fsize: TSpinEdit
-    Left = 174
+    Left = 202
     Top = 5
-    Width = 57
+    Width = 49
     Height = 22
     MaxValue = 500
     MinValue = 2
     TabOrder = 0
     Value = 14
     OnChange = se_fsizeChange
+  end
+  object cbb_font: TJvFontComboBox
+    Left = 8
+    Top = 32
+    Width = 243
+    Height = 22
+    DroppedDownWidth = 243
+    MaxMRUCount = 0
+    FontName = 'Tahoma'
+    ItemIndex = 184
+    Sorted = True
+    TabOrder = 1
+    Visible = False
+    OnChange = cbb_fontChange
   end
   object mm: TMainMenu
     Images = Images
@@ -237,6 +260,20 @@ object FTextEdit: TFTextEdit
           81D10863A60271329ADAB9403C1BC400462376034051844CA303985A643D2C68
           6AF881F82A81FCA103C41F701900024638C441E02FDE301890CC041060005678
           3DA24A00AD780000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000000D34944415478DA62FCFFFF3F03258089814230F0063002
+          01BAD874289D498E0BE481F817104B40D9241BE002C427819815CA4607E640BC
+          054A6335C01E888F430DB1C762803E10FF81D218062801F16F20E607E2C7402C
+          0B1543061640DC00C491300166A4408C01620720F6066263901C343C4E41E595
+          8138152A0F92BB05C48F989052A21B10C703B135141F858A2187CF0620CE83CA
+          9982F4824CE200E265505B35A09256405C09C4E250F627208E83BA6827104700
+          7108109F65841AC006C4ECD0D0270680C2EA27C840C6A19F9900020C00D4962B
+          F370C4EE5A0000000049454E44AE426082}
       end>
     Left = 208
     Top = 40

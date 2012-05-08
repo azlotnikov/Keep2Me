@@ -5,7 +5,7 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.5.1';
+  SYS_KEEP_VERSION = '0.6.0c';
   SYS_CRYPT_KEY = 26123;
 
   SYS_SETTINGS_FILE_NAME = 'settings.ini';
@@ -27,6 +27,7 @@ const
   RU_SEND_WINDOW_SCREEN = 'Отправить скриншот окна';
   RU_SEND_TO_PASTEBIN = 'Отправить на Pastebin.com';
   RU_OPEN_IMAGE_AND_LOAD = 'Загрузить изображение из файла';
+  RU_LOAD_FILES_FROM_BUF = 'Загрузить файлы из буфера';
   RU_SHOW_SETTNGS = 'Показать настройки';
   RU_NO = 'Нет';
   RU_HINT = 'Подсказка';

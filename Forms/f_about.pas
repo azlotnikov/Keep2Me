@@ -20,7 +20,8 @@ uses
   funcs,
   ConstStrings,
   loaders,
-  shortlinks;
+  shortlinks,
+  fileuploaders;
 
 type
   TFAbout = class(TForm)
@@ -69,6 +70,8 @@ begin
         Lines.Add(Format('Имя: %s | Версия: %s', [LoadersArray[i].Caption, LoadersArray[i].Version]));
     for i := 0 to High(ShortersArray) do
         Lines.Add(Format('Имя: %s | Версия: %s', [ShortersArray[i].Caption, ShortersArray[i].Version]));
+    for i := 0 to High(FileLoadersArray) do
+        Lines.Add(Format('Имя: %s | Версия: %s', [FileLoadersArray[i].Caption, FileLoadersArray[i].Version]));
   end;
 end;
 

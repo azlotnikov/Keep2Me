@@ -150,6 +150,7 @@ begin
       FreeAndNil(Cloader);
       pb.Position := pb.Max;
       EnableBtns(true);
+      GSettings.TrayIcon.Hint := r;
       if GSettings.ShowInTray then GSettings.TrayIcon.BalloonHint('Файл загружен', r);
     end;
   end;

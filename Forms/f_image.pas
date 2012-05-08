@@ -31,7 +31,7 @@ uses
   f_textedit,
   funcs,
   imgtools,
-  ConstStrings;
+  ConstStrings, JvFormPlacement, JvComponentBase, JvAppStorage, JvAppIniStorage, Vcl.Mask, JvExMask, JvSpin;
 
 type
   TFImage = class(TForm)
@@ -48,7 +48,6 @@ type
     shp_brush: TShape;
     shp_pen: TShape;
     dlg_color: TsColorDialog;
-    spin_penwidth: TsSpinEdit;
     lbl_penwidth: TLabel;
     mm_swapcolors: TMenuItem;
     N1: TMenuItem;
@@ -83,6 +82,7 @@ type
     btn_Blur: TsSpeedButton;
     mm_blur: TMenuItem;
     pb: TPaintBox;
+    spin_penwidth: TJvSpinEdit;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -222,17 +222,17 @@ begin
   if btn_Blur.down then tmpShape := TFBlurRect.Create;
 
   pb.Invalidate;
-  ShapeList.DrawAll(img.Canvas);
+  // ShapeList.DrawAll(img.Canvas);
   ActiveDraw := true;
   // tmpShape.imgCanvas := img.Picture.Bitmap.Canvas;
   tmpShape.IsDrawing := true;
   tmpShape.pb := pb;
   tmpShape.StartPoint := Point(X, Y);
   pb.Canvas.Pen.Color := shp_pen.Brush.Color;
-  pb.Canvas.Pen.Width := spin_penwidth.Value;
+  pb.Canvas.Pen.Width := trunc(spin_penwidth.Value);
   pb.Canvas.Brush.Color := shp_brush.Brush.Color;
   tmpShape.PenF.Color := shp_pen.Brush.Color;
-  tmpShape.PenF.Width := spin_penwidth.Value;
+  tmpShape.PenF.Width := trunc(spin_penwidth.Value);
   tmpShape.BrushF.Color := shp_brush.Brush.Color;
   tmpShape.AddPoint(Point(X, Y), pb.Canvas);
 end;
@@ -247,23 +247,21 @@ end;
 procedure TFImage.imgMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if not ActiveDraw then exit;
-
-  ActiveDraw := false;
   tmpShape.AddPoint(Point(X, Y), pb.Canvas);
   tmpShape.EndPoint := Point(X, Y);
   if tmpShape is TFText then begin
     Enabled := false;
     with TFTextEdit.Create(nil) do begin
-      // Left := Mouse.CursorPos.X - 20;
-      // Top := Mouse.CursorPos.Y - 20;
       OnClose := TextEditFormClose;
       mmo_text.Font.Color := tmpShape.PenF.Color;
       Show;
     end
-  end
-  else tmpShape.IsDrawing := false;
+  end else begin
+    tmpShape.IsDrawing := false;
+    tmpShape.Draw(img.Canvas);
+    ActiveDraw := false;
+  end;
   ShapeList.AddShape(tmpShape);
-  img.Picture.Assign(OriginImg);
   pb.Invalidate;
 end;
 
@@ -298,7 +296,10 @@ end;
 
 procedure TFImage.mm_undoClick(Sender: TObject);
 begin
-  if ShapeList.Undo then pb.Invalidate;
+  if ShapeList.Undo then begin
+    img.Picture.Assign(OriginImg);
+    ShapeList.DrawAll(img.Canvas);
+  end;
 end;
 
 procedure TFImage.mm_DefaultColorClick(Sender: TObject);
@@ -309,8 +310,12 @@ end;
 
 procedure TFImage.mm_deleteallClick(Sender: TObject);
 begin
-  ShapeList.Clear;
+  repeat
+
+  until (not ShapeList.Undo);
   pb.Invalidate;
+  img.Picture.Assign(OriginImg);
+  ShapeList.DrawAll(img.Canvas);
 end;
 
 procedure TFImage.mm_ellipseclearClick(Sender: TObject);
@@ -335,7 +340,7 @@ var
 begin
   Hide;
   FSName := ExtractFilePath(paramstr(0)) + GetScreenName;
-  ShapeList.DrawAll(img.Canvas);
+  // ShapeList.DrawAll(img.Canvas);
   SaveResult := 1;
   case TImgFormats(GSettings.ImgExtIndex) of
     ifJpg: SaveResult := SaveJPG(img.Picture.Bitmap, FSName);
@@ -369,7 +374,10 @@ end;
 
 procedure TFImage.mm_redoClick(Sender: TObject);
 begin
-  if ShapeList.Redo then pb.Invalidate;
+  if ShapeList.Redo then begin
+    img.Picture.Assign(OriginImg);
+    ShapeList.DrawAll(img.Canvas);
+  end;
 end;
 
 procedure TFImage.mm_SaveToFileClick(Sender: TObject);
@@ -382,14 +390,14 @@ begin
     FilterIndex := 1 + GSettings.ImgExtIndex;
     if Execute then begin
       SaveResult := 1;
-      ShapeList.DrawAll(img.Canvas);
+      // ShapeList.DrawAll(img.Canvas);
       case TImgFormats(GSettings.ImgExtIndex) of
         ifJpg: SaveResult := SaveJPG(img.Picture.Bitmap, FileName);
         ifPng: SaveResult := SavePNG(img.Picture.Bitmap, FileName);
         ifBmp: SaveResult := SaveBMP(img.Picture.Bitmap, FileName);
         ifGif: SaveResult := SaveGIF(img.Picture.Bitmap, FileName);
       end;
-      img.Picture.Assign(OriginImg);
+      // img.Picture.Assign(OriginImg);
       if SaveResult > 0 then ShowMessage('Ошибка Сохранения изображения')
       else ShowMessage('Изображение сохранено: ' + FileName);
     end;
@@ -417,8 +425,7 @@ end;
 
 procedure TFImage.pbPaint(Sender: TObject);
 begin
-  if ActiveDraw then tmpShape.Draw(pb.Canvas)
-  else ShapeList.DrawAll(pb.Canvas);
+  if ActiveDraw then tmpShape.Draw(pb.Canvas);
 end;
 
 procedure TFImage.mm_showtoolsClick(Sender: TObject);
@@ -477,11 +484,15 @@ begin
     (tmpShape as TFText).Text := (Sender as TFTextEdit).NText;
     (tmpShape as TFText).Styles := (Sender as TFTextEdit).mmo_text.Font.Style;
     (tmpShape as TFText).FSize := (Sender as TFTextEdit).mmo_text.Font.Size;
+    (tmpShape as TFText).FontName := (Sender as TFTextEdit).mmo_text.Font.Name;
     (tmpShape as TFText).IsDrawing := false;
+    tmpShape.Draw(img.Canvas);
   end
   else ShapeList.DeleteLast;
   Action := caFree;
   Enabled := true;
+  ActiveDraw := false;
+  pb.Invalidate;
 end;
 
 end.

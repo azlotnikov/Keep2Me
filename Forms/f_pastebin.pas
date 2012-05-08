@@ -154,7 +154,10 @@ begin
   if GSettings.Pastebin.CopyLink then Clipboard.AsText := s;
   if edt_caption.Text = '' then k := '(Без заголовка) ' + timetostr(now)
   else k := edt_caption.Text;
-  GSettings.TrayIcon.BalloonHint('Pastebin.com', s);
+  if GSettings.ShowInTray then begin
+    GSettings.TrayIcon.Hint := s;
+    GSettings.TrayIcon.BalloonHint('Pastebin.com', s);
+  end;
   AddToRecentFiles(s, k, rfText);
   if GSettings.Pastebin.CloseForm then Close;
 end;

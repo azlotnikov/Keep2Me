@@ -52,6 +52,7 @@ uses
   f_windows,
   f_selfield,
   f_pastebin,
+  f_files,
   funcs,
   loaders,
   myhotkeys,
@@ -60,7 +61,8 @@ uses
   mons,
   pastebin_tools,
   cript,
-  ConstStrings;
+  ConstStrings,
+  fileuploaders;
 
 type
   TFMain = class(TForm)
@@ -73,7 +75,6 @@ type
     grp_HotKey: TGroupBox;
     grp_Hostings: TGroupBox;
     grp_ShortLink: TGroupBox;
-    grp_OtherSettings: TGroupBox;
     grp_pb_other: TGroupBox;
     grp_pb_defsets: TGroupBox;
 
@@ -83,7 +84,6 @@ type
 
     cbb_Monitors: TComboBox;
     cbb_HotKeysActions: TComboBox;
-    cbb_ImgExt: TComboBox;
     cbb_Hostings: TComboBox;
     cbb_ShortLink: TComboBox;
     cbb_HotKeys: TComboBox;
@@ -92,7 +92,6 @@ type
     cbb_pb_expire: TComboBox;
 
     lbl_HotKeysActions: TLabel;
-    lbl_ImgExt: TLabel;
     lbl_pb_login: TLabel;
     lbl_pb_pass: TLabel;
     lbl_pb_deflang: TLabel;
@@ -103,10 +102,6 @@ type
     cb_AltKey: TCheckBox;
     cb_ShiftKey: TCheckBox;
     cb_WinKey: TCheckBox;
-    cb_ShowInTray: TCheckBox;
-    cb_HideLoadForm: TCheckBox;
-    cb_CopyLink: TCheckBox;
-    cb_AutoStart: TCheckBox;
     cb_pb_copylink: TCheckBox;
     cb_EnableKey: TCheckBox;
 
@@ -134,17 +129,29 @@ type
     edt_pb_login: TEdit;
     edt_pb_pass: TEdit;
     cb_pb_CloseAfterLoad: TCheckBox;
-    cb_ShowAdmin: TCheckBox;
     mm_LoadImageFromFile: TMenuItem;
     OpenImageDlg: TOpenPictureDialog;
-    cb_FastLoad: TCheckBox;
     btn_Cancel: TsSpeedButton;
     btn_ImgHostSettings: TsSpeedButton;
     btn_ShortLinkSettings: TsSpeedButton;
     btn_CheckHotKey: TsSpeedButton;
+    pg_OtherSettings: TsTabSheet;
+    grp_OtherSettings: TGroupBox;
+    cb_ShowInTray: TCheckBox;
+    cb_HideLoadForm: TCheckBox;
+    cb_CopyLink: TCheckBox;
+    cb_AutoStart: TCheckBox;
+    cb_ShowAdmin: TCheckBox;
+    cb_FastLoad: TCheckBox;
+    cbb_ImgExt: TComboBox;
+    lbl_ImgExt: TLabel;
+    grp_files: TGroupBox;
+    cbb_Files: TComboBox;
+    btn_FilesSettings: TsSpeedButton;
+    mm_filesfrombuf: TMenuItem;
+    cb_OpenByTrayClick: TCheckBox;
 
     procedure FormCreate(Sender: TObject);
-    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 
     procedure btn_GetCurrentMonitorClick(Sender: TObject);
     procedure btn_RefreshMonitorsClick(Sender: TObject);
@@ -175,13 +182,16 @@ type
     procedure DoPastebin(Sender: TObject);
     procedure DoWindowSelect(Sender: TObject);
     procedure DoOpenAndSendImage(Sender: TObject);
+    procedure DoLoadFilesFromBuf(Sender: TObject);
 
     procedure ExitKeep;
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure btn_CancelClick(Sender: TObject);
     procedure btn_CheckHotKeyClick(Sender: TObject);
     procedure TrayIconClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure TrayIconBalloonClick(Sender: TObject);
+    procedure TrayIconBalloonShow(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -218,12 +228,14 @@ begin
     cbb_Monitors.ItemIndex := MonIndex;
     cbb_Hostings.ItemIndex := LoaderIndex;
     cbb_ShortLink.ItemIndex := ShortLinkIndex;
+    cbb_Files.ItemIndex := FileLoaderIndex;
     cb_AutoStart.Checked := AutoStart;
     cb_HideLoadForm.Checked := HideLoadForm;
     cb_ShowInTray.Checked := ShowInTray;
     cb_CopyLink.Checked := CopyLink;
     cb_ShowAdmin.Checked := DontShowAdmin;
     cbb_ImgExt.ItemIndex := ImgExtIndex;
+    cb_OpenByTrayClick.Checked := OpenLinksByClick;
     cb_FastLoad.Checked := FastLoad;
     SetLength(tmpHotKeys, Length(Actions));
     for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
@@ -372,6 +384,35 @@ begin
   else TrayIcon.BalloonHint(SYS_KEEP2ME, RU_NOT_AN_IMAGE_CONTENT);
 end;
 
+procedure TFMain.DoLoadFilesFromBuf(Sender: TObject);
+var
+  f: THandle;
+  buffer: Array [0 .. MAX_PATH] of Char;
+  i, numFiles: Integer;
+  T: Tstringlist;
+begin
+  Clipboard.Open;
+  T := Tstringlist.Create;
+  try
+    f := Clipboard.GetAsHandle(CF_HDROP);
+    If f <> 0 Then Begin
+      numFiles := DragQueryFile(f, $FFFFFFFF, nil, 0);
+      for i := 0 to numFiles - 1 do begin
+        buffer[0] := #0;
+        DragQueryFile(f, i, buffer, sizeof(buffer));
+        T.Add(buffer);
+      end;
+    end;
+  finally
+    Clipboard.Close;
+    if T.Count > 0 then TFFiles.Create(nil).StartLoad(T)
+    else begin
+      T.Free;
+      TrayIcon.BalloonHint(SYS_KEEP2ME, 'Содержимое буфера обмена не содержит файлов');
+    end;
+  end;
+end;
+
 procedure TFMain.DoOpenAndSendImage(Sender: TObject);
 begin
   if OpenImageDlg.Execute then
@@ -419,22 +460,13 @@ var
   i: Integer;
 begin
   for i := 0 to High(GSettings.Actions) do UnRegisterMyHotKey(@GSettings.Actions[i], self.Handle);
-  Hide;
-  Application.Terminate;
   halt(0);
-end;
-
-procedure TFMain.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  Action := caHide;
 end;
 
 procedure TFMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  LoadSettings;
-  ApplySettings;
-  cbb_HotKeysActionsChange(self);
   CanClose := false;
+  cbb_HotKeysActionsChange(self);
   Hide;
 end;
 
@@ -457,6 +489,7 @@ begin
   AddHotKeyAction(true, RU_SEND_TO_PASTEBIN, true, true, true, false, 7, DoPastebin);
   AddHotKeyAction(false, RU_SHOW_SETTNGS, true, true, false, false, 8, DoShowSettings);
   AddHotKeyAction(false, RU_OPEN_IMAGE_AND_LOAD, true, true, false, false, 9, DoOpenAndSendImage);
+  AddHotKeyAction(false, RU_LOAD_FILES_FROM_BUF, true, true, false, false, 10, DoLoadFilesFromBuf);
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
   UpdateActions;
@@ -467,6 +500,7 @@ begin
   for i := 0 to High(PastebinExpires) do cbb_pb_expire.Items.Add(PastebinExpires[i].Caption);
   for i := 0 to High(PastebinPrivates) do cbb_pb_private.Items.Add(PastebinPrivates[i].Caption);
   for i := 0 to High(LoadersArray) do cbb_Hostings.Items.Add(LoadersArray[i].Caption);
+  for i := 0 to High(FileLoadersArray) do cbb_Files.Items.Add(FileLoadersArray[i].Caption);
   LoadSettings;
   ApplySettings;
   for i := 0 to High(GSettings.Actions) do RegisterMyHotKey(@GSettings.Actions[i], self.Handle, i);
@@ -489,12 +523,14 @@ begin
     MonIndex := cbb_Monitors.ItemIndex;
     LoaderIndex := cbb_Hostings.ItemIndex;
     ShortLinkIndex := cbb_ShortLink.ItemIndex;
+    FileLoaderIndex := cbb_Files.ItemIndex;
     AutoStart := cb_AutoStart.Checked;
     HideLoadForm := cb_HideLoadForm.Checked;
     ShowInTray := cb_ShowInTray.Checked;
     CopyLink := cb_CopyLink.Checked;
     DontShowAdmin := cb_ShowAdmin.Checked;
     ImgExtIndex := cbb_ImgExt.ItemIndex;
+    OpenLinksByClick := cb_OpenByTrayClick.Checked;
     FastLoad := cb_FastLoad.Checked;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to High(tmpHotKeys) do Actions[i] := tmpHotKeys[i];
@@ -513,28 +549,30 @@ end;
 
 procedure TFMain.InitMonitors;
 var
-  t: TStringList;
+  T: Tstringlist;
 begin
   cbb_Monitors.Clear;
-  t := MonitorManager.GetCaptions;
-  cbb_Monitors.Items.Assign(t);
+  T := MonitorManager.GetCaptions;
+  cbb_Monitors.Items.Assign(T);
   cbb_Monitors.ItemIndex := 0;
-  t.Free;
+  T.Free;
 end;
 
 procedure TFMain.LoadSettings;
 var
-  F: TIniFile;
+  f: TIniFile;
   i: Integer;
 begin
-  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
-  with F, GSettings do begin
+  f := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
+  with f, GSettings do begin
     MonIndex := ReadInteger(INI_COMMON_SETTINGS, 'MonitorIndex', 0);
     LoaderIndex := ReadInteger(INI_COMMON_SETTINGS, 'LoaderIndex', 0);
     ShortLinkIndex := ReadInteger(INI_COMMON_SETTINGS, 'ShortLinkIndex', 0);
+    FileLoaderIndex := ReadInteger(INI_COMMON_SETTINGS, 'FileLoaderIndex', 0);
     AutoStart := ReadBool(INI_COMMON_SETTINGS, 'AutoStart', false);
     ShowInTray := ReadBool(INI_COMMON_SETTINGS, 'ShowInTray', true);
     HideLoadForm := ReadBool(INI_COMMON_SETTINGS, 'HideLoadForm', false);
+    OpenLinksByClick := ReadBool(INI_COMMON_SETTINGS, 'OpenLinksByClick', true);
     CopyLink := ReadBool(INI_COMMON_SETTINGS, 'CopyLink', true);
     DontShowAdmin := ReadBool(INI_COMMON_SETTINGS, 'DontShowAdmin', false);
     FastLoad := ReadBool(INI_COMMON_SETTINGS, 'FastLoad', false);
@@ -586,7 +624,7 @@ end;
 
 procedure TFMain.pm_SettingsClick(Sender: TObject);
 begin
-  Show;
+  self.Show;
   BringToFront;
 end;
 
@@ -604,19 +642,21 @@ end;
 
 procedure TFMain.SaveSettings;
 var
-  F: TIniFile;
+  f: TIniFile;
   i: Integer;
 begin
-  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
-  with F, GSettings do begin
+  f := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
+  with f, GSettings do begin
     WriteInteger(INI_COMMON_SETTINGS, 'MonitorIndex', MonIndex);
     WriteInteger(INI_COMMON_SETTINGS, 'LoaderIndex', LoaderIndex);
     WriteInteger(INI_COMMON_SETTINGS, 'ShortLinkIndex', ShortLinkIndex);
+    WriteInteger(INI_COMMON_SETTINGS, 'FileLoaderIndex', FileLoaderIndex);
     WriteBool(INI_COMMON_SETTINGS, 'AutoStart', AutoStart);
     WriteBool(INI_COMMON_SETTINGS, 'ShowInTray', ShowInTray);
     WriteBool(INI_COMMON_SETTINGS, 'HideLoadForm', HideLoadForm);
     WriteBool(INI_COMMON_SETTINGS, 'CopyLink', CopyLink);
     WriteBool(INI_COMMON_SETTINGS, 'DontShowAdmin', DontShowAdmin);
+    WriteBool(INI_COMMON_SETTINGS, 'OpenLinksByClick', OpenLinksByClick);
     WriteBool(INI_COMMON_SETTINGS, 'FastLoad', FastLoad);
     WriteInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', ImgExtIndex);
     for i := 0 to High(Actions) do
@@ -649,6 +689,19 @@ begin
   ExitKeep;
 end;
 
+procedure TFMain.TrayIconBalloonClick(Sender: TObject);
+begin
+  if Pos('http', GSettings.LastLink) > 0 then
+    if GSettings.OpenLinksByClick then ShellExecute(Handle, 'open', PChar(GSettings.LastLink), nil, nil, SW_SHOW);
+end;
+
+procedure TFMain.TrayIconBalloonShow(Sender: TObject);
+begin
+  if Pos('http', TrayIcon.Hint) > 0 then GSettings.LastLink := TrayIcon.Hint
+  else GSettings.LastLink := '-1';
+  TrayIcon.Hint := SYS_KEEP2ME;
+end;
+
 procedure TFMain.TrayIconClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button = mbLeft then DoScreenSelect(self);
@@ -679,6 +732,7 @@ begin
     case GSettings.RecentFiles[i].LType of
       rfImg: M.ImageIndex := 10;
       rfText: M.ImageIndex := 12;
+      rfOther: M.ImageIndex := 18;
     end;
     pm_RecentLoads.Insert(0, M);
   end;

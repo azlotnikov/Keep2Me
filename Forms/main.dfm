@@ -1,12 +1,12 @@
 object FMain: TFMain
   Left = 0
   Top = 0
-  Anchors = [akLeft, akTop, akRight]
+  BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Keep2Me '#1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 495
+  ClientHeight = 413
   ClientWidth = 390
   Color = clBtnFace
-  Constraints.MinHeight = 533
+  Constraints.MinHeight = 451
   Constraints.MinWidth = 406
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,18 +15,17 @@ object FMain: TFMain
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
     390
-    495)
+    413)
   PixelsPerInch = 96
   TextHeight = 13
   object btn_ApplySettings: TsSpeedButton
     Left = 190
-    Top = 463
+    Top = 383
     Width = 192
     Height = 24
     Anchors = [akLeft, akRight, akBottom]
@@ -35,10 +34,11 @@ object FMain: TFMain
     SkinData.SkinSection = 'SPEEDBUTTON'
     ImageIndex = 2
     Images = Images
+    ExplicitTop = 385
   end
   object btn_Cancel: TsSpeedButton
     Left = 7
-    Top = 463
+    Top = 383
     Width = 177
     Height = 24
     Anchors = [akLeft, akBottom]
@@ -47,12 +47,13 @@ object FMain: TFMain
     SkinData.SkinSection = 'SPEEDBUTTON'
     ImageIndex = 14
     Images = Images
+    ExplicitTop = 385
   end
   object Pages: TsPageControl
     Left = 0
     Top = 0
-    Width = 392
-    Height = 457
+    Width = 390
+    Height = 380
     ActivePage = pg_main
     Anchors = [akLeft, akTop, akRight, akBottom]
     Style = tsFlatButtons
@@ -63,17 +64,20 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
+      ExplicitWidth = 384
+      ExplicitHeight = 358
       DesignSize = (
-        384
-        426)
+        382
+        349)
       object grp_Monitors: TGroupBox
-        Left = 5
+        Left = 3
         Top = 3
         Width = 373
         Height = 49
         Anchors = [akLeft, akTop, akRight]
         Caption = #1052#1086#1085#1080#1090#1086#1088#1099
         TabOrder = 0
+        ExplicitWidth = 375
         DesignSize = (
           373
           49)
@@ -110,13 +114,14 @@ object FMain: TFMain
         end
       end
       object grp_HotKey: TGroupBox
-        Left = 5
+        Left = 3
         Top = 58
         Width = 373
         Height = 100
         Anchors = [akLeft, akTop, akRight]
         Caption = #1043#1086#1088#1103#1095#1080#1077' '#1082#1083#1072#1074#1080#1096#1080
         TabOrder = 1
+        ExplicitWidth = 375
         DesignSize = (
           373
           100)
@@ -213,16 +218,17 @@ object FMain: TFMain
         end
       end
       object grp_Hostings: TGroupBox
-        Left = 5
+        Left = 3
         Top = 164
         Width = 373
-        Height = 48
+        Height = 75
         Anchors = [akLeft, akTop, akRight]
         Caption = #1061#1086#1089#1090#1080#1085#1075' '#1082#1072#1088#1090#1080#1085#1086#1082
         TabOrder = 2
+        ExplicitWidth = 375
         DesignSize = (
           373
-          48)
+          75)
         object btn_ImgHostSettings: TsSpeedButton
           Left = 271
           Top = 17
@@ -235,6 +241,13 @@ object FMain: TFMain
           ImageIndex = 15
           Images = Images
         end
+        object lbl_ImgExt: TLabel
+          Left = 9
+          Top = 48
+          Width = 112
+          Height = 13
+          Caption = #1060#1086#1088#1084#1072#1090' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1103':'
+        end
         object cbb_Hostings: TComboBox
           Left = 9
           Top = 18
@@ -244,15 +257,24 @@ object FMain: TFMain
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 0
         end
+        object cbb_ImgExt: TComboBox
+          Left = 130
+          Top = 45
+          Width = 78
+          Height = 21
+          Style = csDropDownList
+          TabOrder = 1
+        end
       end
       object grp_ShortLink: TGroupBox
-        Left = 5
-        Top = 218
+        Left = 3
+        Top = 245
         Width = 373
         Height = 48
         Anchors = [akLeft, akTop, akRight]
         Caption = #1050#1086#1088#1086#1090#1082#1072#1103' '#1089#1089#1099#1083#1082#1072
         TabOrder = 3
+        ExplicitWidth = 375
         DesignSize = (
           373
           48)
@@ -278,24 +300,62 @@ object FMain: TFMain
           TabOrder = 0
         end
       end
+      object grp_files: TGroupBox
+        Left = 3
+        Top = 299
+        Width = 373
+        Height = 46
+        Anchors = [akLeft, akTop, akRight]
+        Caption = #1061#1086#1089#1090#1080#1085#1075' '#1092#1072#1081#1083#1086#1074
+        TabOrder = 4
+        ExplicitWidth = 375
+        DesignSize = (
+          373
+          46)
+        object btn_FilesSettings: TsSpeedButton
+          Left = 271
+          Top = 16
+          Width = 92
+          Height = 23
+          Anchors = [akTop, akRight]
+          Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072
+          Enabled = False
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 15
+          Images = Images
+          ExplicitLeft = 273
+        end
+        object cbb_Files: TComboBox
+          Left = 9
+          Top = 17
+          Width = 256
+          Height = 21
+          Style = csDropDownList
+          Anchors = [akLeft, akTop, akRight]
+          TabOrder = 0
+          ExplicitWidth = 258
+        end
+      end
+    end
+    object pg_OtherSettings: TsTabSheet
+      Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      ExplicitWidth = 384
+      ExplicitHeight = 338
+      DesignSize = (
+        382
+        349)
       object grp_OtherSettings: TGroupBox
         Left = 3
-        Top = 272
-        Width = 373
-        Height = 151
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077' '#1085#1072#1089#1090#1088#1086#1081#1082#1080
-        TabOrder = 4
-        object lbl_ImgExt: TLabel
-          Left = 10
-          Top = 126
-          Width = 112
-          Height = 13
-          Caption = #1060#1086#1088#1084#1072#1090' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1103':'
-        end
+        Top = 1
+        Width = 371
+        Height = 144
+        Anchors = [akLeft, akTop, akRight]
+        TabOrder = 0
         object cb_ShowInTray: TCheckBox
           Left = 9
-          Top = 33
+          Top = 25
           Width = 193
           Height = 17
           Caption = #1055#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1091#1074#1077#1076#1086#1084#1083#1077#1085#1080#1077' '#1074' '#1090#1088#1077#1077
@@ -303,7 +363,7 @@ object FMain: TFMain
         end
         object cb_HideLoadForm: TCheckBox
           Left = 9
-          Top = 51
+          Top = 43
           Width = 184
           Height = 17
           Caption = #1053#1077' '#1087#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1092#1086#1088#1084#1091' '#1079#1072#1075#1088#1091#1079#1082#1080
@@ -311,7 +371,7 @@ object FMain: TFMain
         end
         object cb_CopyLink: TCheckBox
           Left = 9
-          Top = 69
+          Top = 61
           Width = 163
           Height = 17
           Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1089#1089#1099#1083#1082#1091' '#1074' '#1073#1091#1092#1077#1088
@@ -319,17 +379,9 @@ object FMain: TFMain
           State = cbChecked
           TabOrder = 3
         end
-        object cbb_ImgExt: TComboBox
-          Left = 128
-          Top = 123
-          Width = 78
-          Height = 21
-          Style = csDropDownList
-          TabOrder = 6
-        end
         object cb_AutoStart: TCheckBox
           Left = 9
-          Top = 15
+          Top = 7
           Width = 80
           Height = 17
           Caption = #1040#1074#1090#1086#1079#1072#1087#1091#1089#1082
@@ -337,7 +389,7 @@ object FMain: TFMain
         end
         object cb_ShowAdmin: TCheckBox
           Left = 9
-          Top = 87
+          Top = 79
           Width = 361
           Height = 17
           Caption = #1053#1077' '#1087#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1091#1074#1077#1076#1086#1084#1083#1077#1085#1080#1077' '#1086#1073' '#1086#1090#1089#1091#1090#1089#1090#1074#1080#1080' '#1087#1088#1072#1074' '#1040#1076#1084#1080#1085#1080#1089#1090#1088#1072#1090#1086#1088#1072
@@ -345,11 +397,19 @@ object FMain: TFMain
         end
         object cb_FastLoad: TCheckBox
           Left = 9
-          Top = 105
+          Top = 97
           Width = 328
           Height = 17
           Caption = #1053#1077' '#1087#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1088#1077#1076#1072#1082#1090#1086#1088' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1081' ('#1073#1099#1089#1090#1088#1072#1103' '#1079#1072#1075#1088#1091#1079#1082#1072')'
           TabOrder = 5
+        end
+        object cb_OpenByTrayClick: TCheckBox
+          Left = 9
+          Top = 115
+          Width = 208
+          Height = 17
+          Caption = #1054#1090#1082#1088#1099#1074#1072#1090#1100' '#1089#1089#1099#1083#1082#1080' '#1087#1086' '#1082#1083#1080#1082#1091' '#1074' '#1090#1088#1077#1077
+          TabOrder = 6
         end
       end
     end
@@ -358,19 +418,22 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
+      ExplicitWidth = 384
+      ExplicitHeight = 426
       DesignSize = (
-        384
-        426)
+        382
+        349)
       object grp_pb_account: TGroupBox
         Left = 3
         Top = 0
-        Width = 378
+        Width = 376
         Height = 105
         Anchors = [akLeft, akTop, akRight]
         Caption = #1040#1082#1082#1072#1091#1085#1090
         TabOrder = 0
+        ExplicitWidth = 378
         DesignSize = (
-          378
+          376
           105)
         object lbl_pb_login: TLabel
           Left = 16
@@ -409,34 +472,37 @@ object FMain: TFMain
         object edt_pb_login: TEdit
           Left = 104
           Top = 39
-          Width = 262
+          Width = 260
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           Enabled = False
           TabOrder = 2
+          ExplicitWidth = 262
         end
         object edt_pb_pass: TEdit
           Left = 104
           Top = 67
-          Width = 262
+          Width = 260
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           Enabled = False
           PasswordChar = '*'
           TabOrder = 3
           Text = '123456'
+          ExplicitWidth = 262
         end
       end
       object grp_pb_defsets: TGroupBox
         Left = 3
         Top = 111
-        Width = 378
+        Width = 376
         Height = 114
         Anchors = [akLeft, akTop, akRight]
         Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1086' '#1091#1084#1086#1083#1095#1072#1085#1080#1102
         TabOrder = 1
+        ExplicitWidth = 378
         DesignSize = (
-          378
+          376
           114)
         object lbl_pb_deflang: TLabel
           Left = 16
@@ -462,40 +528,44 @@ object FMain: TFMain
         object cbb_pb_deflang: TComboBox
           Left = 104
           Top = 22
-          Width = 262
+          Width = 260
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           DropDownCount = 15
           TabOrder = 0
+          ExplicitWidth = 262
         end
         object cbb_pb_expire: TComboBox
           Left = 104
           Top = 49
-          Width = 262
+          Width = 260
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 1
+          ExplicitWidth = 262
         end
         object cbb_pb_private: TComboBox
           Left = 104
           Top = 76
-          Width = 262
+          Width = 260
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 2
+          ExplicitWidth = 262
         end
       end
       object grp_pb_other: TGroupBox
         Left = 3
         Top = 231
-        Width = 378
-        Height = 192
-        Anchors = [akLeft, akTop, akRight, akBottom]
+        Width = 376
+        Height = 74
+        Anchors = [akLeft, akTop, akRight]
         Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077' '#1086#1087#1094#1080#1080
         TabOrder = 2
+        ExplicitWidth = 378
         object cb_pb_copylink: TCheckBox
           Left = 16
           Top = 24
@@ -950,22 +1020,70 @@ object FMain: TFMain
           6F50EC5C5CD9278F06773636CE5E5CF359ECD4341C9E300DF4A5BAFB51EFB5DE
           BFFBB6AD51DC1F0C06BBE48B7FEFFC9A079E42F68B7E74B2398F84C08C04777F
           0B3000E8124202BF43365F0000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C0000021C4944415478DA9C534D68135110FE76F76D6212ADB6D8
+          D21A5A22C59452DA836815413C550AEA4D14BC7AD1AB78EE21143C880741A957
+          0FB9B4F42852C193A2870A39E82160845A458B0D89846DDCECBE1F67D6665D31
+          283ACBC7BC9FF9BE376FDEAC757161016C96655D2077087FB6A74ACA9A941237
+          B6EF401B4068A5BA9BF972A9B424694EEB50C620A471A87534AE542A78B8B676
+          9DCF22BCED92ECE3AD67982590AA6D3898D4651842ED22F07D7CDBD981E77958
+          5D5C5CA2B839E215BB02E284F702B6856BFD53676FD235686CC5F9BA8E138F1B
+          8D06EE95CB989B9EBEFFB9FA7293966E111E084AB72872FD3307F385C34C4D0A
+          2445CECFCF23A0EC32B91CD6F7634C3C599EE978CDA2AD344607274F1D555245
+          64DBB67FF80458648FEB2225041C9A736CC421AEA002158C653B5CD938031201
+          D5A357260E798E650E7305894DEC1D2A0CC840F25346B0A3F2F61671689D0522
+          0E7185D418E81B1E1B493F7A8CF74E93DED6203D388AA1D3977F11A93F5F86BF
+          FD21BA62FAF53AFACE9D1961AE0835DC7DC3F9CCA5AB57E2936AAFDEFD964950
+          FF88A99313D1FEE4EC117619E6D2158CEBB75A08DAED58806BB1B97A9B1A8A3E
+          7A26F65C9AD6D6561C93CA66C15C112AB8DC2C8CAE8D1F1BEFD9C7F58D8D9F13
+          CA8CB9A21D22EB53A7C94E27DEFB54ADE26FC6B5622E09986C40023A5171C379
+          F7302BD1649A5E82B9E2CD17B3E2DF2D65F01F566B628525538403FC5FFC235F
+          12BE7E176000F170FFE09BD111F60000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C0000019E4944415478DAA453414B0241147EB33B468A4BD8A928
+          1532C43C74896E4596101EBC79EBD2A17E8B3F213A74E9D2CD734487A4433FA0
+          4B60B89D12426221C55DD7999DE6CDB6EB2A08890F1E6FDECCF7BDF7E6CD3C22
+          84804584362F62CA12804B6973C141D364C75160698B3E45DCB64C7B232DA37F
+          05648D8DFC61AE747E1654F4DE684C64DAADD5F6D01242A0DDBCBDFBF96C3D62
+          208D7B009E806D632D978D1292C964A8F1787C22186291835CEAE18E80FCD26A
+          66D3B6ED31C830C2B5EBBAE0384EE823964B8E5C3E50EEA9920BD9FD8334D1F4
+          10B41309665916AC178BA12F3C9E7EBBBF2EA8E6715502E823DBD1DCC1200499
+          A619AE317BBFDB1D579048E0D5753F80DF339D3306A851C1CCA9540A7ABDDEC4
+          99C20A3F80C6640552291B8D20AA483EA954943DAD5661FA5C71B089CCBF0265
+          C321707910C851B9ACFCC04605B118C027FA4DD4D5E6147096E05F903CBF078C
+          ABBD988B154CF56096E067933CF585B5FAB380FE50184CBEB5C7F9BF14B1C841
+          2E6D7D8BCCEB17E9F4AEEA2FF30CD187051DE4CA198215A9CBD8873907112FEF
+          9045C7F957800100AB3200D9D220C9D70000000049454E44AE426082}
       end>
-    Left = 144
+    Left = 328
     Top = 16
     Bitmap = {}
   end
   object TrayIcon: TJvTrayIcon
     Active = True
     IconIndex = 0
+    Hint = 'Keep2Me'
     PopupMenu = pm
+    Visibility = [tvVisibleTaskBar, tvVisibleTaskList]
     OnClick = TrayIconClick
-    Left = 48
+    OnBalloonShow = TrayIconBalloonShow
+    OnBalloonClick = TrayIconBalloonClick
+    Left = 232
     Top = 16
   end
   object pm: TPopupMenu
     Images = Images
-    Left = 112
+    Left = 296
     Top = 16
     object pm_SelectScreen: TMenuItem
       Caption = #1042#1099#1076#1077#1083#1080#1090#1100' '#1086#1073#1083#1072#1089#1090#1100' '#1101#1082#1088#1072#1085#1072
@@ -981,6 +1099,11 @@ object FMain: TFMain
       Caption = #1042#1099#1076#1077#1083#1080#1090#1100' '#1086#1082#1085#1086
       ImageIndex = 11
       OnClick = DoWindowSelect
+    end
+    object mm_filesfrombuf: TMenuItem
+      Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100' '#1092#1072#1081#1083#1099' '#1080#1079' '#1073#1091#1092#1077#1088#1072
+      ImageIndex = 17
+      OnClick = DoLoadFilesFromBuf
     end
     object mm_LoadImageFromFile: TMenuItem
       Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077' '#1080#1079' '#1092#1072#1081#1083#1072
@@ -1028,12 +1151,12 @@ object FMain: TFMain
     Enabled = False
     Interval = 500
     OnTimer = tmr_ExitFromThreadTimer
-    Left = 176
-    Top = 16
+    Left = 320
+    Top = 56
   end
   object AntiFreeze: TIdAntiFreeze
     OnlyWhenIdle = False
-    Left = 16
+    Left = 200
     Top = 16
   end
   object OpenImageDlg: TOpenPictureDialog
@@ -1043,7 +1166,7 @@ object FMain: TFMain
       '.png|JPEG Image File (*.jpg)|*.jpg|JPEG Image File (*.jpeg)|*.jp' +
       'eg|Bitmaps (*.bmp)|*.bmp'
     Options = [ofHideReadOnly, ofFileMustExist, ofEnableSizing]
-    Left = 80
+    Left = 264
     Top = 16
   end
 end

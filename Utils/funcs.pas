@@ -35,7 +35,7 @@ type
   PHotKeyAction = ^THotKeyAction;
 
 type
-  TRecentFileType = (rfImg, rfText);
+  TRecentFileType = (rfImg, rfText, rfOther);
 
 type
   TRecentFile = record
@@ -58,9 +58,12 @@ type
 
 type
   TSettings = record
+    LastLink: String;
     MonIndex: Integer;
     LoaderIndex: Integer;
     ShortLinkIndex: Integer;
+    FileLoaderIndex: Integer;
+    OpenLinksByClick: Boolean;
     AutoStart: Boolean;
     ShowInTray: Boolean;
     HideLoadForm: Boolean;
@@ -87,6 +90,7 @@ procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shi
   _Proc: TNotifyEvent);
 procedure LoadRecentFiles;
 function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
+function GetFileSize(filename: wideString): Int64;
 
 var
   GSettings: TSettings;
@@ -94,7 +98,15 @@ var
 
 implementation
 
-
+function GetFileSize(filename: wideString): Int64;
+var
+  sr: TSearchRec;
+begin
+  if FindFirst(filename, faAnyFile, sr) = 0 then
+      Result := Int64(sr.FindData.nFileSizeHigh) shl Int64(32) + Int64(sr.FindData.nFileSizeLow)
+  else Result := -1;
+  FindClose(sr);
+end;
 
 function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
 begin
@@ -170,13 +182,15 @@ begin
   case R of
     rfImg: Result := 'img';
     rfText: Result := 'text';
+    rfOther: Result := 'other';
   end;
 end;
 
 function StringToRecentFileType(R: string): TRecentFileType;
 begin
   if R = 'img' then Result := rfImg
-  else if R = 'text' then Result := rfText;
+  else if R = 'text' then Result := rfText
+  else Result := rfOther;
 end;
 
 procedure LoadRecentFiles;

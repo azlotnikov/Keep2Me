@@ -44,6 +44,7 @@ type
     Text: String;
     Styles: TFontStyles;
     FSize: Integer;
+    FontName: TFontName;
     procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
     procedure Draw(CanvasOut: TCanvas); override;
   end;
@@ -60,7 +61,7 @@ Type
 type
   TFBlurRect = class(TFShape)
   private
-    GPix: array of array of Byte;
+    GPix: array of array of Integer;
   public
     procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
     procedure Draw(CanvasOut: TCanvas); override;
@@ -259,16 +260,28 @@ end;
 { TFSelPencil }
 
 procedure TFSelPencil.AddPoint(P: TPoint; CanvasOut: TCanvas);
+// var
+// t: TCopyMode;
 begin
+  // PenF.Color := TransparencyColor(clRed, PenF.Color, 100);
+  // t := CanvasOut.CopyMode;
+  // CanvasOut.CopyMode := cmSrcPaint;
   CanvasOut.Pen.Mode := pmMerge;
   inherited;
+  // CanvasOut.CopyMode := t;
   CanvasOut.Pen.Mode := pmCopy;
 end;
 
 procedure TFSelPencil.Draw(CanvasOut: TCanvas);
+// var
+// t: TCopyMode;
 begin
+  // PenF.Color := TransparencyColor(clRed, PenF.Color, 100);
+  // t := CanvasOut.CopyMode;
+  // CanvasOut.CopyMode := cmSrcPaint;
   CanvasOut.Pen.Mode := pmMerge;
   inherited;
+  // CanvasOut.CopyMode := t;
   CanvasOut.Pen.Mode := pmCopy;
 end;
 
@@ -307,12 +320,12 @@ begin
   if IsDrawing then AddPoint(EndPoint, CanvasOut)
   else begin
     MRect := Rect(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
-
     SetColors(CanvasOut);
     CanvasOut.Brush.Style := bsClear;
     CanvasOut.Font.Color := PenF.Color;
     CanvasOut.Font.Style := Styles;
     CanvasOut.Font.Size := FSize;
+    CanvasOut.Font.Name := FontName;
     if (StartPoint.x = EndPoint.x) or (StartPoint.y = EndPoint.y) then
         CanvasOut.TextOut(StartPoint.x - FSize, StartPoint.y - FSize, Text)
     else CanvasOut.TextRect(MRect, Text, [tfWordBreak, tfWordEllipsis]);
@@ -382,8 +395,9 @@ var
           c := round(c / sqr(2 * d + 1));
           CanvasOut.Pixels[x, y] := RGB(c, c, c);
           GPix[x - XMin, y - YMin] := RGB(c, c, c);
-        end
-        else CanvasOut.Pixels[x, y] := GPix[x - XMin, y - YMin];
+        end else begin
+          CanvasOut.Pixels[x, y] := GPix[x - XMin, y - YMin];
+        end;
       end;
     end;
   end;
@@ -394,10 +408,11 @@ begin
     YMin := Min(EndPoint.y, StartPoint.y);
     if Length(GPix) = 0 then FirstDraw := true
     else FirstDraw := false;
-    if FirstDraw then SetLength(Pix, Abs(EndPoint.x - StartPoint.x) + 1, Abs(EndPoint.y - StartPoint.y) + 1);
-    SetLength(GPix, Abs(EndPoint.x - StartPoint.x) + 1, Abs(EndPoint.y - StartPoint.y) + 1);
-    if FirstDraw then
-      for k := 1 to 3 do DoBlur
+    if FirstDraw then begin
+      SetLength(Pix, Abs(EndPoint.x - StartPoint.x) + 1, Abs(EndPoint.y - StartPoint.y) + 1);
+      SetLength(GPix, Abs(EndPoint.x - StartPoint.x) + 1, Abs(EndPoint.y - StartPoint.y) + 1);
+      for k := 1 to 2 do DoBlur;
+    end
     else DoBlur;
   end else begin
     CanvasOut.Brush.Style := bsCross;

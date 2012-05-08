@@ -19,7 +19,10 @@ uses
   Vcl.Buttons,
   Vcl.Samples.Spin,
   sSpeedButton,
-  acAlphaImageList;
+  acAlphaImageList,
+  JvExStdCtrls,
+  JvCombobox,
+  JvColorCombo;
 
 type
   TFTextEdit = class(TForm)
@@ -36,6 +39,8 @@ type
     se_fsize: TSpinEdit;
     lbl_fontsize: TLabel;
     btn_EnterText: TsSpeedButton;
+    btn_font: TsSpeedButton;
+    cbb_font: TJvFontComboBox;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mm_ExitClick(Sender: TObject);
@@ -45,6 +50,11 @@ type
     procedure btn_underlinedClick(Sender: TObject);
     procedure se_fsizeChange(Sender: TObject);
     procedure btn_EnterTextClick(Sender: TObject);
+    procedure btn_fontClick(Sender: TObject);
+    procedure cbb_fontChange(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+  protected
+    procedure CreateParams(var Params: TCreateParams); override;
   private
     { Private declarations }
   public
@@ -55,6 +65,13 @@ type
 implementation
 
 {$R *.dfm}
+
+procedure TFTextEdit.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+  Params.WndParent := GetDesktopWindow;
+end;
 
 procedure TFTextEdit.btn_boldClick(Sender: TObject);
 var
@@ -71,6 +88,18 @@ begin
   NAdd := true;
   NText := mmo_text.Text;
   Close;
+end;
+
+procedure TFTextEdit.btn_fontClick(Sender: TObject);
+begin
+  if btn_font.Down then begin
+    mmo_text.Top := 56;
+    mmo_text.Height := mmo_text.Height - 24;
+  end else begin
+    mmo_text.Top := 32;
+    mmo_text.Height := mmo_text.Height + 24;
+  end;
+  cbb_font.Visible := btn_font.Down;
 end;
 
 procedure TFTextEdit.btn_italicClick(Sender: TObject);
@@ -103,16 +132,28 @@ begin
   mmo_text.Font.Style := S;
 end;
 
+procedure TFTextEdit.cbb_fontChange(Sender: TObject);
+begin
+  mmo_text.Font.Name := cbb_font.FontName;
+end;
+
+procedure TFTextEdit.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  Action := caFree;
+end;
+
 procedure TFTextEdit.FormCreate(Sender: TObject);
 begin
   NAdd := false;
   NText := '';
   mmo_text.Font.Size := se_fsize.Value;
+  cbb_font.FontName := mmo_text.Font.Name;
 end;
 
 procedure TFTextEdit.FormShow(Sender: TObject);
 begin
   SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+  BringToFront;
   Left := Mouse.CursorPos.X - 10;
   Top := Mouse.CursorPos.Y - 10;
   mmo_text.SetFocus;
@@ -120,6 +161,7 @@ end;
 
 procedure TFTextEdit.mm_ExitClick(Sender: TObject);
 begin
+  NAdd := false;
   Close;
 end;
 

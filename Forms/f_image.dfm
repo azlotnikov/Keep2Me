@@ -101,7 +101,7 @@ object FImage: TFImage
       OnMouseDown = shp_penMouseDown
     end
     object lbl_penwidth: TLabel
-      Left = 48
+      Left = 54
       Top = 11
       Width = 76
       Height = 13
@@ -191,39 +191,19 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      Visible = False
       SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 20
       Images = Images
     end
-    object spin_penwidth: TsSpinEdit
-      Left = 130
+    object spin_penwidth: TJvSpinEdit
+      Left = 136
       Top = 8
-      Width = 63
+      Width = 49
       Height = 21
-      Alignment = taCenter
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = []
-      NumbersOnly = True
-      ParentFont = False
+      MaxValue = 100.000000000000000000
+      MinValue = 1.000000000000000000
+      Value = 6.000000000000000000
       TabOrder = 0
-      Text = '7'
-      SkinData.SkinSection = 'EDIT'
-      BoundLabel.Indent = 0
-      BoundLabel.Font.Charset = DEFAULT_CHARSET
-      BoundLabel.Font.Color = clWindowText
-      BoundLabel.Font.Height = -11
-      BoundLabel.Font.Name = 'Tahoma'
-      BoundLabel.Font.Style = []
-      BoundLabel.Layout = sclLeft
-      BoundLabel.MaxWidth = 0
-      BoundLabel.UseSkinColor = True
-      MaxValue = 20
-      MinValue = 1
-      Value = 7
     end
   end
   object mm: TMainMenu
