@@ -57,6 +57,18 @@ type
   end;
 
 type
+  TFTPSettings = record
+    ImgLoad: Boolean;
+    FilesLoad: Boolean;
+    Host: string;
+    Path: string;
+    User: String;
+    Pass: string;
+    Port: string;
+    URL: String;
+  end;
+
+type
   TSettings = record
     LastLink: String;
     MonIndex: Integer;
@@ -76,6 +88,7 @@ type
     DontShowAdmin: Boolean;
     FastLoad: Boolean;
     Pastebin: TPasteBinSettings;
+    FTP: TFTPSettings;
   end;
 
 function ImgFormatToText(I: TImgFormats): String;

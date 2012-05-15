@@ -150,6 +150,23 @@ type
     btn_FilesSettings: TsSpeedButton;
     mm_filesfrombuf: TMenuItem;
     cb_OpenByTrayClick: TCheckBox;
+    pg_FTP: TsTabSheet;
+    cb_FTP_Img: TCheckBox;
+    cb_FTP_Files: TCheckBox;
+    grp_FTP_Settings: TGroupBox;
+    edt_FTP_host: TEdit;
+    lbl_FTP_host: TLabel;
+    edt_FTP_user: TEdit;
+    lbl_FTP_user: TLabel;
+    edt_FTP_pass: TEdit;
+    lbl_FTP_pass: TLabel;
+    edt_FTP_port: TEdit;
+    lbl_FTP_port: TLabel;
+    pm_ShortLinkFromBuf: TMenuItem;
+    edt_FTP_path: TEdit;
+    lbl_FTP_path: TLabel;
+    edt_FTP_URL: TEdit;
+    lbl_FTP_URL: TLabel;
 
     procedure FormCreate(Sender: TObject);
 
@@ -183,6 +200,7 @@ type
     procedure DoWindowSelect(Sender: TObject);
     procedure DoOpenAndSendImage(Sender: TObject);
     procedure DoLoadFilesFromBuf(Sender: TObject);
+    procedure DoShortLinkFromBuf(Sender: TObject);
 
     procedure ExitKeep;
     procedure FormShow(Sender: TObject);
@@ -192,6 +210,8 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure TrayIconBalloonClick(Sender: TObject);
     procedure TrayIconBalloonShow(Sender: TObject);
+    procedure cb_FTP_ImgClick(Sender: TObject);
+    procedure cb_FTP_FilesClick(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -249,6 +269,16 @@ begin
       cbb_pb_private.ItemIndex := PrivateIndex;
       cb_pb_copylink.Checked := CopyLink;
       cb_pb_CloseAfterLoad.Checked := CloseForm;
+    end;
+    with FTP do begin
+      cb_FTP_Img.Checked := ImgLoad;
+      cb_FTP_Files.Checked := FilesLoad;
+      edt_FTP_host.Text := Host;
+      edt_FTP_user.Text := User;
+      edt_FTP_pass.Text := Pass;
+      edt_FTP_port.Text := Port;
+      edt_FTP_path.Text := path;
+      edt_FTP_URL.Text := URL;
     end;
     Autorun(AutoStart, SYS_KEEP2ME, ParamStr(0));
   end;
@@ -327,6 +357,16 @@ begin
   cb_CtrlKey.Enabled := cb_EnableKey.Checked;
   cb_AltKey.Enabled := cb_EnableKey.Checked;
   cbb_HotKeys.Enabled := cb_EnableKey.Checked;
+end;
+
+procedure TFMain.cb_FTP_FilesClick(Sender: TObject);
+begin
+  cbb_Files.Enabled := not cb_FTP_Files.Checked;
+end;
+
+procedure TFMain.cb_FTP_ImgClick(Sender: TObject);
+begin
+  cbb_Hostings.Enabled := not cb_FTP_Img.Checked;
 end;
 
 procedure TFMain.cb_ShiftKeyClick(Sender: TObject);
@@ -430,7 +470,7 @@ end;
 
 procedure TFMain.DoPastebin(Sender: TObject);
 begin
-  with TFPasteBin.Create(nil) do Show;
+  TFPasteBin.Create(nil).Show;
 end;
 
 procedure TFMain.DoScreenSelect(Sender: TObject);
@@ -438,6 +478,28 @@ begin
   MinimizeAllForms;
   // FSelField.AlphaBlend := true;
   TFPoints.Create(nil).Show;
+end;
+
+procedure TFMain.DoShortLinkFromBuf(Sender: TObject);
+var
+  CShorter: TShorter;
+begin
+  if Pos('http://', Clipboard.AsText) <> 1 then begin
+    GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Содержимое не является ссылкой');
+    Exit;
+  end;
+  if GSettings.ShortLinkIndex > 0 then begin
+    CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
+    CShorter.SetLoadBar(nil);
+    CShorter.LoadFile(Clipboard.AsText);
+    if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')
+    else begin
+      Clipboard.AsText := CShorter.GetLink;
+      GSettings.TrayIcon.Hint := Clipboard.AsText;
+      GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, Clipboard.AsText);
+    end;
+  end;
+  CShorter.Free;
 end;
 
 procedure TFMain.DoShowSettings(Sender: TObject);
@@ -490,6 +552,7 @@ begin
   AddHotKeyAction(false, RU_SHOW_SETTNGS, true, true, false, false, 8, DoShowSettings);
   AddHotKeyAction(false, RU_OPEN_IMAGE_AND_LOAD, true, true, false, false, 9, DoOpenAndSendImage);
   AddHotKeyAction(false, RU_LOAD_FILES_FROM_BUF, true, true, false, false, 10, DoLoadFilesFromBuf);
+  AddHotKeyAction(false, RU_SHORT_LINK_FROM_BUF, true, true, false, false, 11, DoShortLinkFromBuf);
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
   UpdateActions;
@@ -544,6 +607,16 @@ begin
       CopyLink := cb_pb_copylink.Checked;
       CloseForm := cb_pb_CloseAfterLoad.Checked;
     end;
+    with FTP do begin
+      ImgLoad := cb_FTP_Img.Checked;
+      FilesLoad := cb_FTP_Files.Checked;
+      Host := edt_FTP_host.Text;
+      User := edt_FTP_user.Text;
+      Pass := edt_FTP_pass.Text;
+      Port := edt_FTP_port.Text;
+      path := edt_FTP_path.Text;
+      URL := edt_FTP_URL.Text;
+    end;
   end;
 end;
 
@@ -595,6 +668,16 @@ begin
       PrivateIndex := ReadInteger(INI_PASTEBIN, 'PrivateIndex', 0);
       CopyLink := ReadBool(INI_PASTEBIN, 'CopyLink', true);
       CloseForm := ReadBool(INI_PASTEBIN, 'CloseForm', false);
+    end;
+    with FTP do begin
+      ImgLoad := ReadBool(INI_FTP, 'ImgLoad', false);
+      FilesLoad := ReadBool(INI_FTP, 'FilesLoad', false);
+      Host := ReadString(INI_FTP, 'Host', '127.0.0.1');
+      User := ReadString(INI_FTP, 'User', 'User');
+      Pass := MyDecrypt(ReadString(INI_FTP, 'Password', ''), SYS_CRYPT_KEY);
+      Port := ReadString(INI_FTP, 'Port', '21');
+      path := ReadString(INI_FTP, 'Path', '/www/site.com/');
+      URL := ReadString(INI_FTP, 'URL', 'http://site.com/');
     end;
     Free;
   end;
@@ -677,6 +760,16 @@ begin
       WriteInteger(INI_PASTEBIN, 'PrivateIndex', PrivateIndex);
       WriteBool(INI_PASTEBIN, 'CopyLink', CopyLink);
       WriteBool(INI_PASTEBIN, 'CloseForm', CloseForm);
+    end;
+    with FTP do begin
+      WriteBool(INI_FTP, 'ImgLoad', ImgLoad);
+      WriteBool(INI_FTP, 'FilesLoad', FilesLoad);
+      WriteString(INI_FTP, 'Host', Host);
+      WriteString(INI_FTP, 'User', User);
+      WriteString(INI_FTP, 'Password', MyEncrypt(Pass, SYS_CRYPT_KEY));
+      WriteString(INI_FTP, 'Port', Port);
+      WriteString(INI_FTP, 'Path', path);
+      WriteString(INI_FTP, 'URL', URL);
     end;
     Free;
   end;

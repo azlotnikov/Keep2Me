@@ -62,8 +62,6 @@ object FFiles: TFFiles
       end
       item
       end>
-    ExplicitWidth = 569
-    ExplicitHeight = 121
   end
   object pnl_buttons: TPanel
     Left = 7
@@ -72,8 +70,6 @@ object FFiles: TFFiles
     Height = 41
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 1
-    ExplicitTop = 135
-    ExplicitWidth = 568
     DesignSize = (
       571
       41)
@@ -102,7 +98,6 @@ object FFiles: TFFiles
       SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 10
       Images = Images
-      ExplicitLeft = 216
     end
     object btn_settings: TsSpeedButton
       Left = 10

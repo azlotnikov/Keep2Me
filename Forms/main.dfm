@@ -64,8 +64,6 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
-      ExplicitWidth = 384
-      ExplicitHeight = 358
       DesignSize = (
         382
         349)
@@ -77,7 +75,6 @@ object FMain: TFMain
         Anchors = [akLeft, akTop, akRight]
         Caption = #1052#1086#1085#1080#1090#1086#1088#1099
         TabOrder = 0
-        ExplicitWidth = 375
         DesignSize = (
           373
           49)
@@ -121,7 +118,6 @@ object FMain: TFMain
         Anchors = [akLeft, akTop, akRight]
         Caption = #1043#1086#1088#1103#1095#1080#1077' '#1082#1083#1072#1074#1080#1096#1080
         TabOrder = 1
-        ExplicitWidth = 375
         DesignSize = (
           373
           100)
@@ -225,7 +221,6 @@ object FMain: TFMain
         Anchors = [akLeft, akTop, akRight]
         Caption = #1061#1086#1089#1090#1080#1085#1075' '#1082#1072#1088#1090#1080#1085#1086#1082
         TabOrder = 2
-        ExplicitWidth = 375
         DesignSize = (
           373
           75)
@@ -268,13 +263,12 @@ object FMain: TFMain
       end
       object grp_ShortLink: TGroupBox
         Left = 3
-        Top = 245
+        Top = 297
         Width = 373
         Height = 48
         Anchors = [akLeft, akTop, akRight]
         Caption = #1050#1086#1088#1086#1090#1082#1072#1103' '#1089#1089#1099#1083#1082#1072
-        TabOrder = 3
-        ExplicitWidth = 375
+        TabOrder = 4
         DesignSize = (
           373
           48)
@@ -302,13 +296,12 @@ object FMain: TFMain
       end
       object grp_files: TGroupBox
         Left = 3
-        Top = 299
+        Top = 245
         Width = 373
         Height = 46
         Anchors = [akLeft, akTop, akRight]
         Caption = #1061#1086#1089#1090#1080#1085#1075' '#1092#1072#1081#1083#1086#1074
-        TabOrder = 4
-        ExplicitWidth = 375
+        TabOrder = 3
         DesignSize = (
           373
           46)
@@ -333,7 +326,6 @@ object FMain: TFMain
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 0
-          ExplicitWidth = 258
         end
       end
     end
@@ -341,8 +333,6 @@ object FMain: TFMain
       Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitWidth = 384
-      ExplicitHeight = 338
       DesignSize = (
         382
         349)
@@ -418,8 +408,6 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
-      ExplicitWidth = 384
-      ExplicitHeight = 426
       DesignSize = (
         382
         349)
@@ -431,7 +419,6 @@ object FMain: TFMain
         Anchors = [akLeft, akTop, akRight]
         Caption = #1040#1082#1082#1072#1091#1085#1090
         TabOrder = 0
-        ExplicitWidth = 378
         DesignSize = (
           376
           105)
@@ -477,7 +464,6 @@ object FMain: TFMain
           Anchors = [akLeft, akTop, akRight]
           Enabled = False
           TabOrder = 2
-          ExplicitWidth = 262
         end
         object edt_pb_pass: TEdit
           Left = 104
@@ -489,7 +475,6 @@ object FMain: TFMain
           PasswordChar = '*'
           TabOrder = 3
           Text = '123456'
-          ExplicitWidth = 262
         end
       end
       object grp_pb_defsets: TGroupBox
@@ -500,7 +485,6 @@ object FMain: TFMain
         Anchors = [akLeft, akTop, akRight]
         Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1086' '#1091#1084#1086#1083#1095#1072#1085#1080#1102
         TabOrder = 1
-        ExplicitWidth = 378
         DesignSize = (
           376
           114)
@@ -534,7 +518,6 @@ object FMain: TFMain
           Anchors = [akLeft, akTop, akRight]
           DropDownCount = 15
           TabOrder = 0
-          ExplicitWidth = 262
         end
         object cbb_pb_expire: TComboBox
           Left = 104
@@ -544,7 +527,6 @@ object FMain: TFMain
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 1
-          ExplicitWidth = 262
         end
         object cbb_pb_private: TComboBox
           Left = 104
@@ -554,7 +536,6 @@ object FMain: TFMain
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 2
-          ExplicitWidth = 262
         end
       end
       object grp_pb_other: TGroupBox
@@ -565,7 +546,6 @@ object FMain: TFMain
         Anchors = [akLeft, akTop, akRight]
         Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077' '#1086#1087#1094#1080#1080
         TabOrder = 2
-        ExplicitWidth = 378
         object cb_pb_copylink: TCheckBox
           Left = 16
           Top = 24
@@ -583,6 +563,138 @@ object FMain: TFMain
           Height = 17
           Caption = #1047#1072#1082#1088#1099#1090#1100' '#1086#1082#1085#1086' '#1087#1086#1089#1083#1077' '#1079#1072#1075#1088#1091#1079#1082#1080
           TabOrder = 1
+        end
+      end
+    end
+    object pg_FTP: TsTabSheet
+      Caption = 'FTP'
+      SkinData.CustomColor = False
+      SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 28
+      DesignSize = (
+        382
+        349)
+      object cb_FTP_Img: TCheckBox
+        Left = 3
+        Top = 3
+        Width = 164
+        Height = 17
+        Caption = #1047#1072#1075#1088#1091#1078#1072#1090#1100' '#1085#1072' ftp '#1082#1072#1088#1090#1080#1085#1082#1080
+        TabOrder = 0
+        OnClick = cb_FTP_ImgClick
+      end
+      object cb_FTP_Files: TCheckBox
+        Left = 3
+        Top = 21
+        Width = 142
+        Height = 17
+        Caption = #1047#1072#1075#1088#1091#1078#1072#1090#1100' '#1085#1072' ftp '#1092#1072#1081#1083#1099
+        TabOrder = 1
+        OnClick = cb_FTP_FilesClick
+      end
+      object grp_FTP_Settings: TGroupBox
+        Left = 3
+        Top = 44
+        Width = 376
+        Height = 189
+        Anchors = [akLeft, akTop, akRight]
+        Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
+        TabOrder = 2
+        DesignSize = (
+          376
+          189)
+        object lbl_FTP_host: TLabel
+          Left = 11
+          Top = 22
+          Width = 27
+          Height = 13
+          Caption = #1061#1086#1089#1090':'
+        end
+        object lbl_FTP_user: TLabel
+          Left = 11
+          Top = 103
+          Width = 34
+          Height = 13
+          Caption = #1051#1086#1075#1080#1085':'
+        end
+        object lbl_FTP_pass: TLabel
+          Left = 11
+          Top = 130
+          Width = 41
+          Height = 13
+          Caption = #1055#1072#1088#1086#1083#1100':'
+        end
+        object lbl_FTP_port: TLabel
+          Left = 11
+          Top = 157
+          Width = 29
+          Height = 13
+          Caption = #1055#1086#1088#1090':'
+        end
+        object lbl_FTP_path: TLabel
+          Left = 11
+          Top = 49
+          Width = 35
+          Height = 13
+          Caption = #1055#1072#1087#1082#1072':'
+        end
+        object lbl_FTP_URL: TLabel
+          Left = 11
+          Top = 76
+          Width = 56
+          Height = 13
+          Caption = 'URL '#1087#1072#1087#1082#1080':'
+        end
+        object edt_FTP_host: TEdit
+          Left = 106
+          Top = 19
+          Width = 255
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          TabOrder = 0
+        end
+        object edt_FTP_user: TEdit
+          Left = 106
+          Top = 100
+          Width = 255
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          TabOrder = 3
+        end
+        object edt_FTP_pass: TEdit
+          Left = 106
+          Top = 127
+          Width = 255
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          PasswordChar = '*'
+          TabOrder = 4
+        end
+        object edt_FTP_port: TEdit
+          Left = 106
+          Top = 154
+          Width = 71
+          Height = 21
+          NumbersOnly = True
+          TabOrder = 5
+          Text = '21'
+        end
+        object edt_FTP_path: TEdit
+          Left = 106
+          Top = 46
+          Width = 255
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          TabOrder = 1
+        end
+        object edt_FTP_URL: TEdit
+          Left = 106
+          Top = 73
+          Width = 255
+          Height = 21
+          Anchors = [akLeft, akTop, akRight]
+          TabOrder = 2
         end
       end
     end
@@ -1064,6 +1176,32 @@ object FMain: TFMain
           ABBD988B154CF56096E067933CF585B5FAB380FE50184CBEB5C7F9BF14B1C841
           2E6D7D8BCCEB17E9F4AEEA2FF30CD187051DE4CA198215A9CBD8873907112FEF
           9045C7F957800100AB3200D9D220C9D70000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C0000024D4944415478DA84534D681341147E33BB9BDD842D6211
+          4AC55CAA087A93281EC49B849C3C891A0F112FA287DC5A54043D484F3978557B
+          A80A29043CF4502D8288106A0BB6E46410312A9522C592A424BA497637E337B3
+          9B1843C4071F6FE7ED7BDFFB9937ECF5159DA43006400B0A04DFD7A00E0215D8
+          1E843625D2A7E311259FB8C4694858E821041D3A7DE3E9B4D4F2CC68B4F05146
+          594D5710F75D5769F6AF68883EF07D1D89A6FACC9CFC2F6F0A4AC39E1B8A5B00
+          4A8AC0F5FBC6232732B3598E08A669C443C44F9E9DE6BA4E0A38CB7FAF663326
+          4835C4ACF396272884D5721CAAD56A54077681E78B8BD4806E023F433840F24E
+          3EDBF6C4555501C378344CA2D11631DD30FA5934E04C2A45BDEC5A58816E9A54
+          B875298FB9CC2B02135388E874ACEA90F16EED2DFD4F36D7975F181A3DB4236C
+          5511A097E3B8D3CCC57B8FCFBB68C1EB74C89568B7D5B7879B90F03D8F18E6A3
+          7F7E59A93AA26885E3E7B297E4DD856CA7D9241F015DDF574B2087B9BCB44406
+          DA8AA06CD3B2C8B66D35AB98115CB5226879345FB899CE9B63636444A3140961
+          02E7D269B2A07B90648E4B3140EA600F906CB5D911FADC4C66EF60AFDBCDEEC4
+          E4E144E2FBC78D8D099B6FF7ECE87F53E7438B845D28FE7245F18F13A3A9715E
+          389A4824CA3BA54ABD45175C3F782531DCDA5F04CFCAD80157D0871DA24FD5C0
+          69E614A3A84ED681789C4A1E59DF76B18A2B62E02905725911BCEFF6CE72B36C
+          9924B7D265F753CCD63048B46723787FE8E3000DC01BF51664617B807DF23D95
+          7F88AD47B9DB6B5FEBB485F364E8530B49FA04BF051800A918F681854381A100
+          00000049454E44AE426082}
       end>
     Left = 328
     Top = 16
@@ -1114,6 +1252,11 @@ object FMain: TFMain
       Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1085#1072' Pastebin'
       ImageIndex = 12
       OnClick = DoPastebin
+    end
+    object pm_ShortLinkFromBuf: TMenuItem
+      Caption = #1059#1082#1086#1088#1086#1090#1080#1090#1100' '#1089#1089#1099#1083#1082#1091' '#1080#1079' '#1073#1091#1092#1077#1088#1072
+      ImageIndex = 19
+      OnClick = DoShortLinkFromBuf
     end
     object pm_Sep1: TMenuItem
       Caption = '-'

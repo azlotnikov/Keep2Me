@@ -4,11 +4,13 @@ interface
 
 uses
   System.Classes,
+  System.SysUtils,
   Vcl.ComCtrls,
   IdHTTP,
   IdComponent,
   IdMultipartFormData,
-  IdCookieManager;
+  IdCookieManager,
+  IdFTP;
 
 type
   TLoader = class
@@ -20,12 +22,24 @@ type
     Link: String;
     Function GetError: Boolean;
     procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
+    procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
   public
     property Error: Boolean read GetError;
     function GetLink: string; virtual;
-    procedure SetLoadBar(sPB: TProgressBar);
+    procedure SetLoadBar(sPB: TProgressBar); virtual;
     procedure LoadFile(FileName: string); virtual; abstract;
-    procedure Free;
+    procedure Free; virtual;
+    constructor Create;
+  end;
+
+type
+  TFTPLoader = class(TLoader)
+  private
+    FTP: TidFTP;
+  public
+    procedure SetLoadBar(sPB: TProgressBar); override;
+    procedure LoadFile(FileName: string; Host, Path, User, Pass, Port, URL: String); overload;
+    procedure Free; override;
     constructor Create;
   end;
 
@@ -115,13 +129,19 @@ end;
 
 procedure TLoader.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
 begin
-  PB.Position := AWorkCount div 1024;
+  if PB <> nil then PB.Position := AWorkCount div 1024;
+end;
+
+procedure TLoader.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
+begin
+  if PB <> nil then PB.Max := AWorkCountMax div 1024;
 end;
 
 procedure TLoader.SetLoadBar(sPB: TProgressBar);
 begin
   PB := sPB;
   HTTP.OnWork := HTTPWork;
+  HTTP.OnWorkBegin := HTTPWorkBegin;
 end;
 
 function TLoader.GetLink: string;
@@ -178,7 +198,6 @@ begin
     Stream.AddFormField('jpeg_quality', '70%');
     Stream.AddFormField('resize_to', '500px');
     Stream.AddFormField('upload_type', 'standard');
-    PB.Max := Stream.Size div 1024;
     try
       s := HTTP.Post('http://hostingkartinok.com/process.php', Stream);
     except
@@ -209,7 +228,6 @@ begin
     Stream.AddFile('image1', FileName, 'application/octet-stream');
     Stream.AddFormField('tags1', 'Без тегов');
     Stream.AddFormField('user_uniq_key', 'yes');
-    PB.Max := Stream.Size div 1024;
     try
       s := HTTP.Post('http://imglink.ru/process.php', Stream);
     except
@@ -241,7 +259,6 @@ begin
     Stream := TIdMultipartFormDataStream.Create;
     Stream.AddFormField('key', myAPI);
     Stream.AddFile('image', FileName, 'application/octet-stream');
-    PB.Max := Stream.Size div 1024;
     try
       s := HTTP.Post('http://imgur.com/api/upload.xml', Stream);
     except
@@ -274,7 +291,6 @@ begin
     Stream.AddFormField('caption', '');
     Stream.AddFormField('resize', '0');
     Stream.AddFormField('B1', 'Upload Image');
-    PB.Max := Stream.Size div 1024;
     try
       s := HTTP.Post('http://qikr.co/upload.php', Stream);
     except
@@ -297,6 +313,54 @@ begin
     Caption := ACaption;
     Version := AVersion;
   end;
+end;
+
+{ TFTPLoader }
+
+constructor TFTPLoader.Create;
+begin
+  FTP := TidFTP.Create(nil);
+end;
+
+procedure TFTPLoader.Free;
+begin
+  inherited;
+  FTP.Free;
+end;
+
+procedure TFTPLoader.LoadFile(FileName: string; Host, Path, User, Pass, Port, URL: String);
+begin
+  try
+    Link := '';
+    AError := false;
+    FTP.Host := Host;
+    FTP.Username := User;
+    FTP.Password := Pass;
+    FTP.Port := strtoint(Port);
+    try
+      FTP.Connect;
+    except
+    end;
+    If FTP.Connected then Begin
+      FTP.ChangeDir(Path);
+      try
+        FTP.Put(FileName, ExtractFileName(FileName), true);
+        FTP.Quit;
+      except
+        AError := true;
+      End;
+      if not AError then Link := URL + ExtractFileName(FileName);
+    End
+    else AError := true;
+  finally
+  end;
+end;
+
+procedure TFTPLoader.SetLoadBar(sPB: TProgressBar);
+begin
+  PB := sPB;
+  FTP.OnWork := HTTPWork;
+  FTP.OnWorkBegin := HTTPWorkBegin;
 end;
 
 initialization

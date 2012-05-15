@@ -122,9 +122,16 @@ begin
     EnableBtns(false);
     if not GSettings.HideLoadForm then Show
     else Hide;
-    Cloader := LoadersArray[GSettings.LoaderIndex].Obj.Create;
-    Cloader.SetLoadBar(pb);
-    Cloader.LoadFile(FileName);
+    if GSettings.FTP.ImgLoad then begin
+      Cloader := TFTPLoader.Create;
+      Cloader.SetLoadBar(pb);
+      with GSettings.FTP do
+        (Cloader as TFTPLoader).LoadFile(FileName, Host, Path, User, Pass, Port, URL);
+    end else begin
+      Cloader := LoadersArray[GSettings.LoaderIndex].Obj.Create;
+      Cloader.SetLoadBar(pb);
+      Cloader.LoadFile(FileName);
+    end;
   finally
     if Cloader.Error then begin
       Cloader.Free;
@@ -132,6 +139,7 @@ begin
     end else begin
       DeleteFile(FileName);
       r := Cloader.GetLink;
+      AddToRecentFiles(r, ExtractFileName(FileName), rfImg);
       try
         if GSettings.ShortLinkIndex > 0 then begin
           CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
@@ -143,7 +151,6 @@ begin
       except
         FreeAndNil(CShorter);
       end;
-      AddToRecentFiles(r, ExtractFileName(FileName), rfImg);
       OriginLink := r;
       mmo_Link.Text := r;
       if GSettings.CopyLink then Clipboard.AsText := r;

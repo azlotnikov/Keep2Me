@@ -5,10 +5,11 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.6.0c';
+  SYS_KEEP_VERSION = '0.6.1';
   SYS_CRYPT_KEY = 26123;
 
   SYS_SETTINGS_FILE_NAME = 'settings.ini';
+  SYS_LOADERS_SETTINGS_FILE_NAME = 'loaders.ini';
   SYS_RECENT_FILE_NAME = 'recent_files.ini';
   SYS_SHOW_SETTINGS_PARAM = 'SHOWSETTINGS';
   SYS_TMP_IMG_FOLDER = 'tmpImg\';
@@ -19,6 +20,7 @@ const
   INI_COMMON_SETTINGS = 'CommonSettings';
   INI_HOT_KEYS = 'HotKeys';
   INI_PASTEBIN = 'Pastebin';
+  INI_FTP = 'FTP';
   INI_RECENTFILES = 'RecentFiles';
 
   RU_NOT_ADMIN = 'Для корректной работы программы необходимы права Администратора';
@@ -28,6 +30,7 @@ const
   RU_SEND_TO_PASTEBIN = 'Отправить на Pastebin.com';
   RU_OPEN_IMAGE_AND_LOAD = 'Загрузить изображение из файла';
   RU_LOAD_FILES_FROM_BUF = 'Загрузить файлы из буфера';
+  RU_SHORT_LINK_FROM_BUF = 'Укоротить ссылку из буфера';
   RU_SHOW_SETTNGS = 'Показать настройки';
   RU_NO = 'Нет';
   RU_HINT = 'Подсказка';

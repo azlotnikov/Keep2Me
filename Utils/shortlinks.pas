@@ -20,6 +20,7 @@ type
     Link: String;
     Function GetError: Boolean;
     procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
+    procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
   public
     property Error: Boolean read GetError;
     function GetLink: string; virtual;
@@ -109,7 +110,12 @@ end;
 
 procedure TShorter.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
 begin
-  PB.Position := AWorkCount div 1024;
+  if PB <> nil then PB.Position := AWorkCount div 1024;
+end;
+
+procedure TShorter.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
+begin
+  if PB <> nil then PB.Max := AWorkCountMax div 1024;
 end;
 
 procedure TShorter.SetLoadBar(sPB: TProgressBar);

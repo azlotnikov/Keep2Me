@@ -9,6 +9,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  Vcl.Clipbrd,
   Vcl.ExtCtrls,
   Vcl.Buttons,
   Vcl.Menus,
@@ -20,13 +21,13 @@ uses
   Vcl.ImgList,
   Vcl.ComCtrls,
   JvExComCtrls,
-  Vcl.Clipbrd,
   JvListView,
   acAlphaImageList,
   sSpeedButton,
   funcs,
   ConstStrings,
-  fileuploaders;
+  fileuploaders,
+  shortlinks;
 
 type
   TLinkStatus = (lsWait, lsError, lsOK, lsCanceled, lsNoFile, lsInProgress);
@@ -142,15 +143,23 @@ begin
 end;
 
 procedure TFFiles.LoadFileByIndex(Index: Integer);
+var
+  ALink: string;
+  CShorter: TShorter;
 begin
   try
-    FileLoader := FileLoadersArray[GSettings.FileLoaderIndex].Obj.Create;
+    if GSettings.FTP.FilesLoad then FileLoader := TFTPFileLoader.Create
+    else FileLoader := FileLoadersArray[GSettings.FileLoaderIndex].Obj.Create;
     FileLoader.OnHTTPWork := FileProgress;
     if FileExists(Links[Index].FilePath) then begin
       CurrentLink := Index;
       Links[Index].Status := lsInProgress;
       RePaintList;
-      FileLoader.LoadFile(Links[Index].FilePath);
+      if GSettings.FTP.FilesLoad then begin
+        with GSettings.FTP do
+          (FileLoader as TFTPFileLoader).LoadFile(Links[Index].FilePath, Host, Path, User, Pass, Port, URL);
+      end
+      else FileLoader.LoadFile(Links[Index].FilePath);
     end else begin
       Links[Index].Status := lsNoFile;
       RePaintList;
@@ -162,17 +171,31 @@ begin
         Links[Index].StatusText := 'Ошибка загрузки';
       end else begin
         Links[Index].Status := lsOK;
-        Links[Index].StatusText := 'Завершено';
-        Links[Index].Link := FileLoader.GetLink;
-        AddToRecentFiles(Links[Index].Link, ExtractFileName(Links[Index].FilePath), rfOther);
+        ALink := FileLoader.GetLink;
+        AddToRecentFiles(ALink, ExtractFileName(Links[Index].FilePath), rfOther);
+        try
+          if GSettings.ShortLinkIndex > 0 then begin
+            CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
+            CShorter.SetLoadBar(nil);
+            CShorter.LoadFile(ALink);
+            if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')
+            else ALink := CShorter.GetLink;
+          end;
+        except
+          FreeAndNil(CShorter);
+        end;
+        Links[Index].Link := ALink;
+        Links[Index].StatusText := ALink;
+
         if GSettings.ShowInTray then begin
           GSettings.TrayIcon.Hint := Links[Index].Link;
           GSettings.TrayIcon.BalloonHint('Файл загружен', Links[Index].Link);
         end;
+        if GSettings.CopyLink then Clipboard.AsText := Links[Index].Link;
       end;
     end;
     RePaintList;
-    Freeandnil(FileLoader);
+    FreeAndNil(FileLoader);
   end;
 end;
 
@@ -242,6 +265,11 @@ end;
 
 procedure TFFiles.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  StopLoad := true;
+  if FileLoader <> nil then begin
+    FileLoader.StopLoad;
+    FileLoader.Free;
+  end;
   Application.RemoveComponent(self);
   Action := caFree;
 end;
