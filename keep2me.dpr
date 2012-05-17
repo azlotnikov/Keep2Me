@@ -26,7 +26,9 @@ uses
   f_pastebin in 'Forms\f_pastebin.pas' {FPasteBin},
   f_textedit in 'Forms\f_textedit.pas' {FTextEdit},
   f_files in 'Forms\f_files.pas' {FFiles},
-  fileuploaders in 'Utils\fileuploaders.pas';
+  fileuploaders in 'Utils\fileuploaders.pas',
+  f_filessettings in 'Forms\f_filessettings.pas' {FFilesSettings},
+  umd5 in 'Utils\umd5.pas';
 
 {$R *.res}
 

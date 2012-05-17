@@ -3,6 +3,7 @@ unit loaders;
 interface
 
 uses
+  Winapi.WinInet,
   System.Classes,
   System.SysUtils,
   Vcl.ComCtrls,
@@ -10,7 +11,8 @@ uses
   IdComponent,
   IdMultipartFormData,
   IdCookieManager,
-  IdFTP;
+  IdFTP,
+  IdFTPCommon;
 
 type
   TLoader = class
@@ -38,7 +40,7 @@ type
     FTP: TidFTP;
   public
     procedure SetLoadBar(sPB: TProgressBar); override;
-    procedure LoadFile(FileName: string; Host, Path, User, Pass, Port, URL: String); overload;
+    procedure LoadFile(FileName: string; Host, Path, User, Pass, Port, URL: String; Passive: Boolean); overload;
     procedure Free; override;
     constructor Create;
   end;
@@ -69,6 +71,18 @@ type
 
 type
   TQikrLoader = class(TLoader)
+  public
+    procedure LoadFile(FileName: string); override;
+  end;
+
+type
+  TTrollWsLoader = class(TLoader)
+  public
+    procedure LoadFile(FileName: string); override;
+  end;
+
+type
+  TImgsSuLoader = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
@@ -328,24 +342,31 @@ begin
   FTP.Free;
 end;
 
-procedure TFTPLoader.LoadFile(FileName: string; Host, Path, User, Pass, Port, URL: String);
+procedure TFTPLoader.LoadFile(FileName: string; Host, Path, User, Pass, Port, URL: String; Passive: Boolean);
 begin
   try
     Link := '';
     AError := false;
+    if FTP.Connected then begin
+      FTP.Abort;
+      FTP.Quit;
+    end;
     FTP.Host := Host;
     FTP.Username := User;
     FTP.Password := Pass;
     FTP.Port := strtoint(Port);
+    FTP.Passive := Passive;
+    FTP.TransferType := ftBinary;
     try
       FTP.Connect;
     except
     end;
     If FTP.Connected then Begin
-      FTP.ChangeDir(Path);
       try
-        FTP.Put(FileName, ExtractFileName(FileName), true);
+        FTP.ChangeDir(Path);
+        FTP.Put(FileName, ExtractFileName(FileName), false);
         FTP.Quit;
+        FTP.Disconnect;
       except
         AError := true;
       End;
@@ -363,12 +384,80 @@ begin
   FTP.OnWorkBegin := HTTPWorkBegin;
 end;
 
+{ TTrollWsLoader }
+
+procedure TTrollWsLoader.LoadFile(FileName: string);
+const
+  Str = 'upload'', ''';
+var
+  Stream: TIdMultipartFormDataStream;
+  s: string;
+begin
+  try
+    Link := '';
+    AError := false;
+    HTTP.HandleRedirects := true;
+    Stream := TIdMultipartFormDataStream.Create;
+    Stream.AddFile('file', FileName, 'application/octet-stream');
+    Stream.AddFormField('handler', 'i');
+    Stream.AddFormField('submit', 'Upload');
+    try
+      s := HTTP.Post('http://troll.ws/', Stream);
+    except
+    end;
+    if (Pos(Str, s) = 0) then begin
+      AError := true;
+      Exit;
+    end;
+    Link := 'http://troll.ws/i/' + ParsSubString(s, Str, '''') + ExtractFileExt(FileName);
+  finally
+    Stream.Free;
+  end;
+end;
+
+{ TImgsSu }
+
+procedure TImgsSuLoader.LoadFile(FileName: string);
+const
+  Str = '><img src="';
+var
+  Stream: TIdMultipartFormDataStream;
+  s: string;
+begin
+  try
+    Link := '';
+    AError := false;
+    HTTP.HandleRedirects := true;
+    Stream := TIdMultipartFormDataStream.Create;
+    Stream.AddFile('file', FileName, 'application/octet-stream');
+    Stream.AddFormField('url', 'http://');
+    Stream.AddFormField('resize', '0');
+    Stream.AddFormField('retype', '0');
+    Stream.AddFormField('quality', '100');
+    Stream.AddFormField('rotate', '0');
+    try
+      s := HTTP.Post('http://imgs.su/', Stream);
+    except
+    end;
+    if (Pos(Str, s) = 0) then begin
+      AError := true;
+      Exit;
+    end;
+    Link := ParsSubString(s, Str, '"');
+  finally
+    Stream.Free;
+  end;
+
+end;
+
 initialization
 
 AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.2');
 AddLoader(TQikrLoader, 'qikr.co', '0.1');
-AddLoader(TImgurLoader, 'imgur.com', '0.1');
-AddLoader(TZhykLoader, 'i.zhyk.ru', '0.3');
+AddLoader(TImgurLoader, 'imgur.com [API]', '0.1');
+AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.3');
 AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
+AddLoader(TTrollWsLoader, 'troll.ws', '0.1');
+AddLoader(TImgsSuLoader, 'imgs.su', '0.1');
 
 end.

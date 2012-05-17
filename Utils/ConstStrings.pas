@@ -5,10 +5,14 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.6.1';
+  SYS_KEEP_VERSION = '0.7.3a';
   SYS_CRYPT_KEY = 26123;
 
   SYS_SETTINGS_FILE_NAME = 'settings.ini';
+  SYS_FILE_LOADER_FORM_NAME = 'form_fileloader.ini';
+  SYS_IMG_LOADER_FORM_NAME = 'form_imgloader.ini';
+  SYS_FILELOADERS_SETTINGS_FILE_NAME = 'fileloaders_settings.ini';
+  SYS_IMGLOADERS_SETTINGS_FILE_NAME = 'imgloaders_settings.ini';
   SYS_LOADERS_SETTINGS_FILE_NAME = 'loaders.ini';
   SYS_RECENT_FILE_NAME = 'recent_files.ini';
   SYS_SHOW_SETTINGS_PARAM = 'SHOWSETTINGS';
@@ -17,6 +21,7 @@ const
   SYS_USERAGENT = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)';
   SYS_UPDATE_CHECK_PAGE = 'http://keep2.me/lastversion.php';
   SYS_UPDATER_EXE_NAME = 'updater.exe';
+
   INI_COMMON_SETTINGS = 'CommonSettings';
   INI_HOT_KEYS = 'HotKeys';
   INI_PASTEBIN = 'Pastebin';

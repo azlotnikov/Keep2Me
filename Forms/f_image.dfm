@@ -29,6 +29,8 @@ object FImage: TFImage
     Width = 879
     Height = 423
     Anchors = [akLeft, akTop, akRight, akBottom]
+    Color = clBtnFace
+    ParentColor = False
     TabOrder = 1
     object img: TImage
       Left = 0
@@ -42,6 +44,7 @@ object FImage: TFImage
       Top = 0
       Width = 105
       Height = 105
+      Cursor = crCross
       OnMouseDown = imgMouseDown
       OnMouseMove = imgMouseMove
       OnMouseUp = imgMouseUp
@@ -59,6 +62,7 @@ object FImage: TFImage
       895
       37)
     object btn_Brush: TsSpeedButton
+      Tag = 1
       Left = 199
       Top = 6
       Width = 23
@@ -71,7 +75,7 @@ object FImage: TFImage
       Images = Images
     end
     object btn_DoLoad: TsSpeedButton
-      Left = 728
+      Left = 727
       Top = 6
       Width = 160
       Height = 25
@@ -82,7 +86,6 @@ object FImage: TFImage
       SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 1
       Images = Images
-      ExplicitLeft = 656
     end
     object shp_brush: TShape
       Left = 22
@@ -108,6 +111,7 @@ object FImage: TFImage
       Caption = #1064#1080#1088#1080#1085#1072' '#1082#1080#1089#1090#1080':'
     end
     object btn_line: TsSpeedButton
+      Tag = 2
       Left = 228
       Top = 6
       Width = 23
@@ -119,6 +123,7 @@ object FImage: TFImage
       Images = Images
     end
     object btn_Rect: TsSpeedButton
+      Tag = 3
       Left = 257
       Top = 6
       Width = 23
@@ -130,6 +135,7 @@ object FImage: TFImage
       Images = Images
     end
     object btn_SelPen: TsSpeedButton
+      Tag = 8
       Left = 402
       Top = 6
       Width = 23
@@ -141,6 +147,7 @@ object FImage: TFImage
       Images = Images
     end
     object btn_Ellipse: TsSpeedButton
+      Tag = 4
       Left = 286
       Top = 6
       Width = 23
@@ -152,6 +159,7 @@ object FImage: TFImage
       Images = Images
     end
     object btn_Text: TsSpeedButton
+      Tag = 7
       Left = 373
       Top = 6
       Width = 23
@@ -163,6 +171,7 @@ object FImage: TFImage
       Images = Images
     end
     object btn_rectclear: TsSpeedButton
+      Tag = 5
       Left = 315
       Top = 6
       Width = 23
@@ -174,6 +183,7 @@ object FImage: TFImage
       Images = Images
     end
     object btn_ellipseclear: TsSpeedButton
+      Tag = 6
       Left = 344
       Top = 6
       Width = 23
@@ -185,6 +195,7 @@ object FImage: TFImage
       Images = Images
     end
     object btn_Blur: TsSpeedButton
+      Tag = 9
       Left = 431
       Top = 6
       Width = 23
@@ -193,6 +204,18 @@ object FImage: TFImage
       Flat = True
       SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 20
+      Images = Images
+    end
+    object btn_cut: TsSpeedButton
+      Tag = 10
+      Left = 460
+      Top = 6
+      Width = 23
+      Height = 25
+      GroupIndex = 1
+      Flat = True
+      SkinData.SkinSection = 'SPEEDBUTTON'
+      ImageIndex = 21
       Images = Images
     end
     object spin_penwidth: TJvSpinEdit
@@ -303,6 +326,11 @@ object FImage: TFImage
         Caption = #1056#1072#1079#1084#1099#1090#1080#1077
         ImageIndex = 20
         OnClick = mm_blurClick
+      end
+      object pm_cut: TMenuItem
+        Caption = #1042#1099#1088#1077#1079#1072#1090#1100' '#1086#1073#1083#1072#1089#1090#1100
+        ImageIndex = 21
+        OnClick = pm_cutClick
       end
     end
     object mm_colors: TMenuItem
@@ -1020,6 +1048,29 @@ object FImage: TFImage
           F6E4F6C1516E341AC1DAC6C6BB4FEBEBABE99F461D06CD1832DD2093D3D3F1BE
           51A67A4542A84AB51A6ED56A113BEC6FE4C52278A170D89DE4B7000300F4E332
           307D258E350000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000001EB4944415478DA626480021616161893E1CF9F3F0C7521
+          0C0C75C170219F5FBF187ABF7F67F8F3ED1BC3AD2F5F18E6BF7ECDB0C976D27F
+          06842E28A809FAC75013882204D6CC666223CBC9C5C5C1F5FABDE2C73D5735FF
+          FFFFF61F28B7990959E38FC57F809AFF616A36B696656661E164F8FC99918385
+          8153CE424DF6C70F8678B0CB114EFD87EE18B8E64F6FBF719EDD769E81939381
+          C1DACB908147808D13688032481113923FB16ABE708789D3B588894129ED2E03
+          070750E6FF7F86B7CFBE7E03CA835DCF4448737AF33706171717868A8A0A0675
+          03158637AF7E7D3DB0E8EA5DA03915602FE073767A331358F3BD7BF7181AC29F
+          30FCF8CDF6F5C0E26B30CDDBC12E00C618030CA3FB79D5AA5570CD62EC1F3134
+          835DD0B4860B6E7DB1E7B7FF3FA09A417E7EBF5A99615EB20A569B6180918949
+          18C6560162A79DA56F67C23483FC8C4F73E82A4442026B7EF3E6F64C90930969
+          5E7D0D88AF0223042910E19A191804192C6A145AD746DCF10786C93F64CD308D
+          C8001E0B70CD16CEAD0C0CCC6BFF0153F4FFFFA83662054C4CFC0CCCCCA2D967
+          CEDCFDCFC2A2D0C2C2A26CC8C424C4400CF80FB48111487331334BE73132B2F2
+          0033C8C1BF7F5F5D82A66B18FE8B46C331D080FF202F708134FFFBF7F1F4BF7F
+          EFDF00F9E2A01C0DC5BFB160981CC883FF01020C002168234D5902E770000000
+          0049454E44AE426082}
       end>
     Left = 288
     Top = 56

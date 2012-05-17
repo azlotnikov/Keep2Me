@@ -39,6 +39,13 @@ type
   end;
 
 type
+  TFCut = class(TFShape)
+  public
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas); override;
+    procedure Draw(CanvasOut: TCanvas); override;
+  end;
+
+type
   TFText = class(TFShape)
   public
     Text: String;
@@ -231,7 +238,6 @@ end;
 procedure TFLine.AddPoint(P: TPoint; CanvasOut: TCanvas);
 begin
   EndPoint := P;
-  // PB.Invalidate;
   Draw(CanvasOut);
 end;
 
@@ -247,7 +253,6 @@ end;
 procedure TFRect.AddPoint(P: TPoint; CanvasOut: TCanvas);
 begin
   EndPoint := P;
-  // PB.Invalidate;
   Draw(CanvasOut);
 end;
 
@@ -260,28 +265,16 @@ end;
 { TFSelPencil }
 
 procedure TFSelPencil.AddPoint(P: TPoint; CanvasOut: TCanvas);
-// var
-// t: TCopyMode;
 begin
-  // PenF.Color := TransparencyColor(clRed, PenF.Color, 100);
-  // t := CanvasOut.CopyMode;
-  // CanvasOut.CopyMode := cmSrcPaint;
   CanvasOut.Pen.Mode := pmMerge;
   inherited;
-  // CanvasOut.CopyMode := t;
   CanvasOut.Pen.Mode := pmCopy;
 end;
 
 procedure TFSelPencil.Draw(CanvasOut: TCanvas);
-// var
-// t: TCopyMode;
 begin
-  // PenF.Color := TransparencyColor(clRed, PenF.Color, 100);
-  // t := CanvasOut.CopyMode;
-  // CanvasOut.CopyMode := cmSrcPaint;
   CanvasOut.Pen.Mode := pmMerge;
   inherited;
-  // CanvasOut.CopyMode := t;
   CanvasOut.Pen.Mode := pmCopy;
 end;
 
@@ -290,7 +283,6 @@ end;
 procedure TFEllipse.AddPoint(P: TPoint; CanvasOut: TCanvas);
 begin
   EndPoint := P;
-  // PB.Invalidate;
   Draw(CanvasOut);
 end;
 
@@ -305,12 +297,14 @@ end;
 procedure TFText.AddPoint(P: TPoint; CanvasOut: TCanvas);
 begin
   EndPoint := P;
-  PB.Invalidate;
-  CanvasOut.Brush.Style := bsClear;
-  CanvasOut.Pen.Color := clRed;
-  CanvasOut.Pen.Width := 1;
-  CanvasOut.Pen.Style := psDashDot;
-  CanvasOut.Rectangle(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+  with CanvasOut do begin
+    Brush.Style := bsClear;
+    Pen.Color := clRed;
+    Pen.Width := 1;
+    Pen.Style := psDashDot;
+    Rectangle(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+  end;
+
 end;
 
 procedure TFText.Draw(CanvasOut: TCanvas);
@@ -365,7 +359,6 @@ end;
 procedure TFBlurRect.AddPoint(P: TPoint; CanvasOut: TCanvas);
 begin
   EndPoint := P;
-  // PB.Invalidate;
   Draw(CanvasOut);
 end;
 
@@ -414,13 +407,50 @@ begin
       for k := 1 to 2 do DoBlur;
     end
     else DoBlur;
+  end
+  else
+    with CanvasOut do begin
+      Brush.Style := bsCross;
+      Pen.Color := clRed;
+      Pen.Width := 1;
+      Pen.Style := psSolid;
+      Brush.Color := clRed;
+      Rectangle(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+    end;
+end;
+
+{ TFCut }
+
+procedure TFCut.AddPoint(P: TPoint; CanvasOut: TCanvas);
+begin
+  EndPoint := P;
+  with CanvasOut do begin
+    Brush.Style := bsClear;
+    Pen.Color := clRed;
+    Pen.Width := 1;
+    Pen.Style := psDashDot;
+    Rectangle(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+  end;
+end;
+
+procedure TFCut.Draw(CanvasOut: TCanvas);
+var
+  bm: tbitmap;
+begin
+  if IsDrawing then begin
+    AddPoint(EndPoint, CanvasOut);
   end else begin
-    CanvasOut.Brush.Style := bsCross;
-    CanvasOut.Pen.Color := clRed;
-    CanvasOut.Pen.Width := 1;
-    CanvasOut.Pen.Style := psSolid;
-    CanvasOut.Brush.Color := clRed;
-    CanvasOut.Rectangle(StartPoint.x, StartPoint.y, EndPoint.x, EndPoint.y);
+    bm := tbitmap.Create;
+    bm.Width := Abs(StartPoint.x - EndPoint.x);
+    bm.Height := Abs(StartPoint.y - EndPoint.y);
+    bm.Canvas.CopyRect(Rect(0, 0, bm.Width, bm.Height), CanvasOut, Rect(Min(StartPoint.x, EndPoint.x),
+      Min(StartPoint.y, EndPoint.y), Max(StartPoint.x, EndPoint.x), Max(StartPoint.y, EndPoint.y)));
+    PB.Width := bm.Width;
+    PB.Height := bm.Height;
+    CanvasOut.Brush.Color := clBtnFace;
+    CanvasOut.FillRect(CanvasOut.ClipRect);
+    CanvasOut.Draw(0, 0, bm);
+    bm.Free;
   end;
 end;
 

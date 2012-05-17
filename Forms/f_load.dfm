@@ -15,7 +15,6 @@ object FLoad: TFLoad
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object btn_Copy: TsSpeedButton
@@ -148,5 +147,19 @@ object FLoad: TFLoad
     Left = 304
     Top = 30
     Bitmap = {}
+  end
+  object tmr_selfkill: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = tmr_selfkillTimer
+    Left = 272
+    Top = 88
+  end
+  object tmr_killEditor: TTimer
+    Enabled = False
+    Interval = 50
+    OnTimer = tmr_killEditorTimer
+    Left = 192
+    Top = 72
   end
 end

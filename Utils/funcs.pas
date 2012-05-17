@@ -66,6 +66,7 @@ type
     Pass: string;
     Port: string;
     URL: String;
+    Passive: Boolean;
   end;
 
 type

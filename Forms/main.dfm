@@ -313,6 +313,7 @@ object FMain: TFMain
           Anchors = [akTop, akRight]
           Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072
           Enabled = False
+          OnClick = btn_FilesSettingsClick
           SkinData.SkinSection = 'SPEEDBUTTON'
           ImageIndex = 15
           Images = Images
@@ -326,6 +327,7 @@ object FMain: TFMain
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 0
+          OnChange = cbb_FilesChange
         end
       end
     end
@@ -333,9 +335,63 @@ object FMain: TFMain
       Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         382
         349)
+      object btn_ClearFormsSettings: TsSpeedButton
+        Left = 3
+        Top = 151
+        Width = 370
+        Height = 22
+        Anchors = [akLeft, akTop, akRight]
+        BiDiMode = bdLeftToRight
+        Caption = #1059#1076#1072#1083#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1086#1083#1086#1078#1077#1085#1080#1103' '#1092#1086#1088#1084
+        ParentBiDiMode = False
+        OnClick = btn_ClearFormsSettingsClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+        ImageIndex = 20
+        Images = Images
+      end
+      object btn_ClearMainSettings: TsSpeedButton
+        Left = 3
+        Top = 179
+        Width = 370
+        Height = 22
+        Anchors = [akLeft, akTop, akRight]
+        Caption = #1059#1076#1072#1083#1080#1090#1100' '#1086#1089#1085#1086#1074#1085#1099#1077' '#1085#1072#1089#1090#1088#1086#1081#1082#1080
+        OnClick = btn_ClearMainSettingsClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+        ImageIndex = 20
+        Images = Images
+      end
+      object btn_ClearPluginsSettings: TsSpeedButton
+        Left = 3
+        Top = 207
+        Width = 370
+        Height = 22
+        Anchors = [akLeft, akTop, akRight]
+        Caption = #1059#1076#1072#1083#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1083#1072#1075#1080#1085#1086#1074
+        OnClick = btn_ClearPluginsSettingsClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+        ImageIndex = 20
+        Images = Images
+      end
+      object btn_ClearRecentFiles: TsSpeedButton
+        Left = 3
+        Top = 235
+        Width = 370
+        Height = 22
+        Anchors = [akLeft, akTop, akRight]
+        Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1085#1077#1076#1072#1074#1085#1080#1077' '#1092#1072#1081#1083#1099
+        OnClick = btn_ClearRecentFilesClick
+        SkinData.SkinSection = 'SPEEDBUTTON'
+        ImageIndex = 20
+        Images = Images
+      end
       object grp_OtherSettings: TGroupBox
         Left = 3
         Top = 1
@@ -408,6 +464,10 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         382
         349)
@@ -571,7 +631,9 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       ExplicitLeft = 0
-      ExplicitTop = 28
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         382
         349)
@@ -597,13 +659,13 @@ object FMain: TFMain
         Left = 3
         Top = 44
         Width = 376
-        Height = 189
+        Height = 213
         Anchors = [akLeft, akTop, akRight]
         Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
         TabOrder = 2
         DesignSize = (
           376
-          189)
+          213)
         object lbl_FTP_host: TLabel
           Left = 11
           Top = 22
@@ -695,6 +757,14 @@ object FMain: TFMain
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 2
+        end
+        object cb_FTP_Passive: TCheckBox
+          Left = 11
+          Top = 181
+          Width = 124
+          Height = 17
+          Caption = #1055#1072#1089#1089#1080#1074#1085#1099#1081' '#1088#1077#1078#1080#1084
+          TabOrder = 6
         end
       end
     end
@@ -1202,6 +1272,25 @@ object FMain: TFMain
           9924B7D265F753CCD63048B46723787FE8E3000DC01BF51664617B807DF23D95
           7F88AD47B9DB6B5FEBB485F364E8530B49FA04BF051800A918F681854381A100
           00000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000001814944415478DAA452C14AC340107DDB6C174CA288520F
+          52442DA2F4D843A1A0879E7AF52F0AFE8B1FE01FD49BE0C9BBA5FE4172ABA0E4
+          544B68D3344D9AC459930631D4461C786177B3EFCD9BD961711CE33FC1EF1903
+          03744297F61DC2DE06CE98F04469EF080E9727B4E81ED5EB3717AD5655A8AA58
+          C7946E7DD7F58DC1A0F66618F2E89687C9BFCE59B359753C4FC0F336B916A78D
+          46F5D5303ADF05F6A25249388E53A86E4DD3449896CA97E9A14799A7D3692101
+          59CA8A9709B8AE8BD96C965D0A82002EED257CDFC77299DCE49CA352A9E40556
+          97AEFA7D589605DBB6A1288AB40B5DD72144D2DBC75A0DF3C9242F20C93E9560
+          9AE6D7BA5C2EE7C832B62489DC650241BA588CC788472398EDF6AFF5EB841225
+          087E3A6024A05273D4225D8CA2BC03413D281C942873B048C733A42E527DA208
+          7F1E45FE2219692843FA1C0307F3303C3FE45CD31853E47CAF8324BF78DEBB15
+          86BD1E3060720A7780934BE07A1F68D17E778301FB8388CFC0C30418B2F465B6
+          D3047F09D9C7E9A70003001C0BAD768A80DA340000000049454E44AE426082}
       end>
     Left = 328
     Top = 16
@@ -1216,7 +1305,7 @@ object FMain: TFMain
     OnClick = TrayIconClick
     OnBalloonShow = TrayIconBalloonShow
     OnBalloonClick = TrayIconBalloonClick
-    Left = 232
+    Left = 224
     Top = 16
   end
   object pm: TPopupMenu
@@ -1299,7 +1388,7 @@ object FMain: TFMain
   end
   object AntiFreeze: TIdAntiFreeze
     OnlyWhenIdle = False
-    Left = 200
+    Left = 192
     Top = 16
   end
   object OpenImageDlg: TOpenPictureDialog

@@ -8,6 +8,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.IniFiles,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.ExtDlgs,
@@ -18,12 +19,16 @@ uses
   Vcl.ImgList,
   Vcl.Clipbrd,
   Vcl.StdCtrls,
+  Vcl.Mask,
   Vcl.Imaging.GIFImg,
   Vcl.Buttons,
   Vcl.Imaging.PNGImage,
   Vcl.Imaging.JPEG,
   acAlphaImageList,
   sSpeedButton,
+  JvComponentBase,
+  JvExMask,
+  JvSpin,
   sDialogs,
   sEdit,
   sSpinEdit,
@@ -31,7 +36,7 @@ uses
   f_textedit,
   funcs,
   imgtools,
-  ConstStrings, JvFormPlacement, JvComponentBase, JvAppStorage, JvAppIniStorage, Vcl.Mask, JvExMask, JvSpin;
+  ConstStrings;
 
 type
   TFImage = class(TForm)
@@ -83,6 +88,8 @@ type
     mm_blur: TMenuItem;
     pb: TPaintBox;
     spin_penwidth: TJvSpinEdit;
+    btn_cut: TsSpeedButton;
+    pm_cut: TMenuItem;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -112,6 +119,7 @@ type
     procedure mm_ellipseclearClick(Sender: TObject);
     procedure mm_blurClick(Sender: TObject);
     procedure pbPaint(Sender: TObject);
+    procedure pm_cutClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -119,6 +127,8 @@ type
     tmpShape: TFShape;
     function GetScreenName: string;
     procedure TextEditFormClose(Sender: TObject; var Action: TCloseAction);
+    procedure SavePlacement;
+    procedure LoadPlacement;
   public
     OriginImg: TBitmap;
     ShapeList: TFShapeList;
@@ -201,7 +211,7 @@ end;
 function TFImage.GetScreenName: string;
 begin
   result := SYS_TMP_IMG_FOLDER;
-  result := result + timetostr(now) + '-' + datetostr(now);
+  result := result + timetostr(now) + '_' + datetostr(now);
   result := StringReplace(result, ':', '.', [rfReplaceAll]);
   result := StringReplace(result, '/', '.', [rfReplaceAll]);
   result := result + ImgFormatToText(TImgFormats(GSettings.ImgExtIndex));
@@ -220,6 +230,7 @@ begin
   if btn_ellipseclear.down then tmpShape := TFEllipseClear.Create;
   if btn_Text.down then tmpShape := TFText.Create;
   if btn_Blur.down then tmpShape := TFBlurRect.Create;
+  if btn_cut.down then tmpShape := TFCut.Create;
 
   pb.Invalidate;
   // ShapeList.DrawAll(img.Canvas);
@@ -259,6 +270,8 @@ begin
   end else begin
     tmpShape.IsDrawing := false;
     tmpShape.Draw(img.Canvas);
+    img.Picture.Bitmap.Height := pb.Height;
+    img.Picture.Bitmap.Width := pb.Width;
     ActiveDraw := false;
   end;
   ShapeList.AddShape(tmpShape);
@@ -267,6 +280,7 @@ end;
 
 procedure TFImage.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  SavePlacement;
   Application.RemoveComponent(self);
   ShapeList.Free;
   Action := caFree;
@@ -274,6 +288,7 @@ end;
 
 procedure TFImage.FormCreate(Sender: TObject);
 begin
+  LoadPlacement;
   OriginImg := TBitmap.Create;
   ShapeList := TFShapeList.Create;
   Application.InsertComponent(self);
@@ -298,7 +313,11 @@ procedure TFImage.mm_undoClick(Sender: TObject);
 begin
   if ShapeList.Undo then begin
     img.Picture.Assign(OriginImg);
+    pb.Width := img.Width;
+    pb.Height := img.Height;
     ShapeList.DrawAll(img.Canvas);
+    img.Picture.Bitmap.Height := pb.Height;
+    img.Picture.Bitmap.Width := pb.Width;
   end;
 end;
 
@@ -315,7 +334,11 @@ begin
   until (not ShapeList.Undo);
   pb.Invalidate;
   img.Picture.Assign(OriginImg);
+  pb.Width := img.Width;
+  pb.Height := img.Height;
   ShapeList.DrawAll(img.Canvas);
+  img.Picture.Bitmap.Height := pb.Height;
+  img.Picture.Bitmap.Width := pb.Width;
 end;
 
 procedure TFImage.mm_ellipseclearClick(Sender: TObject);
@@ -352,9 +375,8 @@ begin
     ShowMessage('Ошибка Сохранения изображения для загрузки');
     exit;
   end;
-  img.Picture.Bitmap.FreeImage;
-  with TFLoad.Create(nil) do LoadFile(FSName);
-  Close;
+  Hide;
+  TFLoad.CreateEx(FSName, self);
 end;
 
 procedure TFImage.mm_pencolorClick(Sender: TObject);
@@ -376,7 +398,11 @@ procedure TFImage.mm_redoClick(Sender: TObject);
 begin
   if ShapeList.Redo then begin
     img.Picture.Assign(OriginImg);
+    pb.Width := img.Width;
+    pb.Height := img.Height;
     ShapeList.DrawAll(img.Canvas);
+    img.Picture.Bitmap.Height := pb.Height;
+    img.Picture.Bitmap.Width := pb.Width;
   end;
 end;
 
@@ -428,6 +454,58 @@ begin
   if ActiveDraw then tmpShape.Draw(pb.Canvas);
 end;
 
+procedure TFImage.pm_cutClick(Sender: TObject);
+begin
+  btn_cut.down := true;
+end;
+
+procedure TFImage.SavePlacement;
+var
+  F: TIniFile;
+  i: Integer;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_IMG_LOADER_FORM_NAME);
+  with F do begin
+    WriteInteger('Form', 'Width', Width);
+    WriteInteger('Form', 'Height', Height);
+    WriteInteger('Form', 'Top', Top);
+    WriteInteger('Form', 'Left', Left);
+    WriteInteger('Tools', 'PenWidth', trunc(spin_penwidth.Value));
+    WriteInteger('Colors', 'Pen', shp_pen.Brush.Color);
+    WriteInteger('Colors', 'Brush', shp_brush.Brush.Color);
+    for i := 0 to ComponentCount - 1 do
+      if (Components[i] is TsSpeedButton) and ((Components[i] as TsSpeedButton).down) then begin
+        WriteInteger('Tools', 'Active', Components[i].Tag);
+        break;
+      end;
+    Free;
+  end;
+end;
+
+procedure TFImage.LoadPlacement;
+var
+  F: TIniFile;
+  i, k: Integer;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_IMG_LOADER_FORM_NAME);
+  with F do begin
+    Width := ReadInteger('Form', 'Width', Width);
+    Height := ReadInteger('Form', 'Height', Height);
+    Top := ReadInteger('Form', 'Top', Top);
+    Left := ReadInteger('Form', 'Left', Left);
+    spin_penwidth.Value := ReadInteger('Tools', 'PenWidth', trunc(spin_penwidth.Value));
+    shp_pen.Brush.Color := ReadInteger('Colors', 'Pen', shp_pen.Brush.Color);
+    shp_brush.Brush.Color := ReadInteger('Colors', 'Brush', shp_brush.Brush.Color);
+    k := ReadInteger('Tools', 'Active', 1);
+    for i := 0 to ComponentCount - 1 do
+      if (Components[i] is TsSpeedButton) and (Components[i].Tag = k) then begin
+        (Components[i] as TsSpeedButton).down := true;
+        break;
+      end;
+    Free;
+  end;
+end;
+
 procedure TFImage.mm_showtoolsClick(Sender: TObject);
 begin
   mm_showtools.Checked := not mm_showtools.Checked;
@@ -449,9 +527,7 @@ end;
 
 procedure TFImage.mm_copyimgClick(Sender: TObject);
 begin
-  ShapeList.DrawAll(img.Canvas);
   Clipboard.Assign(img.Picture);
-  img.Picture.Assign(OriginImg);
   pb.Invalidate;
 end;
 

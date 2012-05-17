@@ -27,7 +27,7 @@ uses
   loaders,
   funcs,
   shortlinks,
-  ConstStrings;
+  ConstStrings, Vcl.ExtCtrls;
 
 type
   TFLoad = class(TForm)
@@ -38,17 +38,24 @@ type
     Images: TsAlphaImageList;
     lbl_link: TLabel;
     cbb_view: TComboBox;
+    tmr_selfkill: TTimer;
+    tmr_killEditor: TTimer;
     procedure btn_CopyClick(Sender: TObject);
     procedure btn_OpenClick(Sender: TObject);
     procedure cbb_viewChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
-    procedure FormCreate(Sender: TObject);
+    procedure tmr_selfkillTimer(Sender: TObject);
+    procedure tmr_killEditorTimer(Sender: TObject);
   private
     OriginLink: String;
+    EditorToKill: TForm;
+    CloseForm: Boolean;
+    CanClose: Boolean;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    procedure LoadFile(FileName: string);
+    procedure LoadFile(FileName: string; Editor: TForm);
+    constructor CreateEx(FileName: string; Editor: TForm);
   end;
 
 implementation
@@ -76,6 +83,15 @@ begin
   end;
 end;
 
+constructor TFLoad.CreateEx(FileName: string; Editor: TForm);
+begin
+  Create(nil);
+  Application.InsertComponent(self);
+  EditorToKill := Editor;
+  CanClose := false;
+  LoadFile(FileName, Editor);
+end;
+
 procedure TFLoad.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -85,23 +101,33 @@ end;
 
 procedure TFLoad.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  if not CanClose then begin
+    Action := caNone;
+    exit;
+  end;
   Application.RemoveComponent(self);
   Action := caFree;
 end;
 
-procedure TFLoad.FormCreate(Sender: TObject);
-begin
-  Application.InsertComponent(self);
-end;
-
-procedure TFLoad.LoadFile(FileName: string);
+procedure TFLoad.LoadFile(FileName: string; Editor: TForm);
   procedure ReTry;
   begin
-    if MessageDlg('Ошибка загрузки. Попробовать еще раз?', mtConfirmation, mbYesNo, 0) = mrYes then LoadFile(FileName)
-    else begin
-      DeleteFile(FileName);
-      Hide;
+    case MessageDlg('Ошибка загрузки. Попробовать еще раз?', mtConfirmation, mbYesNoCancel, 0) of
+      mrYes: LoadFile(FileName, Editor);
+      mrNo: begin
+          CloseForm := True;
+          CanClose := True;
+          DeleteFile(FileName);
+          tmr_killEditor.Enabled := True;
+        end;
+      mrCancel: begin
+          DeleteFile(FileName);
+          CanClose := True;
+          Editor.Show;
+          tmr_selfkill.Enabled := True;
+        end;
     end;
+
   end;
   procedure EnableBtns(B: Boolean);
   begin
@@ -120,13 +146,12 @@ begin
     OriginLink := '';
     cbb_view.ItemIndex := 0;
     EnableBtns(false);
-    if not GSettings.HideLoadForm then Show
-    else Hide;
+    if not GSettings.HideLoadForm then Show;
     if GSettings.FTP.ImgLoad then begin
       Cloader := TFTPLoader.Create;
       Cloader.SetLoadBar(pb);
       with GSettings.FTP do
-        (Cloader as TFTPLoader).LoadFile(FileName, Host, Path, User, Pass, Port, URL);
+        (Cloader as TFTPLoader).LoadFile(FileName, Host, Path, User, Pass, Port, URL, Passive);
     end else begin
       Cloader := LoadersArray[GSettings.LoaderIndex].Obj.Create;
       Cloader.SetLoadBar(pb);
@@ -151,16 +176,36 @@ begin
       except
         FreeAndNil(CShorter);
       end;
+
+      CloseForm := false;
       OriginLink := r;
       mmo_Link.Text := r;
       if GSettings.CopyLink then Clipboard.AsText := r;
       FreeAndNil(Cloader);
       pb.Position := pb.Max;
-      EnableBtns(true);
+      EnableBtns(True);
       GSettings.TrayIcon.Hint := r;
       if GSettings.ShowInTray then GSettings.TrayIcon.BalloonHint('Файл загружен', r);
+      CanClose := True;
+      tmr_killEditor.Enabled := True;
     end;
   end;
+end;
+
+procedure TFLoad.tmr_killEditorTimer(Sender: TObject);
+begin
+  EditorToKill.Close;
+  if CloseForm then begin
+    CanClose := True;
+    Close;
+  end;
+  tmr_killEditor.Enabled := false;
+end;
+
+procedure TFLoad.tmr_selfkillTimer(Sender: TObject);
+begin
+  tmr_selfkill.Enabled := false;
+  Close;
 end;
 
 end.

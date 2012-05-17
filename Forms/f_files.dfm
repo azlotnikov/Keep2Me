@@ -53,6 +53,7 @@ object FFiles: TFFiles
     SmallImages = Images
     TabOrder = 0
     ViewStyle = vsReport
+    OnResize = lv_filesResize
     ColumnsOrder = '0=350,1=80,2=130'
     SortOnClick = False
     ExtendedColumns = <

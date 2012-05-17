@@ -9,6 +9,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.IniFiles,
   Vcl.Clipbrd,
   Vcl.ExtCtrls,
   Vcl.Buttons,
@@ -76,6 +77,7 @@ type
     procedure pm_copyClick(Sender: TObject);
     procedure pm_openClick(Sender: TObject);
     procedure pm_dontloadClick(Sender: TObject);
+    procedure lv_filesResize(Sender: TObject);
   private
     Links: array of TLinkData;
     CurrentLink: Integer;
@@ -85,6 +87,8 @@ type
     procedure RePaintList;
     procedure FileProgress(Sender: TObject; Text: string);
     procedure EnableButtons(B: Boolean);
+    procedure SavePlacement;
+    procedure LoadPlacement;
   public
     procedure StartLoad(Files: Tstringlist);
   protected
@@ -157,7 +161,7 @@ begin
       RePaintList;
       if GSettings.FTP.FilesLoad then begin
         with GSettings.FTP do
-          (FileLoader as TFTPFileLoader).LoadFile(Links[Index].FilePath, Host, Path, User, Pass, Port, URL);
+          (FileLoader as TFTPFileLoader).LoadFile(Links[Index].FilePath, Host, Path, User, Pass, Port, URL, Passive);
       end
       else FileLoader.LoadFile(Links[Index].FilePath);
     end else begin
@@ -271,12 +275,14 @@ begin
     FileLoader.Free;
   end;
   Application.RemoveComponent(self);
+  SavePlacement;
   Action := caFree;
 end;
 
 procedure TFFiles.FormCreate(Sender: TObject);
 begin
   Application.InsertComponent(self);
+  LoadPlacement;
 end;
 
 procedure TFFiles.RePaintList;
@@ -302,9 +308,52 @@ begin
         ImageIndex := indx;
         StateIndex := indx;
       end;
-    if (ItemIndex <= High(Links)) and (d >= 0) then ItemIndex := d;
+    if (Length(Links) > 0) and (d <= High(Links)) then ItemIndex := d;
   end;
 
+end;
+
+procedure TFFiles.SavePlacement;
+var
+  F: TIniFile;
+  i: Integer;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_FILE_LOADER_FORM_NAME);
+  with F do begin
+    WriteInteger('Form', 'Width', Width);
+    WriteInteger('Form', 'Height', Height);
+    WriteInteger('Form', 'Top', Top);
+    WriteInteger('Form', 'Left', Left);
+    WriteInteger('List', 'Width', lv_files.Width);
+    WriteInteger('List', 'Height', lv_files.Height);
+    for i := 0 to lv_files.Columns.Count - 1 do
+        WriteInteger('List_Column' + inttostr(i), 'Width', lv_files.Columns[i].Width);
+    Free;
+  end;
+end;
+
+procedure TFFiles.LoadPlacement;
+var
+  F: TIniFile;
+  i: Integer;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_FILE_LOADER_FORM_NAME);
+  with F do begin
+    Width := ReadInteger('Form', 'Width', Width);
+    Height := ReadInteger('Form', 'Height', Height);
+    Top := ReadInteger('Form', 'Top', Top);
+    Left := ReadInteger('Form', 'Left', Left);
+    lv_files.Width := ReadInteger('List', 'Width', lv_files.Width);
+    lv_files.Height := ReadInteger('List', 'Height', lv_files.Height);
+    for i := 0 to lv_files.Columns.Count - 1 do
+        lv_files.Columns[i].Width := ReadInteger('List_Column' + inttostr(i), 'Width', lv_files.Columns[i].Width);
+    Free;
+  end;
+end;
+
+procedure TFFiles.lv_filesResize(Sender: TObject);
+begin
+  SavePlacement;
 end;
 
 procedure TFFiles.StartLoad(Files: Tstringlist);

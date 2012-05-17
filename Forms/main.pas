@@ -53,6 +53,7 @@ uses
   f_selfield,
   f_pastebin,
   f_files,
+  f_filessettings,
   funcs,
   loaders,
   myhotkeys,
@@ -167,6 +168,11 @@ type
     lbl_FTP_path: TLabel;
     edt_FTP_URL: TEdit;
     lbl_FTP_URL: TLabel;
+    cb_FTP_Passive: TCheckBox;
+    btn_ClearFormsSettings: TsSpeedButton;
+    btn_ClearMainSettings: TsSpeedButton;
+    btn_ClearPluginsSettings: TsSpeedButton;
+    btn_ClearRecentFiles: TsSpeedButton;
 
     procedure FormCreate(Sender: TObject);
 
@@ -212,6 +218,12 @@ type
     procedure TrayIconBalloonShow(Sender: TObject);
     procedure cb_FTP_ImgClick(Sender: TObject);
     procedure cb_FTP_FilesClick(Sender: TObject);
+    procedure cbb_FilesChange(Sender: TObject);
+    procedure btn_FilesSettingsClick(Sender: TObject);
+    procedure btn_ClearFormsSettingsClick(Sender: TObject);
+    procedure btn_ClearMainSettingsClick(Sender: TObject);
+    procedure btn_ClearPluginsSettingsClick(Sender: TObject);
+    procedure btn_ClearRecentFilesClick(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -279,6 +291,7 @@ begin
       edt_FTP_port.Text := Port;
       edt_FTP_path.Text := path;
       edt_FTP_URL.Text := URL;
+      cb_FTP_Passive.Checked := Passive;
     end;
     Autorun(AutoStart, SYS_KEEP2ME, ParamStr(0));
   end;
@@ -312,6 +325,45 @@ begin
   else ShowMessage(RU_HOTKEY_IS_BUSY);
 end;
 
+procedure TFMain.btn_ClearFormsSettingsClick(Sender: TObject);
+begin
+  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_FILE_LOADER_FORM_NAME) then
+      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_FILE_LOADER_FORM_NAME);
+  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_IMG_LOADER_FORM_NAME) then
+      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_IMG_LOADER_FORM_NAME);
+end;
+
+procedure TFMain.btn_ClearMainSettingsClick(Sender: TObject);
+begin
+  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME) then
+      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
+  LoadSettings;
+  ApplySettings;
+end;
+
+procedure TFMain.btn_ClearPluginsSettingsClick(Sender: TObject);
+begin
+  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_FILELOADERS_SETTINGS_FILE_NAME) then
+      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_FILELOADERS_SETTINGS_FILE_NAME);
+  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_IMGLOADERS_SETTINGS_FILE_NAME) then
+      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_IMGLOADERS_SETTINGS_FILE_NAME);
+end;
+
+procedure TFMain.btn_ClearRecentFilesClick(Sender: TObject);
+begin
+  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME) then
+      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME);
+  LoadRecentFiles;
+  UpdateRecentFiles(self);
+end;
+
+procedure TFMain.btn_FilesSettingsClick(Sender: TObject);
+begin
+  if FileLoadersArray[cbb_Files.ItemIndex].HaveSettings then
+      TFFilesSettings.CreateEx(FileLoadersArray[cbb_Files.ItemIndex].Obj.Create,
+      'Настройки ' + FileLoadersArray[cbb_Files.ItemIndex].Caption);
+end;
+
 procedure TFMain.btn_GetCurrentMonitorClick(Sender: TObject);
 begin
   cbb_Monitors.ItemIndex := MonitorManager.GetMonitorByPoint(Point(self.Left, self.Top));
@@ -320,6 +372,11 @@ end;
 procedure TFMain.btn_RefreshMonitorsClick(Sender: TObject);
 begin
   InitMonitors;
+end;
+
+procedure TFMain.cbb_FilesChange(Sender: TObject);
+begin
+  btn_FilesSettings.Enabled := FileLoadersArray[cbb_Files.ItemIndex].HaveSettings;
 end;
 
 procedure TFMain.cbb_HotKeysActionsChange(Sender: TObject);
@@ -498,8 +555,9 @@ begin
       GSettings.TrayIcon.Hint := Clipboard.AsText;
       GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, Clipboard.AsText);
     end;
-  end;
-  CShorter.Free;
+    CShorter.Free;
+  end
+  else GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не выбран сервис укорачивания ссылок');
 end;
 
 procedure TFMain.DoShowSettings(Sender: TObject);
@@ -568,6 +626,7 @@ begin
   ApplySettings;
   for i := 0 to High(GSettings.Actions) do RegisterMyHotKey(@GSettings.Actions[i], self.Handle, i);
   cbb_HotKeysActionsChange(self);
+  cbb_FilesChange(self);
   UpdateRecentFiles(self);
   beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
   if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
@@ -616,6 +675,7 @@ begin
       Port := edt_FTP_port.Text;
       path := edt_FTP_path.Text;
       URL := edt_FTP_URL.Text;
+      Passive := cb_FTP_Passive.Checked;
     end;
   end;
 end;
@@ -678,6 +738,7 @@ begin
       Port := ReadString(INI_FTP, 'Port', '21');
       path := ReadString(INI_FTP, 'Path', '/www/site.com/');
       URL := ReadString(INI_FTP, 'URL', 'http://site.com/');
+      Passive := ReadBool(INI_FTP, 'Passive', true)
     end;
     Free;
   end;
@@ -729,6 +790,7 @@ var
   i: Integer;
 begin
   f := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
+  f.WriteString(INI_COMMON_SETTINGS, 'Version', SYS_KEEP_VERSION);
   with f, GSettings do begin
     WriteInteger(INI_COMMON_SETTINGS, 'MonitorIndex', MonIndex);
     WriteInteger(INI_COMMON_SETTINGS, 'LoaderIndex', LoaderIndex);
@@ -770,6 +832,7 @@ begin
       WriteString(INI_FTP, 'Port', Port);
       WriteString(INI_FTP, 'Path', path);
       WriteString(INI_FTP, 'URL', URL);
+      WriteBool(INI_FTP, 'Passive', Passive);
     end;
     Free;
   end;
