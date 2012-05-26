@@ -32,6 +32,18 @@ object FImage: TFImage
     Color = clBtnFace
     ParentColor = False
     TabOrder = 1
+    object pb_fon: TPaintBox
+      Left = 0
+      Top = 0
+      Width = 875
+      Height = 419
+      Align = alClient
+      OnPaint = pb_fonPaint
+      ExplicitLeft = 432
+      ExplicitTop = 152
+      ExplicitWidth = 105
+      ExplicitHeight = 105
+    end
     object img: TImage
       Left = 0
       Top = 0
@@ -49,6 +61,17 @@ object FImage: TFImage
       OnMouseMove = imgMouseMove
       OnMouseUp = imgMouseUp
       OnPaint = pbPaint
+    end
+    object pb_Resizeborder: TPaintBox
+      Left = 0
+      Top = 0
+      Width = 875
+      Height = 419
+      Align = alClient
+      Visible = False
+      OnPaint = pb_ResizeborderPaint
+      ExplicitWidth = 105
+      ExplicitHeight = 105
     end
   end
   object pnl_Tools: TPanel
@@ -218,6 +241,18 @@ object FImage: TFImage
       ImageIndex = 21
       Images = Images
     end
+    object btn_Resize: TsSpeedButton
+      Tag = 11
+      Left = 489
+      Top = 6
+      Width = 23
+      Height = 25
+      GroupIndex = 1
+      Flat = True
+      SkinData.SkinSection = 'SPEEDBUTTON'
+      ImageIndex = 22
+      Images = Images
+    end
     object spin_penwidth: TJvSpinEdit
       Left = 136
       Top = 8
@@ -331,6 +366,11 @@ object FImage: TFImage
         Caption = #1042#1099#1088#1077#1079#1072#1090#1100' '#1086#1073#1083#1072#1089#1090#1100
         ImageIndex = 21
         OnClick = pm_cutClick
+      end
+      object mm_Resize: TMenuItem
+        Caption = #1048#1079#1084#1077#1085#1080#1090#1100' '#1088#1072#1079#1084#1077#1088
+        ImageIndex = 22
+        OnClick = mm_ResizeClick
       end
     end
     object mm_colors: TMenuItem
@@ -1071,6 +1111,29 @@ object FImage: TFImage
           0033C8C1BF7F5F5D82A66B18FE8B46C331D080FF202F708134FFFBF7F1F4BF7F
           EFDF00F9E2A01C0DC5BFB160981CC883FF01020C002168234D5902E770000000
           0049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000001F44944415478DAA453416BD440187D934C324936BBDD5D
+          DDDA5A590F0A5EDAA2BD48B52583D25305AFA53DD7DFE03F50F00714F5EC593D
+          28852224A0881711F4B41E3C7890A5529BDD6E6ACC6ED22FB3DBA5226B0F3B10
+          6626DFFBDEFB66BE372CCB328C33F8BD877B8A81311674BB898CA2084992FC03
+          340C038EE38073C327512FFFF7E47E95F1C3C38892B5208E7FCB5EAF37522927
+          0DC310BAAE4B212C224989A40A4E8A01A94B02F89AA679A7954CB880842455E1
+          AB23A4692A5BAD305F7B6F9E5EC7FF6E84D1777BF38312299526A42208C37D1C
+          1CB41520A50BBDB3C5E00A5AA7806D02651BB8540366A7815B5732B4DB2D853D
+          BE7CDE6C36870A5DCA5AAC7FC27CFD2AB8AEC33680BD08A815800B957EBCD389
+          14F678E6719CFC45F03C78809F7312EBCB6B28DA2EEA1513826B285AFDF849BC
+          22C8326DB8C9BBB0FBBD889DB081CF5F1F636AF21CA66A359A27317FF1326ECE
+          147112AF081CE70CB17686159CAF2EC1755D3A7B19AE598523CE42D0BC1B1728
+          FE87DA6829AC10853E811013C4CAD4C622B3BC7EB436A20731C54D98A63B2028
+          F509C8447E1A7D2313256F97374A4BA7FAA0DD78A7EB06987D2DF781A40A5CCF
+          9AF1FC2F3B1B2B0D7FB33268F7C8519EBEF16B76E5D9C08954C1A0246F61F5C5
+          F6FE8FF7F2E3ABBB239317565F12C1E2F02D28738DFB1A358C398E0418000E1A
+          C64B8583B9050000000049454E44AE426082}
       end>
     Left = 288
     Top = 56

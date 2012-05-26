@@ -18,10 +18,10 @@ uses
   IdMultipartFormData,
   IdFTP,
   IdFTPCommon,
+  IdHashMessageDigest,
   Web.HTTPApp,
   ConstStrings,
-  cript,
-  umd5;
+  cript;
 
 type
   THttpWorkEvent = procedure(Sender: TObject; Text: string) of object;
@@ -114,6 +114,19 @@ var
   FileLoadersArray: array of TFileLoaderElement;
 
 implementation
+
+function md5(SourceString: string): string;
+var
+  md5: TIdHashMessageDigest5;
+begin
+  Result := '';
+  md5 := TIdHashMessageDigest5.Create;
+  try
+    Result := AnsiLowerCase(md5.HashStringAsHex(SourceString));
+  finally
+    FreeAndNil(md5);
+  end;
+end;
 
 function PosEx(SubStr, Str: string; Index: longint): integer;
 begin
@@ -283,6 +296,7 @@ end;
 procedure TSendSpaceFileLoader.LoadFile(FileName: string);
 const
   Str = '<download_url>';
+  AStr2 = 'file_id=';
   Str1 = 'status="ok"';
   Str2 = '<upload url="';
   AStr = '<token>';
@@ -350,11 +364,19 @@ begin
       s := HTTP.Put(uplink, Stream);
     except
     end;
-    if Pos(Str, s) = 0 then begin
-      AError := true;
-      Exit;
+    if Auth then begin
+      if Pos(AStr2, s) = 0 then begin
+        AError := true;
+        Exit;
+      end;
+      Link := 'http://www.sendspace.com/file/' + ParsSubString(s, AStr2, #10);
+    end else begin
+      if Pos(Str, s) = 0 then begin
+        AError := true;
+        Exit;
+      end;
+      Link := ParsSubString(s, Str, '<');
     end;
-    Link := ParsSubString(s, Str, '<');
   finally
     Stream.Free;
   end;
@@ -561,7 +583,7 @@ end;
 initialization
 
 AddFileLoader(TRgHostFileLoader, 'rghost.ru [API]', '0.2', true);
-AddFileLoader(TSendSpaceFileLoader, 'sendspace.com [API]', '0.1',false);
+AddFileLoader(TSendSpaceFileLoader, 'sendspace.com [API]', '0.1', true);
 AddFileLoader(TZalilRuFileLoader, 'zalil.ru', '0.1', false);
 
 end.

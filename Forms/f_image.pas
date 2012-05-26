@@ -8,6 +8,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.Math,
   System.IniFiles,
   Vcl.Graphics,
   Vcl.Controls,
@@ -90,6 +91,10 @@ type
     spin_penwidth: TJvSpinEdit;
     btn_cut: TsSpeedButton;
     pm_cut: TMenuItem;
+    btn_Resize: TsSpeedButton;
+    pb_Resizeborder: TPaintBox;
+    pb_fon: TPaintBox;
+    mm_Resize: TMenuItem;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -120,11 +125,15 @@ type
     procedure mm_blurClick(Sender: TObject);
     procedure pbPaint(Sender: TObject);
     procedure pm_cutClick(Sender: TObject);
+    procedure pb_ResizeborderPaint(Sender: TObject);
+    procedure pb_fonPaint(Sender: TObject);
+    procedure mm_ResizeClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
     ActiveDraw: Boolean;
     tmpShape: TFShape;
+    CopyShift: TShiftState;
     function GetScreenName: string;
     procedure TextEditFormClose(Sender: TObject; var Action: TCloseAction);
     procedure SavePlacement;
@@ -231,7 +240,8 @@ begin
   if btn_Text.down then tmpShape := TFText.Create;
   if btn_Blur.down then tmpShape := TFBlurRect.Create;
   if btn_cut.down then tmpShape := TFCut.Create;
-
+  if btn_Resize.down then tmpShape := TFResize.Create;
+  if (tmpShape is TFResize) or (tmpShape is TFCut) then pb_Resizeborder.Visible := true;
   pb.Invalidate;
   // ShapeList.DrawAll(img.Canvas);
   ActiveDraw := true;
@@ -245,21 +255,30 @@ begin
   tmpShape.PenF.Color := shp_pen.Brush.Color;
   tmpShape.PenF.Width := trunc(spin_penwidth.Value);
   tmpShape.BrushF.Color := shp_brush.Brush.Color;
-  tmpShape.AddPoint(Point(X, Y), pb.Canvas);
+  tmpShape.AddPoint(Point(X, Y), pb.Canvas, Shift);
 end;
 
 procedure TFImage.imgMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
   if not ActiveDraw then exit;
-  tmpShape.AddPoint(Point(X, Y), pb.Canvas);
-  pb.Invalidate;
+  if (tmpShape is TFResize) or (tmpShape is TFCut) then begin
+    tmpShape.EndPoint := Point(X, Y);
+    CopyShift := Shift;
+    pb_Resizeborder.Invalidate;
+  end else begin
+    tmpShape.AddPoint(Point(X, Y), pb.Canvas, Shift);
+    pb.Invalidate;
+  end;
 end;
 
 procedure TFImage.imgMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  K: Integer;
 begin
   if not ActiveDraw then exit;
-  tmpShape.AddPoint(Point(X, Y), pb.Canvas);
+  tmpShape.AddPoint(Point(X, Y), pb.Canvas, Shift);
   tmpShape.EndPoint := Point(X, Y);
+  pb_Resizeborder.Visible := false;
   if tmpShape is TFText then begin
     Enabled := false;
     with TFTextEdit.Create(nil) do begin
@@ -269,9 +288,16 @@ begin
     end
   end else begin
     tmpShape.IsDrawing := false;
+    if (tmpShape is TFResize) then
+      with (tmpShape as TFResize) do begin
+        if v < 0 then img.Picture.Bitmap.Height := pb.Height - v;
+        if h < 0 then img.Picture.Bitmap.Width := pb.Width - h;
+      end;
     tmpShape.Draw(img.Canvas);
+
     img.Picture.Bitmap.Height := pb.Height;
     img.Picture.Bitmap.Width := pb.Width;
+
     ActiveDraw := false;
   end;
   ShapeList.AddShape(tmpShape);
@@ -406,6 +432,11 @@ begin
   end;
 end;
 
+procedure TFImage.mm_ResizeClick(Sender: TObject);
+begin
+  btn_Resize.down := true;
+end;
+
 procedure TFImage.mm_SaveToFileClick(Sender: TObject);
 var
   SaveResult: Integer;
@@ -451,7 +482,29 @@ end;
 
 procedure TFImage.pbPaint(Sender: TObject);
 begin
-  if ActiveDraw then tmpShape.Draw(pb.Canvas);
+  if (ActiveDraw) and (not pb_Resizeborder.Visible) then tmpShape.Draw(pb.Canvas);
+end;
+
+procedure TFImage.pb_fonPaint(Sender: TObject);
+const
+  SqSize = 12;
+var
+  i, j: Integer;
+begin
+  pb_fon.Canvas.Pen.Style := psClear;
+  pb_fon.Canvas.Pen.Width := 0;
+  for i := 0 to pb_fon.Width div SqSize + 1 do
+    for j := 0 to pb_fon.Height div SqSize + 1 do
+      with pb_fon.Canvas do begin
+        if (i mod 2 + j mod 2 = 0) or (i mod 2 + j mod 2 = 2) then Brush.Color := clWhite
+        else Brush.Color := $CCCCCC;
+        Rectangle(SqSize * i, SqSize * j, SqSize * (i + 1), SqSize * (j + 1));
+      end;
+end;
+
+procedure TFImage.pb_ResizeborderPaint(Sender: TObject);
+begin
+  if ActiveDraw then tmpShape.Draw(pb_Resizeborder.Canvas, CopyShift);
 end;
 
 procedure TFImage.pm_cutClick(Sender: TObject);
@@ -485,7 +538,7 @@ end;
 procedure TFImage.LoadPlacement;
 var
   F: TIniFile;
-  i, k: Integer;
+  i, K: Integer;
 begin
   F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_IMG_LOADER_FORM_NAME);
   with F do begin
@@ -496,9 +549,9 @@ begin
     spin_penwidth.Value := ReadInteger('Tools', 'PenWidth', trunc(spin_penwidth.Value));
     shp_pen.Brush.Color := ReadInteger('Colors', 'Pen', shp_pen.Brush.Color);
     shp_brush.Brush.Color := ReadInteger('Colors', 'Brush', shp_brush.Brush.Color);
-    k := ReadInteger('Tools', 'Active', 1);
+    K := ReadInteger('Tools', 'Active', 1);
     for i := 0 to ComponentCount - 1 do
-      if (Components[i] is TsSpeedButton) and (Components[i].Tag = k) then begin
+      if (Components[i] is TsSpeedButton) and (Components[i].Tag = K) then begin
         (Components[i] as TsSpeedButton).down := true;
         break;
       end;
