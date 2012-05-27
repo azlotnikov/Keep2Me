@@ -63,7 +63,7 @@ uses
   pastebin_tools,
   cript,
   ConstStrings,
-  fileuploaders;
+  fileuploaders, JvSerialMaker, JvZlibMultiple;
 
 type
   TFMain = class(TForm)
@@ -91,8 +91,6 @@ type
     cbb_pb_deflang: TComboBox;
     cbb_pb_private: TComboBox;
     cbb_pb_expire: TComboBox;
-
-    lbl_HotKeysActions: TLabel;
     lbl_pb_login: TLabel;
     lbl_pb_pass: TLabel;
     lbl_pb_deflang: TLabel;
@@ -130,7 +128,7 @@ type
     edt_pb_login: TEdit;
     edt_pb_pass: TEdit;
     cb_pb_CloseAfterLoad: TCheckBox;
-    mm_LoadImageFromFile: TMenuItem;
+    pm_LoadImageFromFile: TMenuItem;
     OpenImageDlg: TOpenPictureDialog;
     btn_Cancel: TsSpeedButton;
     btn_ImgHostSettings: TsSpeedButton;
@@ -149,7 +147,7 @@ type
     grp_files: TGroupBox;
     cbb_Files: TComboBox;
     btn_FilesSettings: TsSpeedButton;
-    mm_filesfrombuf: TMenuItem;
+    pm_filesfrombuf: TMenuItem;
     cb_OpenByTrayClick: TCheckBox;
     pg_FTP: TsTabSheet;
     cb_FTP_Img: TCheckBox;
@@ -173,6 +171,7 @@ type
     btn_ClearMainSettings: TsSpeedButton;
     btn_ClearPluginsSettings: TsSpeedButton;
     btn_ClearRecentFiles: TsSpeedButton;
+    cb_ShowActionInTray: TCheckBox;
 
     procedure FormCreate(Sender: TObject);
 
@@ -224,6 +223,7 @@ type
     procedure btn_ClearMainSettingsClick(Sender: TObject);
     procedure btn_ClearPluginsSettingsClick(Sender: TObject);
     procedure btn_ClearRecentFilesClick(Sender: TObject);
+    procedure cb_ShowActionInTrayClick(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -388,6 +388,8 @@ begin
     cbb_HotKeys.ItemIndex := Key;
     cb_WinKey.Checked := Win;
     cb_EnableKey.Checked := Enabled;
+    cb_ShowActionInTray.Enabled := (MenuItem <> nil);
+    cb_ShowActionInTray.Checked := ShowMenuItem;
   end;
 end;
 
@@ -414,6 +416,7 @@ begin
   cb_CtrlKey.Enabled := cb_EnableKey.Checked;
   cb_AltKey.Enabled := cb_EnableKey.Checked;
   cbb_HotKeys.Enabled := cb_EnableKey.Checked;
+  btn_CheckHotKey.Enabled := cb_EnableKey.Checked;
 end;
 
 procedure TFMain.cb_FTP_FilesClick(Sender: TObject);
@@ -429,6 +432,11 @@ end;
 procedure TFMain.cb_ShiftKeyClick(Sender: TObject);
 begin
   tmpHotKeys[cbb_HotKeysActions.ItemIndex].Shift := cb_ShiftKey.Checked;
+end;
+
+procedure TFMain.cb_ShowActionInTrayClick(Sender: TObject);
+begin
+  tmpHotKeys[cbb_HotKeysActions.ItemIndex].ShowMenuItem := cb_ShowActionInTray.Checked;
 end;
 
 procedure TFMain.cb_WinKeyClick(Sender: TObject);
@@ -459,7 +467,9 @@ begin
       ShowMessage(RU_ERROR_FIND_UPDATER + SYS_UPDATER_EXE_NAME);
       Exit;
     end;
-    RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), '');
+    // RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), '');
+    ShellExecute(GetDesktopWindow, 'open', PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), nil,
+      nil, SW_SHOW);
     HTTP.Free;
     FMain.tmr_ExitFromThread.Enabled := true;
   end
@@ -595,7 +605,6 @@ var
   i: Integer;
   id: longword;
 begin
-  ForceDirectories(ExtractFilePath(ParamStr(0)) + SYS_TMP_IMG_FOLDER);
   GSettings.TrayIcon := TrayIcon;
   GSettings.UpdateRecentFiles := UpdateRecentFiles;
   LoadRecentFiles;
@@ -603,14 +612,14 @@ begin
     not((ParamCount > 0) and (ParamStr(1) = SYS_SHOW_SETTINGS_PARAM)) then Visible := false
   else Visible := true;
   for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
-  AddHotKeyAction(true, RU_SELECT_SCREEN_PART, true, true, false, false, 4, DoScreenSelect);
-  AddHotKeyAction(false, RU_SEND_FROM_BUFFER, true, true, false, false, 5, DoBufferSend);
-  AddHotKeyAction(false, RU_SEND_WINDOW_SCREEN, true, true, false, false, 6, DoWindowSelect);
-  AddHotKeyAction(true, RU_SEND_TO_PASTEBIN, true, true, true, false, 7, DoPastebin);
-  AddHotKeyAction(false, RU_SHOW_SETTNGS, true, true, false, false, 8, DoShowSettings);
-  AddHotKeyAction(false, RU_OPEN_IMAGE_AND_LOAD, true, true, false, false, 9, DoOpenAndSendImage);
-  AddHotKeyAction(false, RU_LOAD_FILES_FROM_BUF, true, true, false, false, 10, DoLoadFilesFromBuf);
-  AddHotKeyAction(false, RU_SHORT_LINK_FROM_BUF, true, true, false, false, 11, DoShortLinkFromBuf);
+  AddHotKeyAction(true, RU_SELECT_SCREEN_PART, true, true, false, false, 3, DoScreenSelect, pm_SelectScreen);
+  AddHotKeyAction(false, RU_SEND_FROM_BUFFER, true, true, false, false, 4, DoBufferSend, pm_BufferSend);
+  AddHotKeyAction(false, RU_SEND_WINDOW_SCREEN, true, true, false, false, 5, DoWindowSelect, pm_SelectWindow);
+  AddHotKeyAction(true, RU_SEND_TO_PASTEBIN, true, true, true, false, 6, DoPastebin, pm_pastebin);
+  AddHotKeyAction(false, RU_SHOW_SETTNGS, true, true, false, false, 7, DoShowSettings, nil);
+  AddHotKeyAction(false, RU_OPEN_IMAGE_AND_LOAD, true, true, false, false, 8, DoOpenAndSendImage, pm_LoadImageFromFile);
+  AddHotKeyAction(false, RU_LOAD_FILES_FROM_BUF, true, true, false, false, 9, DoLoadFilesFromBuf, pm_filesfrombuf);
+  AddHotKeyAction(false, RU_SHORT_LINK_FROM_BUF, true, true, false, false, 10, DoShortLinkFromBuf, pm_ShortLinkFromBuf);
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
   UpdateActions;
@@ -630,6 +639,8 @@ begin
   UpdateRecentFiles(self);
   beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
   if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
+  ForceDirectories(ExtractFilePath(ParamStr(0)) + SYS_TMP_IMG_FOLDER);
+  // SerialMaker.
 end;
 
 procedure TFMain.FormShow(Sender: TObject);
@@ -655,7 +666,10 @@ begin
     OpenLinksByClick := cb_OpenByTrayClick.Checked;
     FastLoad := cb_FastLoad.Checked;
     SetLength(Actions, Length(tmpHotKeys));
-    for i := 0 to High(tmpHotKeys) do Actions[i] := tmpHotKeys[i];
+    for i := 0 to High(tmpHotKeys) do begin
+      Actions[i] := tmpHotKeys[i];
+      if Actions[i].MenuItem <> nil then Actions[i].MenuItem.Visible := Actions[i].ShowMenuItem;
+    end;
     with Pastebin do begin
       Anon := rb_pb_anon.Checked;
       Login := edt_pb_login.Text;
@@ -718,6 +732,7 @@ begin
         Alt := ReadBool(INI_HOT_KEYS + inttostr(i), 'Alt', Alt);
         Shift := ReadBool(INI_HOT_KEYS + inttostr(i), 'Shift', Shift);
         Win := ReadBool(INI_HOT_KEYS + inttostr(i), 'Win', Win);
+        ShowMenuItem := ReadBool(INI_HOT_KEYS + inttostr(i), 'ShowMenuItem', true);
       end;
     with Pastebin do begin
       Anon := ReadBool(INI_PASTEBIN, 'Anonimous', true);
@@ -812,6 +827,7 @@ begin
         WriteBool(INI_HOT_KEYS + inttostr(i), 'Shift', Shift);
         WriteBool(INI_HOT_KEYS + inttostr(i), 'Win', Win);
         WriteBool(INI_HOT_KEYS + inttostr(i), 'Enabled', Enabled);
+        WriteBool(INI_HOT_KEYS + inttostr(i), 'ShowMenuItem', ShowMenuItem);
       end;
     with Pastebin do begin
       WriteBool(INI_PASTEBIN, 'Anonimous', Anon);
@@ -870,7 +886,8 @@ begin
   cbb_HotKeysActions.Clear;
   with GSettings do
     for i := 0 to High(Actions) do
-        cbb_HotKeysActions.Items.Add(BoolToCheckedAction(Actions[i].Enabled) + ' ' + Actions[i].Caption);
+        cbb_HotKeysActions.Items.Add(BoolToCheckedAction(Actions[i].ShowMenuItem) +
+        BoolToCheckedAction(Actions[i].Enabled) + ' ' + Actions[i].Caption);
   cbb_HotKeysActions.ItemIndex := 0;
 end;
 

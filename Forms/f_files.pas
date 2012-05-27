@@ -324,6 +324,7 @@ begin
     WriteInteger('Form', 'Height', Height);
     WriteInteger('Form', 'Top', Top);
     WriteInteger('Form', 'Left', Left);
+    WriteBool('Form', 'Maximized', (WindowState = wsMaximized));
     WriteInteger('List', 'Width', lv_files.Width);
     WriteInteger('List', 'Height', lv_files.Height);
     for i := 0 to lv_files.Columns.Count - 1 do
@@ -339,10 +340,13 @@ var
 begin
   F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_FILE_LOADER_FORM_NAME);
   with F do begin
-    Width := ReadInteger('Form', 'Width', Width);
-    Height := ReadInteger('Form', 'Height', Height);
-    Top := ReadInteger('Form', 'Top', Top);
-    Left := ReadInteger('Form', 'Left', Left);
+    if ReadBool('Form', 'Maximized', false) then WindowState := wsMaximized
+    else begin
+      Width := ReadInteger('Form', 'Width', Width);
+      Height := ReadInteger('Form', 'Height', Height);
+      Top := ReadInteger('Form', 'Top', Top);
+      Left := ReadInteger('Form', 'Left', Left);
+    end;
     lv_files.Width := ReadInteger('List', 'Width', lv_files.Width);
     lv_files.Height := ReadInteger('List', 'Height', lv_files.Height);
     for i := 0 to lv_files.Columns.Count - 1 do

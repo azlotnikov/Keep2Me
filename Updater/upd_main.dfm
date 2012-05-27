@@ -4,7 +4,7 @@ object FMain: TFMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Keep2Me Updater'
-  ClientHeight = 108
+  ClientHeight = 125
   ClientWidth = 474
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -34,16 +34,29 @@ object FMain: TFMain
     ImageIndex = 0
     Images = Images
   end
+  object lbl_Admin: TLabel
+    Left = 8
+    Top = 87
+    Width = 399
+    Height = 13
+    Caption = #1044#1083#1103' '#1082#1086#1088#1088#1077#1082#1090#1085#1086#1081' '#1088#1072#1073#1086#1090#1099' '#1087#1088#1086#1075#1088#1072#1084#1084#1099' '#1085#1091#1078#1085#1099' '#1087#1088#1072#1074#1072' '#1040#1076#1084#1080#1085#1080#1089#1090#1088#1072#1090#1086#1088#1072
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clRed
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentFont = False
+  end
   object pb: TProgressBar
     Left = 8
     Top = 64
     Width = 458
     Height = 17
-    TabOrder = 0
+    TabOrder = 1
   end
   object stat: TStatusBar
     Left = 0
-    Top = 89
+    Top = 106
     Width = 474
     Height = 19
     Panels = <
@@ -51,6 +64,7 @@ object FMain: TFMain
         Text = #1053#1072#1078#1084#1080#1090#1077' "'#1053#1072#1095#1072#1090#1100' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1077'"'
         Width = 50
       end>
+    ExplicitTop = 89
   end
   object cb_close: TCheckBox
     Left = 8
@@ -58,7 +72,9 @@ object FMain: TFMain
     Width = 155
     Height = 19
     Caption = #1047#1072#1082#1088#1099#1090#1100' '#1087#1086#1089#1083#1077#13#10' '#1079#1072#1074#1077#1088#1096#1077#1085#1080#1103
-    TabOrder = 2
+    Checked = True
+    State = cbChecked
+    TabOrder = 0
   end
   object Images: TsAlphaImageList
     DrawingStyle = dsTransparent
@@ -118,13 +134,13 @@ object FMain: TFMain
           81B4AB5F3FC9459E6075EA8D2E054812C409F25B095802933E9FA5FD9F96569E
           FB0C1D08EAF829C0000E17E15C687CF8160000000049454E44AE426082}
       end>
-    Left = 72
-    Top = 56
+    Left = 112
+    Top = 65528
     Bitmap = {}
   end
   object AntiFreeze: TIdAntiFreeze
-    Left = 48
-    Top = 88
+    Left = 56
+    Top = 8
   end
   object HTTP: TIdHTTP
     OnWork = HTTPWork
@@ -142,7 +158,7 @@ object FMain: TFMain
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 96
-    Top = 48
+    Left = 168
+    Top = 65520
   end
 end

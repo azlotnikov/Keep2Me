@@ -465,7 +465,8 @@ var
 begin
   if IsDrawing then AddPoint(EndPoint, CanvasOut)
   else begin
-    MRect := Rect(StartPoint.X, StartPoint.y, EndPoint.X, EndPoint.y);
+    MRect := Rect(Min(StartPoint.X, EndPoint.X), Min(StartPoint.y, EndPoint.y), Max(StartPoint.X, EndPoint.X),
+      Max(StartPoint.y, EndPoint.y));
     SetColors(CanvasOut);
     CanvasOut.Brush.Style := bsClear;
     CanvasOut.Font.Color := PenF.Color;
@@ -524,7 +525,7 @@ begin
     YMin := Min(EndPoint.y, StartPoint.y);
     XMax := Max(EndPoint.X, StartPoint.X);
     YMax := Max(EndPoint.y, StartPoint.y);
-    tmp := TBitmap.Create; // BitmapBlurGaussian
+    tmp := TBitmap.Create;
     tmp.Width := Abs(EndPoint.X - StartPoint.X);
     tmp.Height := Abs(EndPoint.y - StartPoint.y);
     tmp.Canvas.CopyRect(Rect(0, 0, tmp.Width, tmp.Height), CanvasOut, Rect(XMin, YMin, XMax, YMax));

@@ -3,10 +3,10 @@ object FMain: TFMain
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Keep2Me '#1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 413
+  ClientHeight = 434
   ClientWidth = 390
   Color = clBtnFace
-  Constraints.MinHeight = 451
+  Constraints.MinHeight = 472
   Constraints.MinWidth = 406
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,12 +20,12 @@ object FMain: TFMain
   OnShow = FormShow
   DesignSize = (
     390
-    413)
+    434)
   PixelsPerInch = 96
   TextHeight = 13
   object btn_ApplySettings: TsSpeedButton
     Left = 190
-    Top = 383
+    Top = 404
     Width = 192
     Height = 24
     Anchors = [akLeft, akRight, akBottom]
@@ -38,7 +38,7 @@ object FMain: TFMain
   end
   object btn_Cancel: TsSpeedButton
     Left = 7
-    Top = 383
+    Top = 404
     Width = 177
     Height = 24
     Anchors = [akLeft, akBottom]
@@ -53,7 +53,7 @@ object FMain: TFMain
     Left = 0
     Top = 0
     Width = 390
-    Height = 380
+    Height = 401
     ActivePage = pg_main
     Anchors = [akLeft, akTop, akRight, akBottom]
     Style = tsFlatButtons
@@ -66,7 +66,7 @@ object FMain: TFMain
       UseCloseBtn = False
       DesignSize = (
         382
-        349)
+        370)
       object grp_Monitors: TGroupBox
         Left = 3
         Top = 3
@@ -114,23 +114,16 @@ object FMain: TFMain
         Left = 3
         Top = 58
         Width = 373
-        Height = 100
+        Height = 121
         Anchors = [akLeft, akTop, akRight]
-        Caption = #1043#1086#1088#1103#1095#1080#1077' '#1082#1083#1072#1074#1080#1096#1080
+        Caption = #1044#1077#1081#1089#1090#1074#1080#1103
         TabOrder = 1
         DesignSize = (
           373
-          100)
-        object lbl_HotKeysActions: TLabel
-          Left = 9
-          Top = 22
-          Width = 53
-          Height = 13
-          Caption = #1044#1077#1081#1089#1090#1074#1080#1077':'
-        end
+          121)
         object btn_CheckHotKey: TsSpeedButton
           Left = 233
-          Top = 44
+          Top = 65
           Width = 130
           Height = 22
           Anchors = [akLeft, akTop, akRight]
@@ -141,81 +134,90 @@ object FMain: TFMain
           Images = Images
         end
         object cbb_HotKeysActions: TComboBox
-          Left = 68
-          Top = 19
-          Width = 295
+          Left = 9
+          Top = 40
+          Width = 354
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
-          TabOrder = 0
+          TabOrder = 1
           OnChange = cbb_HotKeysActionsChange
         end
         object cb_CtrlKey: TCheckBox
           Left = 9
-          Top = 71
+          Top = 92
           Width = 53
           Height = 17
           Caption = 'CTRL +'
           Checked = True
           State = cbChecked
-          TabOrder = 3
+          TabOrder = 4
           OnClick = cb_CtrlKeyClick
         end
         object cb_AltKey: TCheckBox
           Left = 68
-          Top = 71
+          Top = 92
           Width = 49
           Height = 17
           Caption = 'ALT +'
           Checked = True
           State = cbChecked
-          TabOrder = 4
+          TabOrder = 5
           OnClick = cb_AltKeyClick
         end
         object cbb_HotKeys: TComboBox
           Left = 233
-          Top = 70
+          Top = 91
           Width = 130
           Height = 21
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           DropDownCount = 18
-          TabOrder = 2
+          TabOrder = 3
           OnChange = cbb_HotKeysChange
         end
         object cb_ShiftKey: TCheckBox
           Left = 123
-          Top = 71
+          Top = 92
           Width = 62
           Height = 17
           Caption = 'Shift +'
-          TabOrder = 5
+          TabOrder = 6
           OnClick = cb_ShiftKeyClick
         end
         object cb_WinKey: TCheckBox
           Left = 178
-          Top = 71
+          Top = 92
           Width = 49
           Height = 17
           Caption = 'WIN +'
-          TabOrder = 6
+          TabOrder = 7
           OnClick = cb_WinKeyClick
         end
         object cb_EnableKey: TCheckBox
           Left = 9
-          Top = 46
-          Width = 79
+          Top = 67
+          Width = 136
           Height = 17
-          Caption = #1042#1082#1083#1102#1095#1080#1090#1100
+          Caption = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1061#1086#1090#1082#1077#1081
           Checked = True
           State = cbChecked
-          TabOrder = 1
+          TabOrder = 2
           OnClick = cb_EnableKeyClick
+        end
+        object cb_ShowActionInTray: TCheckBox
+          Left = 9
+          Top = 17
+          Width = 120
+          Height = 17
+          Caption = #1055#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1074' '#1084#1077#1085#1102
+          TabOrder = 0
+          OnClick = cb_ShowActionInTrayClick
         end
       end
       object grp_Hostings: TGroupBox
         Left = 3
-        Top = 164
+        Top = 185
         Width = 373
         Height = 75
         Anchors = [akLeft, akTop, akRight]
@@ -263,7 +265,7 @@ object FMain: TFMain
       end
       object grp_ShortLink: TGroupBox
         Left = 3
-        Top = 297
+        Top = 318
         Width = 373
         Height = 48
         Anchors = [akLeft, akTop, akRight]
@@ -296,7 +298,7 @@ object FMain: TFMain
       end
       object grp_files: TGroupBox
         Left = 3
-        Top = 245
+        Top = 266
         Width = 373
         Height = 46
         Anchors = [akLeft, akTop, akRight]
@@ -335,13 +337,9 @@ object FMain: TFMain
       Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         382
-        349)
+        370)
       object btn_ClearFormsSettings: TsSpeedButton
         Left = 3
         Top = 151
@@ -464,13 +462,9 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         382
-        349)
+        370)
       object grp_pb_account: TGroupBox
         Left = 3
         Top = 0
@@ -630,13 +624,9 @@ object FMain: TFMain
       Caption = 'FTP'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         382
-        349)
+        370)
       object cb_FTP_Img: TCheckBox
         Left = 3
         Top = 3
@@ -1327,12 +1317,12 @@ object FMain: TFMain
       ImageIndex = 11
       OnClick = DoWindowSelect
     end
-    object mm_filesfrombuf: TMenuItem
+    object pm_filesfrombuf: TMenuItem
       Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100' '#1092#1072#1081#1083#1099' '#1080#1079' '#1073#1091#1092#1077#1088#1072
       ImageIndex = 17
       OnClick = DoLoadFilesFromBuf
     end
-    object mm_LoadImageFromFile: TMenuItem
+    object pm_LoadImageFromFile: TMenuItem
       Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077' '#1080#1079' '#1092#1072#1081#1083#1072
       ImageIndex = 13
       OnClick = DoOpenAndSendImage

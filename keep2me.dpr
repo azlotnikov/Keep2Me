@@ -15,20 +15,20 @@ uses
   cript in 'Utils\cript.pas',
   unitIsAdmin in 'Utils\unitIsAdmin.pas',
   ConstStrings in 'Utils\ConstStrings.pas',
-  main in 'Forms\main.pas' {FMain},
-  f_load in 'Forms\f_load.pas' {FLoad},
-  f_points in 'Forms\f_points.pas' {FPoints},
-  f_selfield in 'Forms\f_selfield.pas' {FSelField},
-  f_image in 'Forms\f_image.pas' {FImage},
-  f_about in 'Forms\f_about.pas' {FAbout},
-  f_framsize in 'Forms\f_framsize.pas' {FFrameSize},
-  f_windows in 'Forms\f_windows.pas' {FWindows},
-  f_pastebin in 'Forms\f_pastebin.pas' {FPasteBin},
-  f_textedit in 'Forms\f_textedit.pas' {FTextEdit},
-  f_files in 'Forms\f_files.pas' {FFiles},
   fileuploaders in 'Utils\fileuploaders.pas',
-  f_filessettings in 'Forms\f_filessettings.pas' {FFilesSettings},
-  umd5 in 'Utils\umd5.pas';
+  main in 'Forms\main.pas' {FMain} ,
+  f_load in 'Forms\f_load.pas' {FLoad} ,
+  f_points in 'Forms\f_points.pas' {FPoints} ,
+  f_selfield in 'Forms\f_selfield.pas' {FSelField} ,
+  f_image in 'Forms\f_image.pas' {FImage} ,
+  f_about in 'Forms\f_about.pas' {FAbout} ,
+  f_framsize in 'Forms\f_framsize.pas' {FFrameSize} ,
+  f_windows in 'Forms\f_windows.pas' {FWindows} ,
+  f_pastebin in 'Forms\f_pastebin.pas' {FPasteBin} ,
+  f_textedit in 'Forms\f_textedit.pas' {FTextEdit} ,
+  f_files in 'Forms\f_files.pas' {FFiles} ,
+  f_filessettings in 'Forms\f_filessettings.pas' {FFilesSettings} ,
+  f_archivator in 'Forms\f_archivator.pas' {FArchivator};
 
 {$R *.res}
 
@@ -37,7 +37,6 @@ begin
     ShowMessage('Keep2Me уже запущен!');
     Halt(0);
   end;
-
   Application.Initialize;
   Application.Title := 'Keep2Me';
   Application.ShowMainForm := false;

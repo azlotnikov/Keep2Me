@@ -37,7 +37,7 @@ uses
   f_textedit,
   funcs,
   imgtools,
-  ConstStrings;
+  ConstStrings, JvBackgrounds;
 
 type
   TFImage = class(TForm)
@@ -48,7 +48,6 @@ type
     mm_undo: TMenuItem;
     mm_Load: TMenuItem;
     pnl_Tools: TPanel;
-    btn_Brush: TsSpeedButton;
     Images: TsAlphaImageList;
     btn_DoLoad: TsSpeedButton;
     shp_brush: TShape;
@@ -59,42 +58,46 @@ type
     N1: TMenuItem;
     mm_close: TMenuItem;
     mm_DefaultColor: TMenuItem;
-    mm_showtools: TMenuItem;
+    mm_showtoppanel: TMenuItem;
     mm_tools: TMenuItem;
     mm_brush: TMenuItem;
-    btn_line: TsSpeedButton;
     mm_deleteall: TMenuItem;
     mm_line: TMenuItem;
     mm_view: TMenuItem;
     mm_copyimg: TMenuItem;
     mm_SaveToFile: TMenuItem;
     SavePictureDlg: TSavePictureDialog;
-    btn_Rect: TsSpeedButton;
     mm_rect: TMenuItem;
-    btn_SelPen: TsSpeedButton;
     mm_SelPen: TMenuItem;
     mm_redo: TMenuItem;
     mm_colors: TMenuItem;
     mm_pencolor: TMenuItem;
     mm_brushcolor: TMenuItem;
-    btn_Ellipse: TsSpeedButton;
     mm_ellipse: TMenuItem;
-    btn_Text: TsSpeedButton;
     mm_text: TMenuItem;
-    btn_rectclear: TsSpeedButton;
-    btn_ellipseclear: TsSpeedButton;
     mm_rectclear: TMenuItem;
     mm_ellipseclear: TMenuItem;
-    btn_Blur: TsSpeedButton;
     mm_blur: TMenuItem;
     pb: TPaintBox;
     spin_penwidth: TJvSpinEdit;
-    btn_cut: TsSpeedButton;
     pm_cut: TMenuItem;
-    btn_Resize: TsSpeedButton;
-    pb_Resizeborder: TPaintBox;
-    pb_fon: TPaintBox;
     mm_Resize: TMenuItem;
+    pnl_buttons: TPanel;
+    btn_Brush: TsSpeedButton;
+    btn_line: TsSpeedButton;
+    btn_Rect: TsSpeedButton;
+    btn_Ellipse: TsSpeedButton;
+    btn_rectclear: TsSpeedButton;
+    btn_ellipseclear: TsSpeedButton;
+    btn_Text: TsSpeedButton;
+    btn_SelPen: TsSpeedButton;
+    btn_Blur: TsSpeedButton;
+    btn_cut: TsSpeedButton;
+    btn_Resize: TsSpeedButton;
+    mm_showleftpanel: TMenuItem;
+    pb_Resizeborder: TPaintBox;
+    img_fon: TImage;
+    tmr_BackGroundcheck: TTimer;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -107,7 +110,7 @@ type
     procedure mm_swapcolorsClick(Sender: TObject);
     procedure mm_closeClick(Sender: TObject);
     procedure mm_DefaultColorClick(Sender: TObject);
-    procedure mm_showtoolsClick(Sender: TObject);
+    procedure mm_showtoppanelClick(Sender: TObject);
     procedure mm_brushClick(Sender: TObject);
     procedure mm_deleteallClick(Sender: TObject);
     procedure mm_lineClick(Sender: TObject);
@@ -126,18 +129,22 @@ type
     procedure pbPaint(Sender: TObject);
     procedure pm_cutClick(Sender: TObject);
     procedure pb_ResizeborderPaint(Sender: TObject);
-    procedure pb_fonPaint(Sender: TObject);
     procedure mm_ResizeClick(Sender: TObject);
+    procedure mm_showleftpanelClick(Sender: TObject);
+    procedure pnl_ToolsClick(Sender: TObject);
+    procedure tmr_BackGroundcheckTimer(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
     ActiveDraw: Boolean;
     tmpShape: TFShape;
     CopyShift: TShiftState;
+    OldFonSize: TPoint;
     function GetScreenName: string;
     procedure TextEditFormClose(Sender: TObject; var Action: TCloseAction);
     procedure SavePlacement;
     procedure LoadPlacement;
+    procedure ReloadBackGround;
   public
     OriginImg: TBitmap;
     ShapeList: TFShapeList;
@@ -297,7 +304,6 @@ begin
 
     img.Picture.Bitmap.Height := pb.Height;
     img.Picture.Bitmap.Width := pb.Width;
-
     ActiveDraw := false;
   end;
   ShapeList.AddShape(tmpShape);
@@ -444,7 +450,7 @@ begin
   with SavePictureDlg do begin
     FileName := ExtractFileName(GetScreenName);
     DefaultExt := ExtractFileName(GetScreenName);
-    FilterIndex := 1 + GSettings.ImgExtIndex;
+    FilterIndex := GSettings.ImgExtIndex;
     if Execute then begin
       SaveResult := 1;
       // ShapeList.DrawAll(img.Canvas);
@@ -485,23 +491,6 @@ begin
   if (ActiveDraw) and (not pb_Resizeborder.Visible) then tmpShape.Draw(pb.Canvas);
 end;
 
-procedure TFImage.pb_fonPaint(Sender: TObject);
-const
-  SqSize = 12;
-var
-  i, j: Integer;
-begin
-  pb_fon.Canvas.Pen.Style := psClear;
-  pb_fon.Canvas.Pen.Width := 0;
-  for i := 0 to pb_fon.Width div SqSize + 1 do
-    for j := 0 to pb_fon.Height div SqSize + 1 do
-      with pb_fon.Canvas do begin
-        if (i mod 2 + j mod 2 = 0) or (i mod 2 + j mod 2 = 2) then Brush.Color := clWhite
-        else Brush.Color := $CCCCCC;
-        Rectangle(SqSize * i, SqSize * j, SqSize * (i + 1), SqSize * (j + 1));
-      end;
-end;
-
 procedure TFImage.pb_ResizeborderPaint(Sender: TObject);
 begin
   if ActiveDraw then tmpShape.Draw(pb_Resizeborder.Canvas, CopyShift);
@@ -510,6 +499,32 @@ end;
 procedure TFImage.pm_cutClick(Sender: TObject);
 begin
   btn_cut.down := true;
+end;
+
+procedure TFImage.pnl_ToolsClick(Sender: TObject);
+begin
+  ShowMessage(IntToStr(img_fon.Width));
+end;
+
+procedure TFImage.ReloadBackGround;
+const
+  SqSize = 12;
+var
+  i, j: Integer;
+begin
+  img_fon.Picture.Bitmap.Width := img_fon.Width;
+  img_fon.Picture.Bitmap.Height := img_fon.Height;
+  img_fon.Picture.Bitmap.Canvas.Rectangle(0, 0, img_fon.Width, img_fon.Height);
+  img_fon.Picture.Bitmap.Canvas.Pen.Style := psSolid;
+  img_fon.Picture.Bitmap.Canvas.Pen.Width := 0;
+  for i := 0 to img_fon.Width div SqSize + 1 do
+    for j := 0 to img_fon.Height div SqSize + 1 do
+      with img_fon.Picture.Bitmap.Canvas do begin
+        if (i mod 2 + j mod 2 = 0) or (i mod 2 + j mod 2 = 2) then Brush.Color := clWhite
+        else Brush.Color := $CCCCCC;
+        Pen.Color := Brush.Color;
+        Rectangle(SqSize * i, SqSize * j, SqSize * (i + 1), SqSize * (j + 1));
+      end;
 end;
 
 procedure TFImage.SavePlacement;
@@ -523,6 +538,7 @@ begin
     WriteInteger('Form', 'Height', Height);
     WriteInteger('Form', 'Top', Top);
     WriteInteger('Form', 'Left', Left);
+    WriteBool('Form', 'Maximized', (WindowState = wsMaximized));
     WriteInteger('Tools', 'PenWidth', trunc(spin_penwidth.Value));
     WriteInteger('Colors', 'Pen', shp_pen.Brush.Color);
     WriteInteger('Colors', 'Brush', shp_brush.Brush.Color);
@@ -542,10 +558,13 @@ var
 begin
   F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_IMG_LOADER_FORM_NAME);
   with F do begin
-    Width := ReadInteger('Form', 'Width', Width);
-    Height := ReadInteger('Form', 'Height', Height);
-    Top := ReadInteger('Form', 'Top', Top);
-    Left := ReadInteger('Form', 'Left', Left);
+    if ReadBool('Form', 'Maximized', false) then WindowState := wsMaximized
+    else begin
+      Width := ReadInteger('Form', 'Width', Width);
+      Height := ReadInteger('Form', 'Height', Height);
+      Top := ReadInteger('Form', 'Top', Top);
+      Left := ReadInteger('Form', 'Left', Left);
+    end;
     spin_penwidth.Value := ReadInteger('Tools', 'PenWidth', trunc(spin_penwidth.Value));
     shp_pen.Brush.Color := ReadInteger('Colors', 'Pen', shp_pen.Brush.Color);
     shp_brush.Brush.Color := ReadInteger('Colors', 'Brush', shp_brush.Brush.Color);
@@ -559,18 +578,16 @@ begin
   end;
 end;
 
-procedure TFImage.mm_showtoolsClick(Sender: TObject);
+procedure TFImage.mm_showleftpanelClick(Sender: TObject);
 begin
-  mm_showtools.Checked := not mm_showtools.Checked;
-  if mm_showtools.Checked then begin
-    pnl_Tools.Visible := true;
-    scrlbx.Top := 43;
-    scrlbx.Height := scrlbx.Height - 43 + 8;
-  end else begin
-    pnl_Tools.Visible := false;
-    scrlbx.Top := 8;
-    scrlbx.Height := scrlbx.Height + 43 - 8;
-  end;
+  mm_showleftpanel.Checked := not mm_showleftpanel.Checked;
+  pnl_buttons.Visible := mm_showleftpanel.Checked;
+end;
+
+procedure TFImage.mm_showtoppanelClick(Sender: TObject);
+begin
+  mm_showtoppanel.Checked := not mm_showtoppanel.Checked;
+  pnl_Tools.Visible := mm_showtoppanel.Checked;
 end;
 
 procedure TFImage.mm_closeClick(Sender: TObject);
@@ -605,6 +622,7 @@ begin
     BringToFront;
     Show;
   end;
+  ReloadBackGround;
 end;
 
 procedure TFImage.TextEditFormClose(Sender: TObject; var Action: TCloseAction);
@@ -622,6 +640,14 @@ begin
   Enabled := true;
   ActiveDraw := false;
   pb.Invalidate;
+end;
+
+procedure TFImage.tmr_BackGroundcheckTimer(Sender: TObject);
+begin
+  if (OldFonSize.X <> img_fon.Width) or (OldFonSize.Y <> img_fon.Height) then begin
+    ReloadBackGround;
+    OldFonSize := Point(img_fon.Width, img_fon.Height);
+  end;
 end;
 
 end.

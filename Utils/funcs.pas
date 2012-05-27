@@ -10,6 +10,7 @@ uses
   System.IniFiles,
   System.SysUtils,
   Vcl.Forms,
+  Vcl.Menus,
   JvTrayIcon,
   loaders,
   mons,
@@ -30,6 +31,8 @@ type
     Key: Integer;
     RegKey: Integer;
     Proc: TNotifyEvent;
+    MenuItem: TMenuItem;
+    ShowMenuItem: Boolean;
   end;
 
   PHotKeyAction = ^THotKeyAction;
@@ -101,7 +104,7 @@ procedure UnRegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle);
 procedure Autorun(Flag: Boolean; NameParam, Path: String);
 procedure AddToRecentFiles(ALink, ACaption: string; ALType: TRecentFileType);
 procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer;
-  _Proc: TNotifyEvent);
+  _Proc: TNotifyEvent; _MenuItem: TMenuItem);
 procedure LoadRecentFiles;
 function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
 function GetFileSize(filename: wideString): Int64;
@@ -254,7 +257,7 @@ begin
 end;
 
 procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shift, _Win: Boolean; _Key: Integer;
-  _Proc: TNotifyEvent);
+  _Proc: TNotifyEvent; _MenuItem: TMenuItem);
 begin
   SetLength(GSettings.Actions, Length(GSettings.Actions) + 1);
   with GSettings.Actions[High(GSettings.Actions)] do begin
@@ -266,6 +269,8 @@ begin
     Win := _Win;
     Key := _Key;
     Proc := _Proc;
+    MenuItem := _MenuItem;
+    ShowMenuItem := true;
   end;
 end;
 
