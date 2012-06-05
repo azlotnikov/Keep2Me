@@ -29,9 +29,9 @@ uses
   Vcl.ComCtrls,
   Vcl.Buttons,
   Vcl.ExtDlgs,
-  Vcl.Imaging.GIFImg,
   Vcl.Imaging.PNGImage,
   Vcl.Imaging.JPEG,
+  Vcl.Imaging.GIFImg,
   JvImageList,
   JvExControls,
   JvSpeedButton,
@@ -468,7 +468,7 @@ begin
       Exit;
     end;
     // RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), '');
-    ShellExecute(GetDesktopWindow, 'open', PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), nil,
+    ShellExecute(GetDesktopWindow, 'open', PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), 'STARTUPDATE',
       nil, SW_SHOW);
     HTTP.Free;
     FMain.tmr_ExitFromThread.Enabled := true;
@@ -520,12 +520,50 @@ begin
   end;
 end;
 
+procedure DetectImage(const InputFileName: string; BM: TBitmap);
+var
+  FS: TFileStream;
+  FirstBytes: AnsiString;
+  Graphic: TGraphic;
+begin
+  Graphic := nil;
+  FS := TFileStream.Create(InputFileName, fmOpenRead);
+  try
+    SetLength(FirstBytes, 8);
+    FS.Read(FirstBytes[1], 8);
+    if Copy(FirstBytes, 1, 2) = 'BM' then begin
+      Graphic := TBitmap.Create;
+    end
+    else if FirstBytes = #137'PNG'#13#10#26#10 then begin
+      Graphic := TPngImage.Create;
+    end
+    else if Copy(FirstBytes, 1, 3) = 'GIF' then begin
+      Graphic := TGIFImage.Create;
+    end
+    else if Copy(FirstBytes, 1, 2) = #$FF#$D8 then begin
+      Graphic := TJPEGImage.Create;
+    end;
+    if Assigned(Graphic) then begin
+      try
+        FS.Seek(0, soFromBeginning);
+        Graphic.LoadFromStream(FS);
+        BM.Assign(Graphic);
+      except
+      end;
+      Graphic.Free;
+    end;
+  finally
+    FS.Free;
+  end;
+end;
+
 procedure TFMain.DoOpenAndSendImage(Sender: TObject);
 begin
   if OpenImageDlg.Execute then
     with TFImage.Create(nil) do
       try
-        img.Picture.LoadFromFile(OpenImageDlg.FileName);
+        DetectImage(OpenImageDlg.FileName, OriginImg);
+        img.Picture.Assign(OriginImg);
         StartWork;
       except
         On E: Exception do begin
@@ -600,11 +638,47 @@ begin
   Hide;
 end;
 
+{
+  procedure TmpUpdate;
+  var
+  LoadStream: TMemoryStream;
+  HTTP: tidhttp;
+  begin
+  HTTP := tidhttp.Create;
+  HTTP.ReadTimeout := 60000;
+  HTTP.ConnectTimeout := 60000;
+  HTTP.Request.UserAgent := SYS_USERAGENT;
+  LoadStream := TMemoryStream.Create;
+  try
+  DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME);
+  HTTP.Get('http://keep2.me/program/files/updater.exe', LoadStream);
+  LoadStream.SaveToFile(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME);
+  except
+  end;
+  LoadStream.Free;
+  HTTP.Free;
+  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME) then begin
+  ShellExecute(GetDesktopWindow, 'open', PChar(ExtractFilePath(ParamStr(0)) + SYS_UPDATER_EXE_NAME), 'STARTUPDATE',
+  nil, SW_SHOW);
+  end else begin
+  ShowMessage('Не удалось обновить updater.exe' + #13#10 +
+  'Сейчас вас перенаправит на страницу скачивания keep2me. Скачайте архив и замените ваши keep2me.exe и updater.exe на новые.');
+  ShellExecute(GetDesktopWindow, 'open', 'http://keep2.me/keep2me(test)_x86.rar', nil, nil, SW_SHOW);
+  end;
+  FMain.tmr_ExitFromThread.Enabled := true;
+  end;
+}
 procedure TFMain.FormCreate(Sender: TObject);
 var
   i: Integer;
   id: longword;
 begin
+  { TrayIcon.IconVisible := false;
+    ShowMessage('Необходимо обновить updater.exe' + #13#10 +
+    'Программа в фоновом режиме перекачает файл и автоматически обновит keep2me до последней версии.' + #13#10 +
+    'Процесс займет несколько минут.');
+    TmpUpdate;
+    Exit; }
   GSettings.TrayIcon := TrayIcon;
   GSettings.UpdateRecentFiles := UpdateRecentFiles;
   LoadRecentFiles;

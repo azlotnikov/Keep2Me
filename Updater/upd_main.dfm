@@ -4,7 +4,7 @@ object FMain: TFMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Keep2Me Updater'
-  ClientHeight = 125
+  ClientHeight = 127
   ClientWidth = 474
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,25 +14,15 @@ object FMain: TFMain
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object lbl_info: TLabel
-    Left = 184
-    Top = 18
+    Left = 238
+    Top = 16
     Width = 157
     Height = 26
     Caption = 'Keep2Me '#1072#1074#1090#1086#1084#1072#1090#1080#1095#1077#1089#1082#1080#13#10#1079#1072#1087#1091#1089#1090#1080#1090#1089#1103' '#1087#1086#1089#1083#1077' '#1079#1072#1074#1077#1088#1096#1077#1085#1080#1103'.'
-  end
-  object btn_update: TsSpeedButton
-    Left = 8
-    Top = 8
-    Width = 155
-    Height = 25
-    Caption = #1053#1072#1095#1072#1090#1100' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1077
-    OnClick = btn_updateClick
-    SkinData.SkinSection = 'SPEEDBUTTON'
-    ImageIndex = 0
-    Images = Images
   end
   object lbl_Admin: TLabel
     Left = 8
@@ -56,7 +46,7 @@ object FMain: TFMain
   end
   object stat: TStatusBar
     Left = 0
-    Top = 106
+    Top = 108
     Width = 474
     Height = 19
     Panels = <
@@ -64,17 +54,25 @@ object FMain: TFMain
         Text = #1053#1072#1078#1084#1080#1090#1077' "'#1053#1072#1095#1072#1090#1100' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1077'"'
         Width = 50
       end>
-    ExplicitTop = 89
   end
   object cb_close: TCheckBox
     Left = 8
     Top = 39
-    Width = 155
+    Width = 193
     Height = 19
-    Caption = #1047#1072#1082#1088#1099#1090#1100' '#1087#1086#1089#1083#1077#13#10' '#1079#1072#1074#1077#1088#1096#1077#1085#1080#1103
+    Caption = #1047#1072#1082#1088#1099#1090#1100' '#1087#1086#1089#1083#1077' '#1079#1072#1074#1077#1088#1096#1077#1085#1080#1103
     Checked = True
     State = cbChecked
     TabOrder = 0
+  end
+  object btn_update: TButton
+    Left = 8
+    Top = 8
+    Width = 155
+    Height = 25
+    Caption = #1053#1072#1095#1072#1090#1100' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1077
+    TabOrder = 3
+    OnClick = btn_updateClick
   end
   object Images: TsAlphaImageList
     DrawingStyle = dsTransparent
@@ -134,12 +132,12 @@ object FMain: TFMain
           81B4AB5F3FC9459E6075EA8D2E054812C409F25B095802933E9FA5FD9F96569E
           FB0C1D08EAF829C0000E17E15C687CF8160000000049454E44AE426082}
       end>
-    Left = 112
-    Top = 65528
+    Left = 368
+    Top = 8
     Bitmap = {}
   end
   object AntiFreeze: TIdAntiFreeze
-    Left = 56
+    Left = 408
     Top = 8
   end
   object HTTP: TIdHTTP
@@ -160,5 +158,12 @@ object FMain: TFMain
     HTTPOptions = [hoForceEncodeParams]
     Left = 168
     Top = 65520
+  end
+  object tmr_exit: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = tmr_exitTimer
+    Left = 256
+    Top = 48
   end
 end

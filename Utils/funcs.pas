@@ -12,6 +12,7 @@ uses
   Vcl.Forms,
   Vcl.Menus,
   JvTrayIcon,
+  acAlphaImageList,
   loaders,
   mons,
   myhotkeys,
@@ -95,8 +96,9 @@ type
     FTP: TFTPSettings;
   end;
 
+
 function ImgFormatToText(I: TImgFormats): String;
-function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string): Boolean;
+function RunMeAsAdmin(hWnd: hWnd; FileName: string; Parameters: string): Boolean;
 procedure MinimizeAllForms;
 procedure RestoreAllForms;
 function RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer; Check: Boolean = false): Boolean;
@@ -107,7 +109,8 @@ procedure AddHotKeyAction(_Enabled: Boolean; _Caption: string; _Ctrl, _Alt, _Shi
   _Proc: TNotifyEvent; _MenuItem: TMenuItem);
 procedure LoadRecentFiles;
 function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
-function GetFileSize(filename: wideString): Int64;
+function GetFileSize(FileName: wideString): Int64;
+procedure GetAllFiles(Path: string; T: TStringList; ImgOnly: Boolean);
 
 var
   GSettings: TSettings;
@@ -115,11 +118,32 @@ var
 
 implementation
 
-function GetFileSize(filename: wideString): Int64;
+procedure GetAllFiles(Path: string; T: TStringList; ImgOnly: Boolean);
+var
+  sRec: TSearchRec;
+  isFound: Boolean;
+begin
+  isFound := FindFirst(Path + '\*.*', faAnyFile, sRec) = 0;
+  while isFound do begin
+    if (sRec.Name <> '.') and (sRec.Name <> '..') then begin
+      if (sRec.Attr and faDirectory) = faDirectory then GetAllFiles(Path + '\' + sRec.Name, T, ImgOnly);
+      if ImgOnly then begin
+        if (ExtractFileExt(sRec.Name) = '.png') or (ExtractFileExt(sRec.Name) = '.jpg') then
+            T.Add(Path + '\' + sRec.Name);
+      end
+      else T.Add(Path + '\' + sRec.Name);
+    end;
+    Application.ProcessMessages;
+    isFound := FindNext(sRec) = 0;
+  end;
+  FindClose(sRec);
+end;
+
+function GetFileSize(FileName: wideString): Int64;
 var
   sr: TSearchRec;
 begin
-  if FindFirst(filename, faAnyFile, sr) = 0 then
+  if FindFirst(FileName, faAnyFile, sr) = 0 then
       Result := Int64(sr.FindData.nFileSizeHigh) shl Int64(32) + Int64(sr.FindData.nFileSizeLow)
   else Result := -1;
   FindClose(sr);
@@ -167,7 +191,7 @@ begin
   end;
 end;
 
-function RunMeAsAdmin(hWnd: hWnd; filename: string; Parameters: string): Boolean;
+function RunMeAsAdmin(hWnd: hWnd; FileName: string; Parameters: string): Boolean;
 var
   sei: TShellExecuteInfo;
 begin
@@ -176,7 +200,7 @@ begin
   sei.Wnd := hWnd;
   sei.fMask := SEE_MASK_FLAG_DDEWAIT or SEE_MASK_FLAG_NO_UI;
   sei.lpVerb := PChar('runas');
-  sei.lpFile := PChar(filename); // PAnsiChar;
+  sei.lpFile := PChar(FileName); // PAnsiChar;
   if Parameters <> '' then sei.lpParameters := PChar(Parameters)
   else sei.lpParameters := nil; // PAnsiChar;
   sei.nShow := SW_SHOWNORMAL; // Integer;
@@ -307,5 +331,7 @@ begin
   else Reg.DeleteValue(NameParam);
   Reg.Free;
 end;
+
+{ TSmileList }
 
 end.

@@ -164,6 +164,10 @@
 				<Form>FArchivator</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
+			<DCCReference Include="Forms\f_imageinfo.pas">
+				<Form>FImageInfo</Form>
+				<FormType>dfm</FormType>
+			</DCCReference>
 			<BuildConfiguration Include="Release">
 				<Key>Cfg_2</Key>
 				<CfgParent>Base</CfgParent>

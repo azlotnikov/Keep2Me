@@ -3,13 +3,16 @@ program updater;
 uses
   Vcl.Forms,
   upd_main in 'upd_main.pas' {FMain},
-  unitIsAdmin in 'unitIsAdmin.pas';
+  unitIsAdmin in 'unitIsAdmin.pas',
+  Vcl.Themes,
+  Vcl.Styles;
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  TStyleManager.TrySetStyle('Carbon');
   Application.Title := 'Keep2Me Updater';
   Application.CreateForm(TFMain, FMain);
   Application.Run;

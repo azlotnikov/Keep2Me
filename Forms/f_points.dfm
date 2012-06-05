@@ -7,7 +7,7 @@ object FPoints: TFPoints
   BorderStyle = bsNone
   ClientHeight = 338
   ClientWidth = 651
-  Color = clBtnFace
+  Color = clWhite
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

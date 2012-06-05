@@ -11,7 +11,8 @@ uses
   Vcl.Graphics,
   Vcl.ExtCtrls,
   System.Math,
-  JclGraphics;
+  JclGraphics,
+  acAlphaImageList;
 
 type
   TRPen = record
@@ -34,10 +35,19 @@ type
     StartPoint: TPoint;
     EndPoint: TPoint;
     IsDrawing: Boolean;
+    IMGSize: TPoint;
     procedure SetColors(CanvasOut: TCanvas); virtual;
     procedure Draw(CanvasOut: TCanvas; Shift: TShiftState = []); virtual; abstract;
     procedure AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = []); virtual; abstract;
     constructor Create;
+  end;
+
+type
+  TFSmile = class(TFShape)
+  public
+    ImagesData: TsAlphaImageList;
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = []); override;
+    procedure Draw(CanvasOut: TCanvas; Shift: TShiftState = []); override;
   end;
 
 type
@@ -132,6 +142,7 @@ Type
     UndoIndex: Integer;
     Shapes: array of TFShape;
   public
+    IMG: TImage;
     procedure AddShape(S: TFShape);
     procedure DrawAll(CanvasOut: TCanvas);
     procedure Clear;
@@ -310,6 +321,7 @@ begin
   end;
   CanvasOut.MoveTo(Points[0].X, Points[0].y);
   for i := 0 to High(Points) - 1 do CanvasOut.LineTo(Points[i].X, Points[i].y);
+  IMGSize := Point(PB.Width, PB.Height);
 end;
 
 { TFShapeList }
@@ -352,7 +364,17 @@ procedure TFShapeList.DrawAll(CanvasOut: TCanvas);
 var
   i: Integer;
 begin
-  for i := 0 to High(Shapes) - UndoIndex do Shapes[i].Draw(CanvasOut);
+  for i := 0 to High(Shapes) - UndoIndex do begin
+    if (Shapes[i] is TFResize) and ((IMG.Picture.Bitmap.Height > Shapes[i].IMGSize.y) or
+      (IMG.Picture.Bitmap.Width > Shapes[i].IMGSize.X)) then
+    else if not(Shapes[i] is TFCut) then begin
+      IMG.Picture.Bitmap.Height := Shapes[i].IMGSize.y;
+      IMG.Picture.Bitmap.Width := Shapes[i].IMGSize.X;
+    end;
+    Shapes[i].Draw(CanvasOut);
+    IMG.Picture.Bitmap.Height := Shapes[i].IMGSize.y;
+    IMG.Picture.Bitmap.Width := Shapes[i].IMGSize.X;
+  end;
 end;
 
 procedure TFShapeList.Free;
@@ -398,6 +420,7 @@ begin
   SetColors(CanvasOut);
   CanvasOut.MoveTo(StartPoint.X, StartPoint.y);
   CanvasOut.LineTo(EndPoint.X, EndPoint.y);
+  IMGSize := Point(PB.Width, PB.Height);
 end;
 
 { TFRect }
@@ -412,6 +435,7 @@ procedure TFRect.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
 begin
   SetColors(CanvasOut);
   CanvasOut.Rectangle(StartPoint.X, StartPoint.y, EndPoint.X, EndPoint.y);
+  IMGSize := Point(PB.Width, PB.Height);
 end;
 
 { TFSelPencil }
@@ -442,6 +466,7 @@ procedure TFEllipse.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
 begin
   SetColors(CanvasOut);
   CanvasOut.Ellipse(StartPoint.X, StartPoint.y, EndPoint.X, EndPoint.y);
+  IMGSize := Point(PB.Width, PB.Height);
 end;
 
 { TFText }
@@ -476,6 +501,7 @@ begin
     if (StartPoint.X = EndPoint.X) or (StartPoint.y = EndPoint.y) then
         CanvasOut.TextOut(StartPoint.X - FSize, StartPoint.y - FSize, Text)
     else CanvasOut.TextRect(MRect, Text, [tfWordBreak, tfWordEllipsis]);
+    IMGSize := Point(PB.Width, PB.Height);
   end;
 end;
 
@@ -532,6 +558,7 @@ begin
     tmp.PixelFormat := pf24Bit;
     BitmapBlurGaussian(tmp, 2.8);
     CanvasOut.Draw(XMin, YMin, tmp);
+    IMGSize := Point(PB.Width, PB.Height);
     tmp.Free;
   end
   else
@@ -573,6 +600,7 @@ begin
       Min(StartPoint.y, EndPoint.y), Max(StartPoint.X, EndPoint.X), Max(StartPoint.y, EndPoint.y)));
     PB.Width := bm.Width;
     PB.Height := bm.Height;
+    IMGSize := Point(PB.Width, PB.Height);
     CanvasOut.Brush.Color := clBtnFace;
     CanvasOut.FillRect(CanvasOut.ClipRect);
     CanvasOut.Draw(0, 0, bm);
@@ -590,7 +618,6 @@ end;
 
 procedure TFResize.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
 var
-  rtmp: TJclBitmap32;
   tmp: TBitmap;
   pW, pH: Integer;
 begin
@@ -613,12 +640,34 @@ begin
     tmp.Width := PB.Width;
     tmp.Height := PB.Height;
     tmp.Canvas.CopyRect(Rect(0, 0, tmp.Width, tmp.Height), CanvasOut, Rect(0, 0, tmp.Width, tmp.Height));
-    Stretch(PB.Width - h, PB.Height - v, rfLanczos3, 0, tmp);
+    try
+      Stretch(PB.Width - h, PB.Height - v, rfLanczos3, 0, tmp);
+    except
+    end;
     CanvasOut.CopyRect(Rect(0, 0, tmp.Width, tmp.Height), tmp.Canvas, Rect(0, 0, tmp.Width, tmp.Height));
     PB.Width := tmp.Width;
     PB.Height := tmp.Height;
+    IMGSize := Point(tmp.Width, tmp.Height);
     tmp.Free;
   end;
+end;
+
+{ TFSmile }
+
+procedure TFSmile.AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState);
+begin
+  EndPoint := P;
+  Draw(CanvasOut, Shift);
+end;
+
+procedure TFSmile.Draw(CanvasOut: TCanvas; Shift: TShiftState);
+var
+  W, h: Integer;
+begin
+  h := ImagesData.Height div 2;
+  W := ImagesData.Width div 2;
+  ImagesData.Draw(CanvasOut, EndPoint.X - W, EndPoint.y - h, 0);
+  IMGSize := Point(PB.Width, PB.Height);
 end;
 
 end.

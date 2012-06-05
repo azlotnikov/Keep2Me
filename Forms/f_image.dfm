@@ -2,11 +2,11 @@ object FImage: TFImage
   Left = 0
   Top = 0
   Caption = #1048#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077
-  ClientHeight = 474
-  ClientWidth = 895
+  ClientHeight = 439
+  ClientWidth = 821
   Color = clBtnFace
-  Constraints.MinHeight = 374
-  Constraints.MinWidth = 572
+  Constraints.MinHeight = 255
+  Constraints.MinWidth = 400
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,77 +21,78 @@ object FImage: TFImage
   PixelsPerInch = 96
   TextHeight = 13
   object pnl_Tools: TPanel
-    Left = 0
+    Left = 744
     Top = 0
-    Width = 895
-    Height = 38
-    Align = alTop
+    Width = 77
+    Height = 439
+    Align = alRight
     TabOrder = 0
-    OnClick = pnl_ToolsClick
     object btn_DoLoad: TsSpeedButton
-      Left = 191
-      Top = 8
-      Width = 168
-      Height = 21
-      Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100' (Alt + Enter)'
-      Flat = True
+      Left = 6
+      Top = 2
+      Width = 65
+      Height = 50
+      BiDiMode = bdLeftToRight
+      Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100#13#10'(Alt+Enter)'
+      Layout = blGlyphTop
+      ParentBiDiMode = False
       OnClick = mm_LoadClick
       SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 1
       Images = Images
     end
-    object shp_brush: TShape
-      Left = 21
-      Top = 13
-      Width = 20
-      Height = 20
-      Brush.Color = clGreen
-      OnMouseDown = shp_brushMouseDown
-    end
-    object shp_pen: TShape
-      Left = 10
-      Top = 3
-      Width = 20
-      Height = 20
-      Brush.Color = clRed
-      OnMouseDown = shp_penMouseDown
-    end
     object lbl_penwidth: TLabel
-      Left = 54
-      Top = 11
-      Width = 76
-      Height = 13
-      Caption = #1064#1080#1088#1080#1085#1072' '#1082#1080#1089#1090#1080':'
+      Left = 6
+      Top = 55
+      Width = 40
+      Height = 26
+      Caption = #1064#1080#1088#1080#1085#1072#13#10#1082#1080#1089#1090#1080':'
     end
     object spin_penwidth: TJvSpinEdit
-      Left = 136
-      Top = 8
-      Width = 49
+      Left = 6
+      Top = 87
+      Width = 65
       Height = 21
       MaxValue = 100.000000000000000000
       MinValue = 1.000000000000000000
       Value = 6.000000000000000000
       TabOrder = 0
     end
+    object pnl_Colors: TJvGammaPanel
+      Left = 6
+      Top = 114
+    end
+    object cbb_smiles: TJvImageComboBox
+      Left = 4
+      Top = 370
+      Width = 69
+      Height = 46
+      Style = csOwnerDrawVariable
+      ButtonStyle = fsLighter
+      DroppedWidth = 145
+      ImageHeight = 0
+      ImageWidth = 0
+      Images = Smiles
+      ItemHeight = 40
+      ItemIndex = -1
+      TabOrder = 2
+      Items = <>
+    end
   end
   object scrlbx: TScrollBox
     Left = 37
-    Top = 38
-    Width = 858
-    Height = 436
+    Top = 0
+    Width = 707
+    Height = 439
     Align = alClient
     Color = clBtnFace
     ParentColor = False
     TabOrder = 2
-    ExplicitLeft = 35
-    ExplicitTop = 35
-    ExplicitWidth = 852
-    ExplicitHeight = 431
+    OnMouseWheel = scrlbxMouseWheel
     object img_fon: TImage
       Left = 0
       Top = 0
-      Width = 854
-      Height = 432
+      Width = 703
+      Height = 435
       Align = alClient
       IncrementalDisplay = True
       ExplicitLeft = 424
@@ -113,6 +114,7 @@ object FImage: TFImage
       Height = 105
       Cursor = crCross
       OnMouseDown = imgMouseDown
+      OnMouseEnter = pbMouseEnter
       OnMouseMove = imgMouseMove
       OnMouseUp = imgMouseUp
       OnPaint = pbPaint
@@ -120,10 +122,11 @@ object FImage: TFImage
     object pb_Resizeborder: TPaintBox
       Left = 0
       Top = 0
-      Width = 854
-      Height = 432
+      Width = 703
+      Height = 435
       Align = alClient
       Visible = False
+      OnMouseEnter = pb_ResizeborderMouseEnter
       OnPaint = pb_ResizeborderPaint
       ExplicitWidth = 105
       ExplicitHeight = 105
@@ -131,18 +134,15 @@ object FImage: TFImage
   end
   object pnl_buttons: TPanel
     Left = 0
-    Top = 38
+    Top = 0
     Width = 37
-    Height = 436
+    Height = 439
     Align = alLeft
     TabOrder = 1
-    ExplicitLeft = -4
-    ExplicitTop = 40
-    ExplicitHeight = 437
     object btn_Brush: TsSpeedButton
       Tag = 1
       Left = 6
-      Top = 6
+      Top = 64
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -155,7 +155,7 @@ object FImage: TFImage
     object btn_line: TsSpeedButton
       Tag = 2
       Left = 6
-      Top = 37
+      Top = 95
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -167,7 +167,7 @@ object FImage: TFImage
     object btn_Rect: TsSpeedButton
       Tag = 3
       Left = 6
-      Top = 68
+      Top = 126
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -179,7 +179,7 @@ object FImage: TFImage
     object btn_Ellipse: TsSpeedButton
       Tag = 4
       Left = 6
-      Top = 99
+      Top = 157
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -191,7 +191,7 @@ object FImage: TFImage
     object btn_rectclear: TsSpeedButton
       Tag = 5
       Left = 6
-      Top = 130
+      Top = 188
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -203,7 +203,7 @@ object FImage: TFImage
     object btn_ellipseclear: TsSpeedButton
       Tag = 6
       Left = 6
-      Top = 161
+      Top = 219
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -215,7 +215,7 @@ object FImage: TFImage
     object btn_Text: TsSpeedButton
       Tag = 7
       Left = 6
-      Top = 192
+      Top = 250
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -227,7 +227,7 @@ object FImage: TFImage
     object btn_SelPen: TsSpeedButton
       Tag = 8
       Left = 6
-      Top = 223
+      Top = 281
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -239,7 +239,7 @@ object FImage: TFImage
     object btn_Blur: TsSpeedButton
       Tag = 9
       Left = 6
-      Top = 254
+      Top = 312
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -251,7 +251,7 @@ object FImage: TFImage
     object btn_cut: TsSpeedButton
       Tag = 10
       Left = 6
-      Top = 285
+      Top = 343
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -263,13 +263,47 @@ object FImage: TFImage
     object btn_Resize: TsSpeedButton
       Tag = 11
       Left = 6
-      Top = 316
+      Top = 374
       Width = 23
       Height = 25
       GroupIndex = 1
       Flat = True
       SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 22
+      Images = Images
+    end
+    object btn_smile: TsSpeedButton
+      Tag = 12
+      Left = 6
+      Top = 405
+      Width = 23
+      Height = 25
+      GroupIndex = 1
+      Flat = True
+      SkinData.SkinSection = 'SPEEDBUTTON'
+      ImageIndex = 23
+      Images = Images
+    end
+    object btn_undo: TsSpeedButton
+      Left = 6
+      Top = 2
+      Width = 23
+      Height = 25
+      Flat = True
+      OnClick = mm_undoClick
+      SkinData.SkinSection = 'SPEEDBUTTON'
+      ImageIndex = 5
+      Images = Images
+    end
+    object btn_redo: TsSpeedButton
+      Left = 6
+      Top = 33
+      Width = 23
+      Height = 25
+      Flat = True
+      OnClick = mm_redoClick
+      SkinData.SkinSection = 'SPEEDBUTTON'
+      ImageIndex = 15
       Images = Images
     end
   end
@@ -381,19 +415,14 @@ object FImage: TFImage
         ImageIndex = 22
         OnClick = mm_ResizeClick
       end
+      object mm_smile: TMenuItem
+        Caption = #1057#1084#1072#1081#1083
+        ImageIndex = 23
+        OnClick = mm_smileClick
+      end
     end
     object mm_colors: TMenuItem
       Caption = #1062#1074#1077#1090#1072
-      object mm_pencolor: TMenuItem
-        Caption = #1062#1074#1077#1090' '#1082#1080#1089#1090#1080
-        ImageIndex = 13
-        OnClick = mm_pencolorClick
-      end
-      object mm_brushcolor: TMenuItem
-        Caption = #1062#1074#1077#1090' '#1092#1086#1085#1072
-        ImageIndex = 14
-        OnClick = mm_brushcolorClick
-      end
       object mm_swapcolors: TMenuItem
         Caption = #1055#1086#1084#1077#1085#1103#1090#1100' '#1094#1074#1077#1090#1072
         ImageIndex = 8
@@ -409,16 +438,20 @@ object FImage: TFImage
     end
     object mm_view: TMenuItem
       Caption = #1042#1080#1076
-      object mm_showtoppanel: TMenuItem
-        Caption = #1042#1077#1088#1093#1085#1103#1103' '#1087#1072#1085#1077#1083#1100
+      object mm_showrightpanel: TMenuItem
+        Caption = #1055#1088#1072#1074#1072#1103' '#1087#1072#1085#1077#1083#1100
         Checked = True
-        OnClick = mm_showtoppanelClick
+        OnClick = mm_showrightpanelClick
       end
       object mm_showleftpanel: TMenuItem
         Caption = #1051#1077#1074#1072#1103' '#1087#1072#1085#1077#1083#1100
         Checked = True
         OnClick = mm_showleftpanelClick
       end
+    end
+    object mm_info: TMenuItem
+      Caption = 'FAQ'
+      OnClick = mm_infoClick
     end
   end
   object Images: TsAlphaImageList
@@ -1148,14 +1181,41 @@ object FImage: TFImage
           9AF1FC2F3B1B2B0D7FB33268F7C8519EBEF16B76E5D9C08954C1A0246F61F5C5
           F6FE8FF7F2E3ABBB239317565F12C1E2F02D28738DFB1A358C398E0418000E1A
           C64B8583B9050000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000002E84944415478DA7C534B4F135114FE6668297D510A53AA
+          7DD052A8185E01849484608A0281206E5CAA1B57ECFC01C655FF847189AE4C5C
+          08222A4434B149B129A0490908ADBC0229104A4BA72DD3D27A6E6B7541E2CD7C
+          73E79EF37D27E79CB987C3640DC00190D18BE354E03148A7314203A192102784
+          0833C8611EF97C12D93CC09E87C790E1DF7292D3D35C73BD73D83E60B46BEB54
+          95E55A595C3ACB6E9DED747FDC5A70AF1EAE2D13EF2961A3242A05702AB8F267
+          775A46DBFB8C2E410D252A7805F82C0F3DAF932BB5D774756D569D37B258FD36
+          386B38C7F94429880C993C4BDBE36EED6FAFAFB209FE5000EF0373540D87F18E
+          514CAFCC5262798CDC1842BDC526B89BFADB3FACCC79A89C47A44FCA70911FB4
+          0A96AE2B3AA3707A7E0AEFA60F23AE21947165980ABCC3986B842817F0AEF930
+          6CB80DC6B3569BBB76237BAC57533C6530E6343B6BE3A933C4A433584C6628B4
+          1505B4395BFF7E333BF3331EE3331D2B8105685055A855E19D5F486652100C02
+          A2520C27521435869AC2CECECCCEFC8CC7F84C57EC8194ABE4794E160C06110A
+          85A0D168A0542A0B3D282DD683542A85442281743A0D9BADAEA0FB13201F4F89
+          A9AC42A190BFB9F90276B515E170180E87E3D2BE25EEE2EE9707607CA62B0648
+          E742A727D16E7D955EF72DBD0C774B3F72B91CEC76FBA5FD55600AC403F1934C
+          57EC41E26266EBFBCF4387D58EE7C1497CDEFE0A51142F81D9999FF1189FE98A
+          198817F3476BFB4B5693556FB79885C7FE2718AD1CC03DCD389271AAF950C2EB
+          8369CCAE2F80FC88ED9D1C333ECAE85A834DC17D8EDD6BA7BC5CFECC75ABAFBD
+          B1A951D88D45709C8C42CCA4A196574050E961D519B1B9BE79BCF8C9FB232365
+          2648B9917F9943B1D5B584669A05033C750E5B674F6F8FD174D5A4D2A8D4B244
+          52CCEE1FEC27FD3E7F6427BCBD8C239A8555BAC687C5BFC30294116824214083
+          2A34A20336F4A21C16B269080948D8C3367CD8C4129D22643B62F652009EA024
+          A80872FC7FD110234D1009120BF05B800100FB955DA70BB7DC65000000004945
+          4E44AE426082}
       end>
     Left = 432
     Top = 8
     Bitmap = {}
-  end
-  object dlg_color: TsColorDialog
-    Left = 536
-    Top = 8
   end
   object SavePictureDlg: TSavePictureDialog
     DefaultExt = '.jpg'
@@ -1170,6 +1230,13 @@ object FImage: TFImage
     Interval = 50
     OnTimer = tmr_BackGroundcheckTimer
     Left = 592
+    Top = 8
+  end
+  object Smiles: TsAlphaImageList
+    Height = 40
+    Width = 40
+    Items = <>
+    Left = 344
     Top = 8
   end
 end

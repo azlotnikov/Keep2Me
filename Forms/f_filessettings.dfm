@@ -1,6 +1,7 @@
 object FFilesSettings: TFFilesSettings
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
   ClientHeight = 47
   ClientWidth = 340
   Color = clBtnFace
@@ -23,7 +24,6 @@ object FFilesSettings: TFFilesSettings
     Height = 41
     Align = alBottom
     TabOrder = 0
-    ExplicitWidth = 277
     DesignSize = (
       340
       41)
@@ -102,8 +102,8 @@ object FFilesSettings: TFFilesSettings
           6910FEC500F23410C00C0039811D8839A034333457FC83E23F50FC1789FE0737
           801200106000BB1C04DA4E75922D0000000049454E44AE426082}
       end>
-    Left = 288
-    Top = 24
+    Left = 296
+    Top = 8
     Bitmap = {}
   end
 end

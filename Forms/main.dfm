@@ -1373,8 +1373,8 @@ object FMain: TFMain
     Enabled = False
     Interval = 500
     OnTimer = tmr_ExitFromThreadTimer
-    Left = 320
-    Top = 56
+    Left = 160
+    Top = 16
   end
   object AntiFreeze: TIdAntiFreeze
     OnlyWhenIdle = False

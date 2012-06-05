@@ -1,11 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.384,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.380,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Forms\f_archivator.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.380,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.dfm=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Forms\f_archivator.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.589,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\umd5.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.392,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\umd5.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.380,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Forms\f_archivator.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.390,F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Unit1.dfm=F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Forms\f_imageinfo.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.380,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Forms\f_archivator.dfm=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.384,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.390,F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Unit1.pas=F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Forms\f_imageinfo.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.688,=F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.589,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\umd5.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.261,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
@@ -32,10 +35,12 @@
     <File Path="Forms\f_textedit.dfm"/>
     <File Path="Forms\f_windows.pas"/>
     <File Path="Forms\f_windows.dfm"/>
-    <File Path="Forms\main.pas"/>
-    <File Path="Forms\main.dfm"/>
     <File Path="Forms\f_archivator.pas"/>
     <File Path="Forms\f_archivator.dfm"/>
+    <File Path="Forms\f_imageinfo.pas"/>
+    <File Path="Forms\f_imageinfo.dfm"/>
+    <File Path="Forms\main.pas"/>
+    <File Path="Forms\main.dfm"/>
     <File Path="Utils"/>
     <File Path="Utils\ConstStrings.pas"/>
     <File Path="Utils\cript.pas"/>

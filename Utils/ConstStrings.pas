@@ -5,7 +5,7 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.8.2a';
+  SYS_KEEP_VERSION = '0.8.5';
   SYS_CRYPT_KEY = 26123;
 
   SYS_SETTINGS_FILE_NAME = 'settings.ini';
@@ -17,9 +17,11 @@ const
   SYS_RECENT_FILE_NAME = 'recent_files.ini';
   SYS_SHOW_SETTINGS_PARAM = 'SHOWSETTINGS';
   SYS_TMP_IMG_FOLDER = 'tmpImg\';
+  SYS_SMILES_FOLDER = 'smiles\';
+  SYS_SETTINGS_FOLDER = 'settings\';
   SYS_KEEP2ME = 'Keep2Me';
   SYS_USERAGENT = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)';
-  SYS_UPDATE_CHECK_PAGE = 'http://keep2.me/lastversion.php?clientversion=' + SYS_KEEP_VERSION;
+  SYS_UPDATE_CHECK_PAGE = 'http://keep2.me/program/lastversion.php?clientversion=' + SYS_KEEP_VERSION;
   SYS_UPDATER_EXE_NAME = 'updater.exe';
 
   INI_COMMON_SETTINGS = 'CommonSettings';

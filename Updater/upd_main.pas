@@ -8,7 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ComCtrls, Vcl.ImgList,
   acAlphaImageList, Vcl.Buttons, sSpeedButton, Vcl.StdCtrls, IdComponent,
   IdTCPConnection, IdTCPClient, IdHTTP, IdBaseComponent, IdAntiFreezeBase,
-  Vcl.IdAntiFreeze, shellapi, unitIsAdmin;
+  Vcl.IdAntiFreeze, shellapi, unitIsAdmin, Vcl.ExtCtrls;
 
 type
   TFMain = class(TForm)
@@ -19,11 +19,14 @@ type
     HTTP: TIdHTTP;
     cb_close: TCheckBox;
     lbl_info: TLabel;
-    btn_update: TsSpeedButton;
     lbl_Admin: TLabel;
+    btn_update: TButton;
+    tmr_exit: TTimer;
     procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
     procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
     procedure btn_updateClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure tmr_exitTimer(Sender: TObject);
   private
     { Private declarations }
   public
@@ -58,18 +61,22 @@ begin
   Result := Copy(s, 1, Pos('&&', s) - 1);
 end;
 
-function GetValue(s: string): string;
+function GetValue(s: string; Param: integer = 1): string;
+var
+  i: integer;
 begin
-  Delete(s, 1, Pos('&&', s) + 1);
+  for i := 1 to Param do Delete(s, 1, Pos('&&', s) + 1);
+  if Pos('&&', s) > 0 then Delete(s, Pos('&&', s), Length(s) + 1 - Pos('&&', s));
+
   Result := s;
 end;
 
 function GetName(s: string): string;
 var
-  i: Integer;
+  i: integer;
 begin
   Result := '';
-  for i := length(s) downto 1 do
+  for i := Length(s) downto 1 do
     if s[i] = '/' then break
     else Result := s[i] + Result;
 end;
@@ -85,7 +92,7 @@ begin
     ShowMessage('Не могу войти в каталог: ' + Dir);
     Exit;
   end;
-  if Dir[length(Dir)] <> '\' then Dir := Dir + '\';
+  if Dir[Length(Dir)] <> '\' then Dir := Dir + '\';
   isFound := FindFirst(Dir + '*.*', faAnyFile, sRec) = 0;
   while isFound do begin
     if (sRec.Name <> '.') and (sRec.Name <> '..') then
@@ -109,7 +116,7 @@ end;
 
 function FullRemoveDir(Dir: string; DeleteAllFilesAndFolders, StopIfNotAllDeleted, RemoveRoot: Boolean): Boolean;
 var
-  i: Integer;
+  i: integer;
   sRec: TSearchRec;
   FN: string;
 begin
@@ -152,8 +159,8 @@ end;
 procedure TFMain.btn_updateClick(Sender: TObject);
 var
   t: tstringlist;
-  i: Integer;
-  s: string;
+  i: integer;
+  s, Path: string;
   LoadStream: TMemoryStream;
 begin
   // if (not IsUserAnAdmin) then ShowMessage('Для корректной работы программы необходимы права Администратора');
@@ -161,13 +168,15 @@ begin
     ShowMessage('Закройте Keep2Me перед началом обновления');
     Exit;
   end;
+  Show;
+  Path := ExtractFilePath(ParamStr(0));
   HTTP.ReadTimeout := 5000;
   HTTP.ConnectTimeout := 5000;
   btn_update.Enabled := false;
   stat.Panels[0].Text := 'Получаем список файлов';
   t := tstringlist.Create;
   try
-    t.Text := HTTP.Get('http://keep2.me/loaderfiles/fileslist.php');
+    t.Text := HTTP.Get('http://keep2.me/program/fileslist.php');
   except
   end;
   if t.Text = '' then begin
@@ -178,53 +187,88 @@ begin
   end;
   HTTP.ReadTimeout := 60000;
   HTTP.ConnectTimeout := 60000;
-  LoadStream := TMemoryStream.Create; // выделение памяти под переменную
   for i := 0 to t.Count - 1 do begin
     s := GetCommand(t[i]);
 
     if s = 'download_file' then begin
       stat.Panels[0].Text := 'Загружаем: ' + GetName(GetValue(t[i]));
+      LoadStream := TMemoryStream.Create;
       try
         HTTP.Get(t[i], LoadStream);
       except
       end;
-      LoadStream.SaveToFile(ExtractFilePath(ParamStr(0)) + GetName(GetValue(t[i])));
-      LoadStream.Clear;
+      LoadStream.SaveToFile(Path + GetName(GetValue(t[i])));
+      LoadStream.Free;
     end
     else if s = 'delete_file' then begin
       stat.Panels[0].Text := 'Удаляем: ' + GetValue(t[i]);
       try
-        DeleteFile(ExtractFilePath(ParamStr(0)) + GetValue(t[i]));
+        DeleteFile(Path + GetValue(t[i]));
       except
       end;
     end
     else if s = 'delete_dir' then begin
       stat.Panels[0].Text := 'Удаляем: ' + GetValue(t[i]);
       try
-        FullRemoveDir(ExtractFilePath(ParamStr(0)) + GetValue(t[i]) + '\', True, false, True);
+        FullRemoveDir(Path + GetValue(t[i]), True, false, True);
       except
       end;
     end
     else if s = 'create_dir' then begin
       stat.Panels[0].Text := 'Создаем: ' + GetValue(t[i]);
       try
-        ForceDirectories(ExtractFilePath(ParamStr(0)) + GetValue(t[i]) + '\');
+        ForceDirectories(Path + GetValue(t[i]));
       except
       end;
     end
-    ELSE if s = 'clear_dir' then begin
+    else if s = 'clear_dir' then begin
       stat.Panels[0].Text := 'Очищаем: ' + GetValue(t[i]);
       try
-        ClearDir(ExtractFilePath(ParamStr(0)) + GetValue(t[i]) + '\');
+        ClearDir(Path + GetValue(t[i]));
       except
       end;
+    end
+    else if s = 'move_file' then begin
+      stat.Panels[0].Text := 'Перемещаем: ' + GetValue(t[i]);
+      if FileExists(Path + GetValue(t[i])) then
+        try
+          MoveFile(PChar(Path + GetValue(t[i])), PChar(Path + GetValue(t[i], 2)));
+        except
+        end;
+    end
+    else if s = 'rename_file' then begin
+      stat.Panels[0].Text := 'Переименовываем: ' + GetValue(t[i]);
+      if FileExists(Path + GetValue(t[i])) then
+        try
+          RenameFile(Path + GetValue(t[i]), Path + GetValue(t[i], 2));
+        except
+        end;
+    end
+    else if s = 'copy_file' then begin
+      stat.Panels[0].Text := 'Копируем: ' + GetValue(t[i]);
+      if FileExists(Path + GetValue(t[i])) then
+        try
+          CopyFile(PChar(Path + GetValue(t[i])), PChar(Path + GetValue(t[i], 2)), false);
+        except
+        end;
     end;
   end;
   stat.Panels[0].Text := 'Обновление завершено!';
-  LoadStream.Free;
   // RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + 'keep2me.exe'), PChar('SHOWSETTINGS'));
-  ShellExecute(GetDesktopWindow, 'open', PChar(ExtractFilePath(ParamStr(0)) + 'keep2me.exe'), nil, nil, SW_SHOW);
-  if cb_close.Checked then Application.Terminate;
+  ShellExecute(GetDesktopWindow, 'open', PChar(ExtractFilePath(ParamStr(0)) + 'keep2me.exe'), 'SHOWSETTINGS',
+    nil, SW_SHOW);
+  if cb_close.Checked then tmr_exit.Enabled := True;
+end;
+
+procedure TFMain.FormCreate(Sender: TObject);
+begin
+  Show;
+  if ParamCount > 0 then
+    if ParamStr(1) = 'STARTUPDATE' then begin
+      Sleep(1000);
+      btn_update.Click;
+    end;
+  MoveFile(PChar(ExtractFilePath(ParamStr(0)) + 'dgs.png'), PChar(ExtractFilePath(ParamStr(0)) + 'smiles\dgs.png'));
 end;
 
 procedure TFMain.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
@@ -236,6 +280,11 @@ procedure TFMain.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCoun
 begin
   pb.Max := AWorkCountMax;
   pb.Position := 0;
+end;
+
+procedure TFMain.tmr_exitTimer(Sender: TObject);
+begin
+  halt;
 end;
 
 end.

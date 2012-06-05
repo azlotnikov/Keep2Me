@@ -15,6 +15,7 @@ type
     btn_Save: TsSpeedButton;
     btn_cancel: TsSpeedButton;
     prb_compress: TProgressBar;
+    btn_SaveAndLoad: TsSpeedButton;
     procedure btn_SaveClick(Sender: TObject);
     procedure ZLibProgress(Sender: TObject; Position, Total: Integer);
   private
