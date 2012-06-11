@@ -5,12 +5,14 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.8.5';
+  SYS_KEEP_VERSION = '0.9.0';
   SYS_CRYPT_KEY = 26123;
 
+  SYS_CHANGELOG_FILE = 'changelog.txt';
   SYS_SETTINGS_FILE_NAME = 'settings.ini';
   SYS_FILE_LOADER_FORM_NAME = 'form_fileloader.ini';
   SYS_IMG_LOADER_FORM_NAME = 'form_imgloader.ini';
+  SYS_LINK_FORM_NAME = 'form_link.ini';
   SYS_FILELOADERS_SETTINGS_FILE_NAME = 'fileloaders_settings.ini';
   SYS_IMGLOADERS_SETTINGS_FILE_NAME = 'imgloaders_settings.ini';
   SYS_LOADERS_SETTINGS_FILE_NAME = 'loaders.ini';

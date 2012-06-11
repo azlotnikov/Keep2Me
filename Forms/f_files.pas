@@ -31,18 +31,6 @@ uses
   shortlinks;
 
 type
-  TLinkStatus = (lsWait, lsError, lsOK, lsCanceled, lsNoFile, lsInProgress);
-
-type
-  TLinkData = record
-    FilePath: String;
-    Size: String;
-    Status: TLinkStatus;
-    StatusText: String;
-    Link: String;
-  end;
-
-type
   TFFiles = class(TForm)
     lv_files: TJvListView;
     Images: TsAlphaImageList;
@@ -65,6 +53,7 @@ type
     pm_delete: TMenuItem;
     pm_copy: TMenuItem;
     pm_open: TMenuItem;
+    stat_hint: TStatusBar;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure btn_StartLoadClick(Sender: TObject);
@@ -79,10 +68,12 @@ type
     procedure pm_dontloadClick(Sender: TObject);
     procedure lv_filesResize(Sender: TObject);
   private
-    Links: array of TLinkData;
+    Links: TArrayOfLinkData;
     CurrentLink: Integer;
     StopLoad: Boolean;
     FileLoader: TFileLoader;
+    FOrgListViewWndProc: TWndMethod;
+    procedure LV_FilesWndProc(var Msg: TMessage);
     procedure LoadFileByIndex(Index: Integer);
     procedure RePaintList;
     procedure FileProgress(Sender: TObject; Text: string);
@@ -91,6 +82,8 @@ type
     procedure LoadPlacement;
   public
     procedure StartLoad(Files: Tstringlist);
+    procedure DropFiles(var Msg: TMessage); message WM_DROPFILES;
+
   protected
     procedure CreateParams(var Params: TCreateParams); override;
 
@@ -146,6 +139,22 @@ begin
   if FileLoader <> nil then FileLoader.StopLoad;
 end;
 
+procedure TFFiles.DropFiles(var Msg: TMessage);
+var
+  i, count: Integer;
+  dropFileName: array [0 .. 511] of Char;
+  MAXFILENAME: Integer;
+begin
+  MAXFILENAME := 511;
+  count := DragQueryFile(Msg.WParam, $FFFFFFFF, dropFileName, MAXFILENAME);
+  for i := 0 to count - 1 do begin
+    DragQueryFile(Msg.WParam, i, dropFileName, MAXFILENAME);
+    AddFileLink(dropFileName, Links);
+  end;
+  RePaintList;
+  DragFinish(Msg.WParam);
+end;
+
 procedure TFFiles.LoadFileByIndex(Index: Integer);
 var
   ALink: string;
@@ -177,17 +186,16 @@ begin
         Links[Index].Status := lsOK;
         ALink := FileLoader.GetLink;
         AddToRecentFiles(ALink, ExtractFileName(Links[Index].FilePath), rfOther);
-        try
-          if GSettings.ShortLinkIndex > 0 then begin
+        if (GSettings.ShortLinkIndex > 0) and (GSettings.ShortFiles) then
+          try
             CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
             CShorter.SetLoadBar(nil);
             CShorter.LoadFile(ALink);
             if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')
             else ALink := CShorter.GetLink;
+          except
+            FreeAndNil(CShorter);
           end;
-        except
-          FreeAndNil(CShorter);
-        end;
         Links[Index].Link := ALink;
         Links[Index].StatusText := ALink;
 
@@ -283,6 +291,9 @@ procedure TFFiles.FormCreate(Sender: TObject);
 begin
   Application.InsertComponent(self);
   LoadPlacement;
+  FOrgListViewWndProc := lv_files.WindowProc;
+  lv_files.WindowProc := LV_FilesWndProc;
+  DragAcceptFiles(lv_files.Handle, true);
 end;
 
 procedure TFFiles.RePaintList;
@@ -327,7 +338,7 @@ begin
     WriteBool('Form', 'Maximized', (WindowState = wsMaximized));
     WriteInteger('List', 'Width', lv_files.Width);
     WriteInteger('List', 'Height', lv_files.Height);
-    for i := 0 to lv_files.Columns.Count - 1 do
+    for i := 0 to lv_files.Columns.count - 1 do
         WriteInteger('List_Column' + inttostr(i), 'Width', lv_files.Columns[i].Width);
     Free;
   end;
@@ -349,7 +360,7 @@ begin
     end;
     lv_files.Width := ReadInteger('List', 'Width', lv_files.Width);
     lv_files.Height := ReadInteger('List', 'Height', lv_files.Height);
-    for i := 0 to lv_files.Columns.Count - 1 do
+    for i := 0 to lv_files.Columns.count - 1 do
         lv_files.Columns[i].Width := ReadInteger('List_Column' + inttostr(i), 'Width', lv_files.Columns[i].Width);
     Free;
   end;
@@ -360,24 +371,20 @@ begin
   SavePlacement;
 end;
 
+procedure TFFiles.LV_FilesWndProc(var Msg: TMessage);
+begin
+  case Msg.Msg of
+    WM_DROPFILES: DropFiles(Msg);
+  else if Assigned(FOrgListViewWndProc) then FOrgListViewWndProc(Msg);
+  end;
+end;
+
 procedure TFFiles.StartLoad(Files: Tstringlist);
 var
   i: Integer;
 begin
-  SetLength(Links, Files.Count);
-  for i := 0 to Files.Count - 1 do begin
-    Links[i].FilePath := Files[i];
-    if FileExists(Files[i]) then begin
-      Links[i].Size := inttostr(GetFileSize(Files[i]) div 1024);
-      if Links[i].Size = '0' then Links[i].Size := '1';
-      Links[i].StatusText := 'Ожидание';
-      Links[i].Status := lsWait;
-    end else begin
-      Links[i].Size := '0';
-      Links[i].Status := lsNoFile;
-      Links[i].StatusText := 'Файл отсутствует!';
-    end;
-  end;
+  SetLength(Links, 0);
+  for i := 0 to Files.count - 1 do AddFileLink(Files[i], Links);
   Files.Free;
   RePaintList;
   Show;

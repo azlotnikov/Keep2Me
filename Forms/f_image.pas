@@ -158,6 +158,7 @@ type
     procedure LoadPlacement;
     procedure ReloadBackGround;
     procedure LoadSmiles;
+    procedure UpdateCaption;
   public
     OriginImg: TBitmap;
     ShapeList: TFShapeList;
@@ -324,6 +325,7 @@ begin
   end;
   ShapeList.AddShape(tmpShape);
   pb.Invalidate;
+  UpdateCaption;
 end;
 
 procedure TFImage.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -364,6 +366,7 @@ begin
     img.Picture.Bitmap.Height := pb.Height;
     img.Picture.Bitmap.Width := pb.Width;
   end;
+  UpdateCaption;
 end;
 
 procedure TFImage.mm_DefaultColorClick(Sender: TObject);
@@ -380,6 +383,7 @@ begin
   pb.Invalidate;
   img.Picture.Assign(OriginImg);
   ShapeList.DrawAll(img.Canvas);
+  UpdateCaption;
 end;
 
 procedure TFImage.mm_ellipseclearClick(Sender: TObject);
@@ -439,12 +443,9 @@ procedure TFImage.mm_redoClick(Sender: TObject);
 begin
   if ShapeList.Redo then begin
     img.Picture.Assign(OriginImg);
-    // pb.Width := img.Width;
-    // pb.Height := img.Height;
     ShapeList.DrawAll(img.Canvas);
-    // img.Picture.Bitmap.Height := pb.Height;
-    // img.Picture.Bitmap.Width := pb.Width;
   end;
+  UpdateCaption;
 end;
 
 procedure TFImage.mm_ResizeClick(Sender: TObject);
@@ -763,6 +764,8 @@ begin
     Show;
   end;
   ReloadBackGround;
+  UpdateCaption;
+  img.Picture.Bitmap.PixelFormat := pf32bit;
 end;
 
 procedure TFImage.TextEditFormClose(Sender: TObject; var Action: TCloseAction);
@@ -788,6 +791,11 @@ begin
     ReloadBackGround;
     OldFonSize := Point(img_fon.Width, img_fon.Height);
   end;
+end;
+
+procedure TFImage.UpdateCaption;
+begin
+  Caption := Format('Изображение [ %dx%d ]', [img.Width, img.Height]);
 end;
 
 end.

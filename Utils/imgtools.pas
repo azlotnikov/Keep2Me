@@ -77,7 +77,7 @@ type
   end;
 
 Type
-  TFPencil = class(TFShape) // Карандаш
+  TFPencil = class(TFShape)
   private
     Points: array of TPoint;
   public
@@ -93,7 +93,7 @@ type
   end;
 
 Type
-  TFSelPencil = class(TFPencil) // Карандаш
+  TFSelPencil = class(TFShape)
   private
     Points: array of TPoint;
   public
@@ -304,9 +304,6 @@ procedure TFPencil.AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = 
 begin
   SetLength(Points, Length(Points) + 1);
   Points[High(Points)] := P;
-  if Length(Points) < 2 then exit;
-  CanvasOut.MoveTo(Points[High(Points) - 1].X, Points[High(Points) - 1].y);
-  CanvasOut.LineTo(P.X, P.y);
 end;
 
 procedure TFPencil.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
@@ -315,10 +312,6 @@ var
 begin
   if Length(Points) = 0 then exit;
   SetColors(CanvasOut);
-  if Length(Points) = 1 then begin
-    SetLength(Points, Length(Points) + 1);
-    Points[High(Points)] := Point(Points[0].X + 1, Points[0].y + 1);
-  end;
   CanvasOut.MoveTo(Points[0].X, Points[0].y);
   for i := 0 to High(Points) - 1 do CanvasOut.LineTo(Points[i].X, Points[i].y);
   IMGSize := Point(PB.Width, PB.Height);
@@ -412,7 +405,7 @@ end;
 procedure TFLine.AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = []);
 begin
   EndPoint := P;
-  Draw(CanvasOut);
+  // Draw(CanvasOut);
 end;
 
 procedure TFLine.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
@@ -428,7 +421,7 @@ end;
 procedure TFRect.AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = []);
 begin
   EndPoint := P;
-  Draw(CanvasOut);
+  // Draw(CanvasOut);
 end;
 
 procedure TFRect.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
@@ -442,16 +435,29 @@ end;
 
 procedure TFSelPencil.AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = []);
 begin
-  CanvasOut.Pen.Mode := pmMerge;
-  inherited;
-  CanvasOut.Pen.Mode := pmCopy;
+  SetLength(Points, Length(Points) + 1);
+  Points[High(Points)] := P;
 end;
 
 procedure TFSelPencil.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
+var
+  i: Integer;
+  bm1, bm2: TBitmap;
 begin
-  CanvasOut.Pen.Mode := pmMerge;
-  inherited;
-  CanvasOut.Pen.Mode := pmCopy;
+  bm1 := TBitmap.Create;
+  bm1.SetSize(PB.Width, PB.Height);
+  bm1.Canvas.CopyRect(Rect(0, 0, bm1.Width, bm1.Height), CanvasOut, Rect(0, 0, bm1.Width, bm1.Height));
+  bm2 := TBitmap.Create;
+  bm2.Assign(bm1);
+  SetColors(bm2.Canvas);
+  bm2.Canvas.MoveTo(Points[0].X, Points[0].y);
+  for i := 0 to High(Points) - 1 do bm2.Canvas.LineTo(Points[i].X, Points[i].y);
+  CanvasOut.Draw(0, 0, bm1);
+  CanvasOut.Draw(0, 0, bm2, 100);
+
+  bm1.Free;
+  bm2.Free;
+  IMGSize := Point(PB.Width, PB.Height);
 end;
 
 { TFEllipse }
@@ -459,7 +465,7 @@ end;
 procedure TFEllipse.AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = []);
 begin
   EndPoint := P;
-  Draw(CanvasOut);
+  // Draw(CanvasOut);
 end;
 
 procedure TFEllipse.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);

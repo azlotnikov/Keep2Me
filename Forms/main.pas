@@ -63,7 +63,7 @@ uses
   pastebin_tools,
   cript,
   ConstStrings,
-  fileuploaders, JvSerialMaker, JvZlibMultiple;
+  fileuploaders;
 
 type
   TFMain = class(TForm)
@@ -172,6 +172,8 @@ type
     btn_ClearPluginsSettings: TsSpeedButton;
     btn_ClearRecentFiles: TsSpeedButton;
     cb_ShowActionInTray: TCheckBox;
+    cb_shortlinkFiles: TCheckBox;
+    cb_shortlinkImg: TCheckBox;
 
     procedure FormCreate(Sender: TObject);
 
@@ -269,6 +271,8 @@ begin
     cbb_ImgExt.ItemIndex := ImgExtIndex;
     cb_OpenByTrayClick.Checked := OpenLinksByClick;
     cb_FastLoad.Checked := FastLoad;
+    cb_shortlinkFiles.Checked := ShortFiles;
+    cb_shortlinkImg.Checked := ShortImg;
     SetLength(tmpHotKeys, Length(Actions));
     for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
     with Pastebin do begin
@@ -739,6 +743,8 @@ begin
     ImgExtIndex := cbb_ImgExt.ItemIndex;
     OpenLinksByClick := cb_OpenByTrayClick.Checked;
     FastLoad := cb_FastLoad.Checked;
+    ShortFiles := cb_shortlinkFiles.Checked;
+    ShortImg := cb_shortlinkImg.Checked;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to High(tmpHotKeys) do begin
       Actions[i] := tmpHotKeys[i];
@@ -798,6 +804,8 @@ begin
     DontShowAdmin := ReadBool(INI_COMMON_SETTINGS, 'DontShowAdmin', false);
     FastLoad := ReadBool(INI_COMMON_SETTINGS, 'FastLoad', false);
     ImgExtIndex := ReadInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', 1);
+    ShortFiles := ReadBool(INI_COMMON_SETTINGS, 'ShortFiles', false);
+    ShortImg := ReadBool(INI_COMMON_SETTINGS, 'ShortImg', false);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         Enabled := ReadBool(INI_HOT_KEYS + inttostr(i), 'Enabled', Enabled);
@@ -892,6 +900,8 @@ begin
     WriteBool(INI_COMMON_SETTINGS, 'DontShowAdmin', DontShowAdmin);
     WriteBool(INI_COMMON_SETTINGS, 'OpenLinksByClick', OpenLinksByClick);
     WriteBool(INI_COMMON_SETTINGS, 'FastLoad', FastLoad);
+    WriteBool(INI_COMMON_SETTINGS, 'ShortFiles', ShortFiles);
+    WriteBool(INI_COMMON_SETTINGS, 'ShortImg', ShortImg);
     WriteInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', ImgExtIndex);
     for i := 0 to High(Actions) do
       with Actions[i] do begin

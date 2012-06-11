@@ -59,7 +59,7 @@ object FLoad: TFLoad
   end
   object mmo_Link: TMemo
     Left = 8
-    Top = 57
+    Top = 55
     Width = 354
     Height = 90
     ReadOnly = True
@@ -152,14 +152,14 @@ object FLoad: TFLoad
     Enabled = False
     Interval = 50
     OnTimer = tmr_selfkillTimer
-    Left = 272
-    Top = 88
+    Left = 264
+    Top = 32
   end
   object tmr_killEditor: TTimer
     Enabled = False
     Interval = 50
     OnTimer = tmr_killEditorTimer
-    Left = 192
-    Top = 72
+    Left = 208
+    Top = 32
   end
 end

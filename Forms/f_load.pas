@@ -9,6 +9,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.IniFiles,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
@@ -19,6 +20,7 @@ uses
   Vcl.ImgList,
   Vcl.Clipbrd,
   Vcl.IdAntiFreeze,
+  Vcl.ExtCtrls,
   IdBaseComponent,
   IdAntiFreezeBase,
   JvTrayIcon,
@@ -27,7 +29,7 @@ uses
   loaders,
   funcs,
   shortlinks,
-  ConstStrings, Vcl.ExtCtrls;
+  ConstStrings;
 
 type
   TFLoad = class(TForm)
@@ -51,6 +53,8 @@ type
     EditorToKill: TForm;
     CloseForm: Boolean;
     CanClose: Boolean;
+    procedure SavePlacement;
+    procedure LoadPlacement;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
@@ -87,6 +91,7 @@ constructor TFLoad.CreateEx(FileName: string; Editor: TForm);
 begin
   Create(nil);
   Application.InsertComponent(self);
+  LoadPlacement;
   EditorToKill := Editor;
   CanClose := false;
   LoadFile(FileName, Editor);
@@ -105,6 +110,7 @@ begin
     Action := caNone;
     exit;
   end;
+  SavePlacement;
   Application.RemoveComponent(self);
   Action := caFree;
 end;
@@ -144,7 +150,6 @@ begin
   try
     mmo_Link.Clear;
     OriginLink := '';
-    cbb_view.ItemIndex := 0;
     EnableBtns(false);
     if not GSettings.HideLoadForm then Show;
     if GSettings.FTP.ImgLoad then begin
@@ -165,22 +170,21 @@ begin
       DeleteFile(FileName);
       r := Cloader.GetLink;
       AddToRecentFiles(r, ExtractFileName(FileName), rfImg);
-      try
-        if GSettings.ShortLinkIndex > 0 then begin
+      if (GSettings.ShortLinkIndex > 0) and (GSettings.ShortImg) then
+        try
           CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
           CShorter.SetLoadBar(pb);
           CShorter.LoadFile(r);
           if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')
           else r := CShorter.GetLink;
+        except
+          FreeAndNil(CShorter);
         end;
-      except
-        FreeAndNil(CShorter);
-      end;
-
       CloseForm := false;
       OriginLink := r;
       mmo_Link.Text := r;
-      if GSettings.CopyLink then Clipboard.AsText := r;
+      cbb_viewChange(nil);
+      if GSettings.CopyLink then Clipboard.AsText := mmo_Link.Text;
       FreeAndNil(Cloader);
       pb.Position := pb.Max;
       EnableBtns(True);
@@ -190,6 +194,24 @@ begin
       tmr_killEditor.Enabled := True;
     end;
   end;
+end;
+
+procedure TFLoad.SavePlacement;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_LINK_FORM_NAME);
+  F.WriteInteger('Form', 'ViewIndex', cbb_view.ItemIndex);
+  F.Free;
+end;
+
+procedure TFLoad.LoadPlacement;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_LINK_FORM_NAME);
+  cbb_view.ItemIndex := F.ReadInteger('Form', 'ViewIndex', cbb_view.ItemIndex);
+  F.Free;
 end;
 
 procedure TFLoad.tmr_killEditorTimer(Sender: TObject);

@@ -47,9 +47,9 @@
 		</PropertyGroup>
 		<PropertyGroup Condition="'$(Base)'!=''">
 			<VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-			<VerInfo_MinorVer>4</VerInfo_MinorVer>
+			<VerInfo_MinorVer>9</VerInfo_MinorVer>
 			<VerInfo_MajorVer>0</VerInfo_MajorVer>
-			<VerInfo_Keys>CompanyName=ZerverTeam;FileDescription=;FileVersion=0.4.0.0;InternalName=;LegalCopyright=(c) Z.Razor;LegalTrademarks=;OriginalFilename=;ProductName=Keep2Me;ProductVersion=0.4.0.0;Comments=</VerInfo_Keys>
+			<VerInfo_Keys>CompanyName=ZerverTeam;FileDescription=;FileVersion=0.9.0.0;InternalName=;LegalCopyright=(c) Z.Razor;LegalTrademarks=;OriginalFilename=;ProductName=Keep2Me;ProductVersion=0.9.0.0;Comments=</VerInfo_Keys>
 			<Manifest_File>None</Manifest_File>
 			<VerInfo_Locale>1049</VerInfo_Locale>
 			<DCC_UsePackage>fmx;IndySystem;DBXInterBaseDriver;DataSnapClient;DataSnapCommon;DataSnapServer;DataSnapProviderClient;DbxCommonDriver;dbxcds;DBXOracleDriver;dsnap;IndyCore;fmxase;CloudService;inetdbxpress;IPIndyImpl;bindcompfmx;rtl;dbrtl;DbxClientDriver;bindcomp;inetdb;xmlrtl;ibxpress;IndyProtocols;DBXMySQLDriver;soaprtl;bindengine;DBXInformixDriver;DBXFirebirdDriver;inet;fmxobj;DBXSybaseASADriver;fmxdae;dbexpress;DataSnapIndy10ServerTransport;$(DCC_UsePackage)</DCC_UsePackage>
@@ -160,10 +160,6 @@
 				<Form>FFilesSettings</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
-			<DCCReference Include="Forms\f_archivator.pas">
-				<Form>FArchivator</Form>
-				<FormType>dfm</FormType>
-			</DCCReference>
 			<DCCReference Include="Forms\f_imageinfo.pas">
 				<Form>FImageInfo</Form>
 				<FormType>dfm</FormType>
@@ -225,6 +221,7 @@
 					<Platform value="Win64">True</Platform>
 					<Platform value="Win32">True</Platform>
 				</Platforms>
+				<ModelSupport>False</ModelSupport>
 			</BorlandProject>
 			<ProjectFileVersion>12</ProjectFileVersion>
 		</ProjectExtensions>

@@ -93,9 +93,24 @@ type
     DontShowAdmin: Boolean;
     FastLoad: Boolean;
     Pastebin: TPasteBinSettings;
+    ShortImg: Boolean;
+    ShortFiles: Boolean;
     FTP: TFTPSettings;
   end;
 
+type
+  TLinkStatus = (lsWait, lsError, lsOK, lsCanceled, lsNoFile, lsInProgress);
+
+type
+  TLinkData = record
+    FilePath: String;
+    Size: String;
+    Status: TLinkStatus;
+    StatusText: String;
+    Link: String;
+  end;
+
+  TArrayOfLinkData = array of TLinkData;
 
 function ImgFormatToText(I: TImgFormats): String;
 function RunMeAsAdmin(hWnd: hWnd; FileName: string; Parameters: string): Boolean;
@@ -111,12 +126,31 @@ procedure LoadRecentFiles;
 function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
 function GetFileSize(FileName: wideString): Int64;
 procedure GetAllFiles(Path: string; T: TStringList; ImgOnly: Boolean);
+procedure AddFileLink(Path: String; var A: TArrayOfLinkData);
 
 var
   GSettings: TSettings;
   MonitorManager: TMonitorManager;
 
 implementation
+
+procedure AddFileLink(Path: String; var A: TArrayOfLinkData);
+begin
+  SetLength(A, Length(A) + 1);
+  with A[High(A)] do begin
+    FilePath := Path;
+    if FileExists(Path) then begin
+      Size := inttostr(GetFileSize(Path) div 1024);
+      if Size = '0' then Size := '1';
+      StatusText := 'Ожидание';
+      Status := lsWait;
+    end else begin
+      Size := '0';
+      Status := lsNoFile;
+      StatusText := 'Файл отсутствует!';
+    end;
+  end;
+end;
 
 procedure GetAllFiles(Path: string; T: TStringList; ImgOnly: Boolean);
 var
@@ -164,9 +198,10 @@ procedure MinimizeAllForms;
 var
   I: Integer;
 begin
+  Exit;
   with Application do begin
     for I := 0 to ComponentCount - 1 do
-      if (Components[I] is TForm) then
+      if (Components[I] is TForm) and ((Components[I] as TForm).Caption = 'Загрузка') then
         if (Components[I] as TForm).Visible then begin
           (Components[I] as TForm).Tag := -1;
           (Components[I] as TForm).Visible := false;
@@ -180,6 +215,7 @@ procedure RestoreAllForms;
 var
   I: Integer;
 begin
+  Exit;
   with Application do begin
     for I := 0 to ComponentCount - 1 do
       if (Components[I] is TForm) then

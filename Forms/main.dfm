@@ -3,7 +3,7 @@ object FMain: TFMain
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Keep2Me '#1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 434
+  ClientHeight = 467
   ClientWidth = 390
   Color = clBtnFace
   Constraints.MinHeight = 472
@@ -20,12 +20,12 @@ object FMain: TFMain
   OnShow = FormShow
   DesignSize = (
     390
-    434)
+    467)
   PixelsPerInch = 96
   TextHeight = 13
   object btn_ApplySettings: TsSpeedButton
     Left = 190
-    Top = 404
+    Top = 437
     Width = 192
     Height = 24
     Anchors = [akLeft, akRight, akBottom]
@@ -38,7 +38,7 @@ object FMain: TFMain
   end
   object btn_Cancel: TsSpeedButton
     Left = 7
-    Top = 404
+    Top = 437
     Width = 177
     Height = 24
     Anchors = [akLeft, akBottom]
@@ -53,7 +53,7 @@ object FMain: TFMain
     Left = 0
     Top = 0
     Width = 390
-    Height = 401
+    Height = 434
     ActivePage = pg_main
     Anchors = [akLeft, akTop, akRight, akBottom]
     Style = tsFlatButtons
@@ -64,9 +64,10 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
+      ExplicitHeight = 370
       DesignSize = (
         382
-        370)
+        403)
       object grp_Monitors: TGroupBox
         Left = 3
         Top = 3
@@ -267,13 +268,13 @@ object FMain: TFMain
         Left = 3
         Top = 318
         Width = 373
-        Height = 48
+        Height = 86
         Anchors = [akLeft, akTop, akRight]
         Caption = #1050#1086#1088#1086#1090#1082#1072#1103' '#1089#1089#1099#1083#1082#1072
         TabOrder = 4
         DesignSize = (
           373
-          48)
+          86)
         object btn_ShortLinkSettings: TsSpeedButton
           Left = 271
           Top = 17
@@ -294,6 +295,22 @@ object FMain: TFMain
           Style = csDropDownList
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 0
+        end
+        object cb_shortlinkFiles: TCheckBox
+          Left = 9
+          Top = 40
+          Width = 161
+          Height = 17
+          Caption = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1076#1083#1103' '#1092#1072#1081#1083#1086#1074
+          TabOrder = 1
+        end
+        object cb_shortlinkImg: TCheckBox
+          Left = 9
+          Top = 58
+          Width = 199
+          Height = 17
+          Caption = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1076#1083#1103' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1081
+          TabOrder = 2
         end
       end
       object grp_files: TGroupBox
@@ -337,9 +354,10 @@ object FMain: TFMain
       Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitHeight = 370
       DesignSize = (
         382
-        370)
+        403)
       object btn_ClearFormsSettings: TsSpeedButton
         Left = 3
         Top = 151
@@ -462,9 +480,10 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
+      ExplicitHeight = 370
       DesignSize = (
         382
-        370)
+        403)
       object grp_pb_account: TGroupBox
         Left = 3
         Top = 0
@@ -624,9 +643,10 @@ object FMain: TFMain
       Caption = 'FTP'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
+      ExplicitHeight = 370
       DesignSize = (
         382
-        370)
+        403)
       object cb_FTP_Img: TCheckBox
         Left = 3
         Top = 3
