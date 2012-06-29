@@ -54,6 +54,7 @@ uses
   f_pastebin,
   f_files,
   f_filessettings,
+  f_load,
   funcs,
   loaders,
   myhotkeys,
@@ -174,6 +175,7 @@ type
     cb_ShowActionInTray: TCheckBox;
     cb_shortlinkFiles: TCheckBox;
     cb_shortlinkImg: TCheckBox;
+    cb_EditImageFromFile: TCheckBox;
 
     procedure FormCreate(Sender: TObject);
 
@@ -273,6 +275,7 @@ begin
     cb_FastLoad.Checked := FastLoad;
     cb_shortlinkFiles.Checked := ShortFiles;
     cb_shortlinkImg.Checked := ShortImg;
+    cb_EditImageFromFile.Checked := EditImageFromFile;
     SetLength(tmpHotKeys, Length(Actions));
     for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
     with Pastebin do begin
@@ -564,17 +567,20 @@ end;
 procedure TFMain.DoOpenAndSendImage(Sender: TObject);
 begin
   if OpenImageDlg.Execute then
-    with TFImage.Create(nil) do
-      try
-        DetectImage(OpenImageDlg.FileName, OriginImg);
-        img.Picture.Assign(OriginImg);
-        StartWork;
-      except
-        On E: Exception do begin
-          ShowMessage(RU_IMG_LOAD_ERROR + E.Message);
-          Free;
+    if GSettings.EditImageFromFile then begin
+      with TFImage.Create(nil) do
+        try
+          DetectImage(OpenImageDlg.FileName, OriginImg);
+          img.Picture.Assign(OriginImg);
+          StartWork;
+        except
+          On E: Exception do begin
+            ShowMessage(RU_IMG_LOAD_ERROR + E.Message);
+            Free;
+          end;
         end;
-      end;
+    end
+    else TFLoad.CreateEx(OpenImageDlg.FileName, nil, true);
 end;
 
 procedure TFMain.DoPastebin(Sender: TObject);
@@ -584,7 +590,6 @@ end;
 
 procedure TFMain.DoScreenSelect(Sender: TObject);
 begin
-  MinimizeAllForms;
   // FSelField.AlphaBlend := true;
   TFPoints.Create(nil).Show;
 end;
@@ -718,7 +723,6 @@ begin
   beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
   if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
   ForceDirectories(ExtractFilePath(ParamStr(0)) + SYS_TMP_IMG_FOLDER);
-  // SerialMaker.
 end;
 
 procedure TFMain.FormShow(Sender: TObject);
@@ -745,6 +749,7 @@ begin
     FastLoad := cb_FastLoad.Checked;
     ShortFiles := cb_shortlinkFiles.Checked;
     ShortImg := cb_shortlinkImg.Checked;
+    EditImageFromFile := cb_EditImageFromFile.Checked;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to High(tmpHotKeys) do begin
       Actions[i] := tmpHotKeys[i];
@@ -806,6 +811,7 @@ begin
     ImgExtIndex := ReadInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', 1);
     ShortFiles := ReadBool(INI_COMMON_SETTINGS, 'ShortFiles', false);
     ShortImg := ReadBool(INI_COMMON_SETTINGS, 'ShortImg', false);
+    EditImageFromFile := ReadBool(INI_COMMON_SETTINGS, 'EditImageFromFile', false);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         Enabled := ReadBool(INI_HOT_KEYS + inttostr(i), 'Enabled', Enabled);
@@ -903,6 +909,7 @@ begin
     WriteBool(INI_COMMON_SETTINGS, 'ShortFiles', ShortFiles);
     WriteBool(INI_COMMON_SETTINGS, 'ShortImg', ShortImg);
     WriteInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', ImgExtIndex);
+    WriteBool(INI_COMMON_SETTINGS, 'EditImageFromFile', EditImageFromFile);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         WriteInteger(INI_HOT_KEYS + inttostr(i), 'Key', Key);

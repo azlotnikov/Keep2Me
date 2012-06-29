@@ -1,4 +1,5 @@
 object FWindows: TFWindows
+  Tag = -2
   Left = 0
   Top = 0
   Cursor = crHandPoint

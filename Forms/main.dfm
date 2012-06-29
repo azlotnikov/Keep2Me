@@ -3,10 +3,10 @@ object FMain: TFMain
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'Keep2Me '#1053#1072#1089#1090#1088#1086#1081#1082#1080
-  ClientHeight = 467
+  ClientHeight = 469
   ClientWidth = 390
   Color = clBtnFace
-  Constraints.MinHeight = 472
+  Constraints.MinHeight = 507
   Constraints.MinWidth = 406
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,12 +20,12 @@ object FMain: TFMain
   OnShow = FormShow
   DesignSize = (
     390
-    467)
+    469)
   PixelsPerInch = 96
   TextHeight = 13
   object btn_ApplySettings: TsSpeedButton
     Left = 190
-    Top = 437
+    Top = 439
     Width = 192
     Height = 24
     Anchors = [akLeft, akRight, akBottom]
@@ -38,7 +38,7 @@ object FMain: TFMain
   end
   object btn_Cancel: TsSpeedButton
     Left = 7
-    Top = 437
+    Top = 439
     Width = 177
     Height = 24
     Anchors = [akLeft, akBottom]
@@ -53,7 +53,7 @@ object FMain: TFMain
     Left = 0
     Top = 0
     Width = 390
-    Height = 434
+    Height = 436
     ActivePage = pg_main
     Anchors = [akLeft, akTop, akRight, akBottom]
     Style = tsFlatButtons
@@ -64,10 +64,9 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
-      ExplicitHeight = 370
       DesignSize = (
         382
-        403)
+        405)
       object grp_Monitors: TGroupBox
         Left = 3
         Top = 3
@@ -354,13 +353,12 @@ object FMain: TFMain
       Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitHeight = 370
       DesignSize = (
         382
-        403)
+        405)
       object btn_ClearFormsSettings: TsSpeedButton
-        Left = 3
-        Top = 151
+        Left = 9
+        Top = 167
         Width = 370
         Height = 22
         Anchors = [akLeft, akTop, akRight]
@@ -373,8 +371,8 @@ object FMain: TFMain
         Images = Images
       end
       object btn_ClearMainSettings: TsSpeedButton
-        Left = 3
-        Top = 179
+        Left = 9
+        Top = 195
         Width = 370
         Height = 22
         Anchors = [akLeft, akTop, akRight]
@@ -385,8 +383,8 @@ object FMain: TFMain
         Images = Images
       end
       object btn_ClearPluginsSettings: TsSpeedButton
-        Left = 3
-        Top = 207
+        Left = 9
+        Top = 223
         Width = 370
         Height = 22
         Anchors = [akLeft, akTop, akRight]
@@ -397,8 +395,8 @@ object FMain: TFMain
         Images = Images
       end
       object btn_ClearRecentFiles: TsSpeedButton
-        Left = 3
-        Top = 235
+        Left = 9
+        Top = 251
         Width = 370
         Height = 22
         Anchors = [akLeft, akTop, akRight]
@@ -412,7 +410,7 @@ object FMain: TFMain
         Left = 3
         Top = 1
         Width = 371
-        Height = 144
+        Height = 160
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
         object cb_ShowInTray: TCheckBox
@@ -473,6 +471,14 @@ object FMain: TFMain
           Caption = #1054#1090#1082#1088#1099#1074#1072#1090#1100' '#1089#1089#1099#1083#1082#1080' '#1087#1086' '#1082#1083#1080#1082#1091' '#1074' '#1090#1088#1077#1077
           TabOrder = 6
         end
+        object cb_EditImageFromFile: TCheckBox
+          Left = 9
+          Top = 133
+          Width = 272
+          Height = 17
+          Caption = #1054#1090#1082#1088#1099#1074#1072#1090#1100' '#1088#1077#1076#1072#1082#1090#1086#1088' '#1076#1083#1103' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1081' '#1080#1079' '#1092#1072#1081#1083#1072
+          TabOrder = 7
+        end
       end
     end
     object pg_pastebin: TsTabSheet
@@ -480,10 +486,9 @@ object FMain: TFMain
       SkinData.CustomColor = False
       SkinData.CustomFont = False
       UseCloseBtn = False
-      ExplicitHeight = 370
       DesignSize = (
         382
-        403)
+        405)
       object grp_pb_account: TGroupBox
         Left = 3
         Top = 0
@@ -643,10 +648,9 @@ object FMain: TFMain
       Caption = 'FTP'
       SkinData.CustomColor = False
       SkinData.CustomFont = False
-      ExplicitHeight = 370
       DesignSize = (
         382
-        403)
+        405)
       object cb_FTP_Img: TCheckBox
         Left = 3
         Top = 3
@@ -1328,7 +1332,7 @@ object FMain: TFMain
       OnClick = DoScreenSelect
     end
     object pm_BufferSend: TMenuItem
-      Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1080#1079' '#1073#1091#1092#1077#1088#1072
+      Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077' '#1080#1079' '#1073#1091#1092#1077#1088#1072
       ImageIndex = 3
       OnClick = DoBufferSend
     end

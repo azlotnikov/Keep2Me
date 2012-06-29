@@ -105,9 +105,9 @@ type
     cbb_smiles: TJvImageComboBox;
     btn_smile: TsSpeedButton;
     mm_smile: TMenuItem;
-    btn_undo: TsSpeedButton;
-    btn_redo: TsSpeedButton;
     mm_info: TMenuItem;
+    btn_arrow: TsSpeedButton;
+    mm_arrow: TMenuItem;
     procedure mm_LoadClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -140,10 +140,11 @@ type
     procedure tmr_BackGroundcheckTimer(Sender: TObject);
     procedure mm_smileClick(Sender: TObject);
     procedure pbMouseEnter(Sender: TObject);
-    procedure pb_ResizeborderMouseEnter(Sender: TObject);
     procedure scrlbxMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
       var Handled: Boolean);
     procedure mm_infoClick(Sender: TObject);
+    procedure img_fonMouseEnter(Sender: TObject);
+    procedure mm_arrowClick(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -263,6 +264,7 @@ begin
   if btn_cut.down then tmpShape := TFCut.Create;
   if btn_Resize.down then tmpShape := TFResize.Create;
   if btn_smile.down then tmpShape := TFSmile.Create;
+  if btn_arrow.down then tmpShape := TFArrow.Create;
   if (tmpShape is TFResize) or (tmpShape is TFCut) then pb_Resizeborder.Visible := true;
   if (tmpShape is TFSmile) then
     (tmpShape as TFSmile).ImagesData := SmilesList[cbb_smiles.ItemIndex];
@@ -328,6 +330,11 @@ begin
   UpdateCaption;
 end;
 
+procedure TFImage.img_fonMouseEnter(Sender: TObject);
+begin
+  scrlbx.SetFocus;
+end;
+
 procedure TFImage.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   SavePlacement;
@@ -344,6 +351,11 @@ begin
   ShapeList.img := img;
   Application.InsertComponent(self);
   LoadSmiles;
+end;
+
+procedure TFImage.mm_arrowClick(Sender: TObject);
+begin
+  btn_arrow.down := true;
 end;
 
 procedure TFImage.mm_blurClick(Sender: TObject);
@@ -504,11 +516,6 @@ end;
 procedure TFImage.pbPaint(Sender: TObject);
 begin
   if (ActiveDraw) and (not pb_Resizeborder.Visible) then tmpShape.Draw(pb.Canvas);
-end;
-
-procedure TFImage.pb_ResizeborderMouseEnter(Sender: TObject);
-begin
-  scrlbx.SetFocus;
 end;
 
 procedure TFImage.pb_ResizeborderPaint(Sender: TObject);

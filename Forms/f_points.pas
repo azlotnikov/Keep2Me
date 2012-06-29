@@ -144,6 +144,7 @@ begin
   FFrameSize.Hide;
   Hide;
   if not(Button = mbLeft) then exit;
+  MinimizeAllForms;
   dc := GetDC(0);
   bm := TBitMap.Create;
   bm.Width := FSelField.shp_sel.Width;

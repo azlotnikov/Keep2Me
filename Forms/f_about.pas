@@ -39,11 +39,11 @@ type
     lbl4: TLabel;
     mmo_logs: TMemo;
     mmo_modules: TMemo;
-    btn_ok: TButton;
     lbl5: TLabel;
     lbl6: TLabel;
     lbl7: TLabel;
     lbl8: TLabel;
+    btn_ok: TButton;
     procedure FormCreate(Sender: TObject);
     procedure btn_okClick(Sender: TObject);
     procedure ClickLink(Sender: TObject);

@@ -4,7 +4,7 @@ object FAbout: TFAbout
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
   Caption = #1054' '#1055#1088#1086#1075#1088#1072#1084#1084#1077
-  ClientHeight = 300
+  ClientHeight = 311
   ClientWidth = 360
   Color = clBtnFace
   DoubleBuffered = True
@@ -23,18 +23,15 @@ object FAbout: TFAbout
   PixelsPerInch = 96
   TextHeight = 13
   object pgc_tabs: TPageControl
-    Left = 0
+    Left = -1
     Top = 0
-    Width = 360
-    Height = 300
+    Width = 362
+    Height = 273
     ActivePage = ts_info
-    Align = alClient
-    Style = tsButtons
     TabOrder = 0
     object ts_info: TTabSheet
       Caption = 'About'
-      ExplicitLeft = 8
-      ExplicitTop = 31
+      ExplicitWidth = 352
       object img_logo: TImage
         Left = 3
         Top = 2
@@ -3624,50 +3621,53 @@ object FAbout: TFAbout
         TabOrder = 1
         Text = 'exp.razor@gmail.com'
       end
-      object btn_ok: TButton
-        Left = 254
-        Top = 243
-        Width = 91
-        Height = 25
-        BiDiMode = bdLeftToRight
-        Caption = 'OK'
-        Default = True
-        ParentBiDiMode = False
-        TabOrder = 2
-        OnClick = btn_okClick
-      end
     end
     object ts_logs: TTabSheet
       Caption = 'Changelog.txt'
       ImageIndex = 1
-      ExplicitWidth = 281
-      ExplicitHeight = 162
+      ExplicitWidth = 352
       object mmo_logs: TMemo
-        Left = 3
-        Top = 3
-        Width = 346
-        Height = 263
+        Left = 0
+        Top = 0
+        Width = 354
+        Height = 245
+        Align = alClient
         Color = clBtnFace
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
+        ExplicitWidth = 352
       end
     end
     object ts_plugins: TTabSheet
       Caption = 'Plugins'
       ImageIndex = 2
-      ExplicitWidth = 281
-      ExplicitHeight = 162
+      ExplicitWidth = 352
       object mmo_modules: TMemo
-        Left = 3
-        Top = 3
-        Width = 346
-        Height = 263
+        Left = 0
+        Top = 0
+        Width = 354
+        Height = 245
+        Align = alClient
+        Alignment = taCenter
         Color = clBtnFace
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
+        ExplicitWidth = 352
       end
     end
+  end
+  object btn_ok: TButton
+    Left = 248
+    Top = 279
+    Width = 104
+    Height = 25
+    BiDiMode = bdLeftToRight
+    Caption = 'OK'
+    Default = True
+    ParentBiDiMode = False
+    TabOrder = 1
+    OnClick = btn_okClick
   end
 end

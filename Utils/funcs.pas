@@ -85,6 +85,7 @@ type
     ShowInTray: Boolean;
     HideLoadForm: Boolean;
     CopyLink: Boolean;
+    EditImageFromFile: Boolean;
     ImgExtIndex: Integer;
     Actions: array of THotKeyAction;
     TrayIcon: TJvTrayIcon;
@@ -127,12 +128,23 @@ function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
 function GetFileSize(FileName: wideString): Int64;
 procedure GetAllFiles(Path: string; T: TStringList; ImgOnly: Boolean);
 procedure AddFileLink(Path: String; var A: TArrayOfLinkData);
+function HotKeyToText(K: THotKeyAction): String;
 
 var
   GSettings: TSettings;
   MonitorManager: TMonitorManager;
 
 implementation
+
+function HotKeyToText(K: THotKeyAction): String;
+begin
+  Result := '';
+  if K.Ctrl then Result := Result + 'Ctrl+';
+  if K.Alt then Result := Result + 'Alt+';
+  if K.Shift then Result := Result + 'Shift+';
+  if K.Win then Result := Result + 'Win+';
+  Result := Result + HotKeysArray[K.RegKey].Caption;
+end;
 
 procedure AddFileLink(Path: String; var A: TArrayOfLinkData);
 begin
@@ -198,10 +210,9 @@ procedure MinimizeAllForms;
 var
   I: Integer;
 begin
-  Exit;
   with Application do begin
     for I := 0 to ComponentCount - 1 do
-      if (Components[I] is TForm) and ((Components[I] as TForm).Caption = 'Загрузка') then
+      if (Components[I] is TForm) and ((Components[I] as TForm).Tag <> -2) then
         if (Components[I] as TForm).Visible then begin
           (Components[I] as TForm).Tag := -1;
           (Components[I] as TForm).Visible := false;
@@ -215,7 +226,6 @@ procedure RestoreAllForms;
 var
   I: Integer;
 begin
-  Exit;
   with Application do begin
     for I := 0 to ComponentCount - 1 do
       if (Components[I] is TForm) then

@@ -3,14 +3,14 @@
 	<Transactions>
     <Transaction>1899.12.30 00:00:00.000.392,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\umd5.pas=</Transaction>
     <Transaction>1899.12.30 00:00:00.000.390,F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Forms\f_imageinfo.dfm=F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Unit1.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.390,F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Forms\f_imageinfo.pas=F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.589,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\umd5.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.261,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.464,D:\ProjectsGit\Keep2Me\Forms\f_archivator.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.390,F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Forms\f_imageinfo.pas=F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.380,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.dfm=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Forms\f_archivator.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.688,=F:\EVERYTHING\Всячина\Projects\Projects2\Keep2me\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.384,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.380,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Forms\f_archivator.pas</Transaction>
-    <Transaction>2012.06.12 01:06:08.464,D:\ProjectsGit\Keep2Me\Forms\f_archivator.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.261,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.384,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Unit1.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="Forms"/>

@@ -2,7 +2,7 @@ object FImage: TFImage
   Left = 0
   Top = 0
   Caption = #1048#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077
-  ClientHeight = 439
+  ClientHeight = 422
   ClientWidth = 821
   Color = clBtnFace
   Constraints.MinHeight = 255
@@ -24,7 +24,7 @@ object FImage: TFImage
     Left = 744
     Top = 0
     Width = 77
-    Height = 439
+    Height = 422
     Align = alRight
     TabOrder = 0
     object btn_DoLoad: TsSpeedButton
@@ -82,7 +82,7 @@ object FImage: TFImage
     Left = 37
     Top = 0
     Width = 707
-    Height = 439
+    Height = 422
     Align = alClient
     Color = clBtnFace
     ParentColor = False
@@ -92,9 +92,10 @@ object FImage: TFImage
       Left = 0
       Top = 0
       Width = 703
-      Height = 435
+      Height = 418
       Align = alClient
       IncrementalDisplay = True
+      OnMouseEnter = img_fonMouseEnter
       ExplicitLeft = 424
       ExplicitTop = 144
       ExplicitWidth = 105
@@ -123,10 +124,9 @@ object FImage: TFImage
       Left = 0
       Top = 0
       Width = 703
-      Height = 435
+      Height = 418
       Align = alClient
       Visible = False
-      OnMouseEnter = pb_ResizeborderMouseEnter
       OnPaint = pb_ResizeborderPaint
       ExplicitWidth = 105
       ExplicitHeight = 105
@@ -136,13 +136,13 @@ object FImage: TFImage
     Left = 0
     Top = 0
     Width = 37
-    Height = 439
+    Height = 422
     Align = alLeft
     TabOrder = 1
     object btn_Brush: TsSpeedButton
       Tag = 1
       Left = 6
-      Top = 64
+      Top = 7
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -155,7 +155,7 @@ object FImage: TFImage
     object btn_line: TsSpeedButton
       Tag = 2
       Left = 6
-      Top = 95
+      Top = 38
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -167,7 +167,7 @@ object FImage: TFImage
     object btn_Rect: TsSpeedButton
       Tag = 3
       Left = 6
-      Top = 126
+      Top = 69
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -179,7 +179,7 @@ object FImage: TFImage
     object btn_Ellipse: TsSpeedButton
       Tag = 4
       Left = 6
-      Top = 157
+      Top = 100
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -191,7 +191,7 @@ object FImage: TFImage
     object btn_rectclear: TsSpeedButton
       Tag = 5
       Left = 6
-      Top = 188
+      Top = 131
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -203,7 +203,7 @@ object FImage: TFImage
     object btn_ellipseclear: TsSpeedButton
       Tag = 6
       Left = 6
-      Top = 219
+      Top = 162
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -215,7 +215,7 @@ object FImage: TFImage
     object btn_Text: TsSpeedButton
       Tag = 7
       Left = 6
-      Top = 250
+      Top = 224
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -227,7 +227,7 @@ object FImage: TFImage
     object btn_SelPen: TsSpeedButton
       Tag = 8
       Left = 6
-      Top = 281
+      Top = 255
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -239,7 +239,7 @@ object FImage: TFImage
     object btn_Blur: TsSpeedButton
       Tag = 9
       Left = 6
-      Top = 312
+      Top = 286
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -251,7 +251,7 @@ object FImage: TFImage
     object btn_cut: TsSpeedButton
       Tag = 10
       Left = 6
-      Top = 343
+      Top = 317
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -263,7 +263,7 @@ object FImage: TFImage
     object btn_Resize: TsSpeedButton
       Tag = 11
       Left = 6
-      Top = 374
+      Top = 348
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -275,7 +275,7 @@ object FImage: TFImage
     object btn_smile: TsSpeedButton
       Tag = 12
       Left = 6
-      Top = 405
+      Top = 379
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -284,26 +284,16 @@ object FImage: TFImage
       ImageIndex = 23
       Images = Images
     end
-    object btn_undo: TsSpeedButton
+    object btn_arrow: TsSpeedButton
+      Tag = 13
       Left = 6
-      Top = 2
+      Top = 193
       Width = 23
       Height = 25
+      GroupIndex = 1
       Flat = True
-      OnClick = mm_undoClick
       SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 5
-      Images = Images
-    end
-    object btn_redo: TsSpeedButton
-      Left = 6
-      Top = 33
-      Width = 23
-      Height = 25
-      Flat = True
-      OnClick = mm_redoClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 15
+      ImageIndex = 24
       Images = Images
     end
   end
@@ -389,6 +379,10 @@ object FImage: TFImage
         Caption = #1055#1086#1083#1099#1081' '#1101#1083#1083#1080#1087#1089
         ImageIndex = 19
         OnClick = mm_ellipseclearClick
+      end
+      object mm_arrow: TMenuItem
+        Caption = #1057#1090#1088#1077#1083#1082#1072
+        OnClick = mm_arrowClick
       end
       object mm_text: TMenuItem
         Caption = #1058#1077#1082#1089#1090
@@ -1212,6 +1206,33 @@ object FImage: TFImage
           2A34A20336F4A21C16B269080948D8C3367CD8C4129D22643B62F652009EA024
           A80872FC7FD110234D1009120BF05B800100FB955DA70BB7DC65000000004945
           4E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000002814944415478DA84534B681351143D339949B4A0880B17
+          153F4B578AD885426BAD822EFC64DCE8A62B410A2EFC503F6453D360ADB8112B
+          28F859B48808D2D8BA484B554A6D172D2AFE10420AD5348D49D3D6B4C6A4C99B
+          CC3CEF9B97365958BD7099C770CFB9E79E779FC23987A228B8D49FEA316DEEB5
+          6CFC35A8049A4B855BD73134380C4DD3E0D6D45E080211E743D35C44A128D3B4
+          64323A338B2FC7F68B41CE6C79AE6FEDE3DA52078B787E9B40781650A9DB484C
+          FEAFDB0C50638C26808ECE2046AE79E17DF49500546CDB50972552168A4226A0
+          53BA4512BD4707AA3CC09DCE6E0CF88FA0F149188AC5303F3989BA7DB5650211
+          459AFF1D751AA3ACDF02ECDF0A7C9C018E0782E8F11D46D3B3712A6298F91EC5
+          60DB31E49909AD5201B3647771765450F71B0F8278DA7C08175E4C809B0CD3DF
+          A2F09D3690CE11976595094430F26177B51CE3F31C70F55E100FCF1E80AF3F0A
+          DB2C38E05EBF815C01C89205C2FFB202724E8CB034B79FC01D4D0D687B1D87CD
+          24B8F58C81022320D599F2F2CA04BACB452440E41770F97610EDA7F6E2D670C2
+          E99C24705FC0C022757E9B94F5DBD6CB511D131B5A435CD73578C86D5FC773B4
+          34D6E2FE588A6EAA80C4441437CF19C89BF2AA5D84D20965A14281AAAA8884C7
+          7162208EE6937BF0F8C32C2CC69024F0ABEB06B279E0538AA453EDCE0DD2F1B9
+          7C050177166615AA76D4A0FB4B9A6433A448F6DD2B0688C729D04BC38AA5126B
+          6D2B951E5081B2761D42910570DAB0746C0A5D2D5E641781898C747B8D5B0262
+          39F95DAD0BE525027103B4FF345811991F716CDC548DAED10572DC84B5C2EB12
+          6096F939A488C774B0FD25E73677A43982E81F23F09BC0D11AFC3BE695D273DE
+          B542C1FBFF10E08F000300B87C3D4F76FFDEAD0000000049454E44AE426082}
       end>
     Left = 432
     Top = 8

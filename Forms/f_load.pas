@@ -6,6 +6,7 @@ uses
   Winapi.Windows,
   Winapi.Messages,
   Winapi.shellapi,
+  Winapi.Wininet,
   System.SysUtils,
   System.Variants,
   System.Classes,
@@ -21,6 +22,8 @@ uses
   Vcl.Clipbrd,
   Vcl.IdAntiFreeze,
   Vcl.ExtCtrls,
+  Vcl.Imaging.PNGImage,
+  HTTPApp,
   IdBaseComponent,
   IdAntiFreezeBase,
   JvTrayIcon,
@@ -42,24 +45,30 @@ type
     cbb_view: TComboBox;
     tmr_selfkill: TTimer;
     tmr_killEditor: TTimer;
+    btn_QRCode: TsSpeedButton;
+    img_qr: TImage;
     procedure btn_CopyClick(Sender: TObject);
     procedure btn_OpenClick(Sender: TObject);
     procedure cbb_viewChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure tmr_selfkillTimer(Sender: TObject);
     procedure tmr_killEditorTimer(Sender: TObject);
+    procedure btn_QRCodeClick(Sender: TObject);
   private
     OriginLink: String;
     EditorToKill: TForm;
     CloseForm: Boolean;
     CanClose: Boolean;
+    DontDeleteImg: Boolean;
+    QrDone: Boolean;
     procedure SavePlacement;
     procedure LoadPlacement;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
+
     procedure LoadFile(FileName: string; Editor: TForm);
-    constructor CreateEx(FileName: string; Editor: TForm);
+    constructor CreateEx(FileName: string; Editor: TForm; ADontDeleteImg: Boolean = false);
   end;
 
 implementation
@@ -76,6 +85,67 @@ begin
   ShellExecute(Handle, 'open', PChar(OriginLink), nil, nil, SW_SHOW);
 end;
 
+procedure TFLoad.btn_QRCodeClick(Sender: TObject);
+const
+  UrlGoogleQrCode = 'http://chart.apis.google.com/chart?chs=%dx%d&cht=qr&chld=%s&chl=%s';
+var
+  URL: String;
+  ImageStream: TMemoryStream;
+  PNGImage: TPngImage;
+  procedure WinInet_HttpGet(const URL: string; Stream: TStream);
+  const
+    BuffSize = 1024 * 1024;
+  var
+    hInter: HINTERNET;
+    UrlHandle: HINTERNET;
+    BytesRead: DWORD;
+    Buffer: Pointer;
+  begin
+    hInter := InternetOpen('', INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
+    if Assigned(hInter) then begin
+      Stream.Seek(0, 0);
+      GetMem(Buffer, BuffSize);
+      try
+        UrlHandle := InternetOpenUrl(hInter, PChar(URL), nil, 0, INTERNET_FLAG_RELOAD, 0);
+        if Assigned(UrlHandle) then begin
+          repeat
+            InternetReadFile(UrlHandle, Buffer, BuffSize, BytesRead);
+            if BytesRead > 0 then Stream.WriteBuffer(Buffer^, BytesRead);
+          until BytesRead = 0;
+          InternetCloseHandle(UrlHandle);
+        end;
+      finally
+        FreeMem(Buffer);
+      end;
+      InternetCloseHandle(hInter);
+    end
+  end;
+
+begin
+  if QrDone then exit;
+  QrDone := true;
+  ClientWidth := 568;
+  img_qr.Picture := nil;
+  ImageStream := TMemoryStream.Create;
+  PNGImage := TPngImage.Create;
+  try
+    try
+      URL := Format(UrlGoogleQrCode, [146, 146, 'L', HTTPEncode(OriginLink)]);
+      WinInet_HttpGet(URL, ImageStream);
+      if ImageStream.Size > 0 then begin
+        ImageStream.Position := 0;
+        PNGImage.LoadFromStream(ImageStream);
+        img_qr.Picture.Assign(PNGImage);
+      end;
+    except
+      on E: exception do ShowMessage(E.Message);
+    end;
+  finally
+    ImageStream.Free;
+    PNGImage.Free;
+  end;
+end;
+
 procedure TFLoad.cbb_viewChange(Sender: TObject);
 begin
   case cbb_view.ItemIndex of
@@ -87,10 +157,11 @@ begin
   end;
 end;
 
-constructor TFLoad.CreateEx(FileName: string; Editor: TForm);
+constructor TFLoad.CreateEx(FileName: string; Editor: TForm; ADontDeleteImg: Boolean = false);
 begin
   Create(nil);
   Application.InsertComponent(self);
+  DontDeleteImg := ADontDeleteImg;
   LoadPlacement;
   EditorToKill := Editor;
   CanClose := false;
@@ -121,16 +192,16 @@ procedure TFLoad.LoadFile(FileName: string; Editor: TForm);
     case MessageDlg('Ошибка загрузки. Попробовать еще раз?', mtConfirmation, mbYesNoCancel, 0) of
       mrYes: LoadFile(FileName, Editor);
       mrNo: begin
-          CloseForm := True;
-          CanClose := True;
-          DeleteFile(FileName);
-          tmr_killEditor.Enabled := True;
+          CloseForm := true;
+          CanClose := true;
+          if not DontDeleteImg then DeleteFile(FileName);
+          tmr_killEditor.Enabled := true;
         end;
       mrCancel: begin
-          DeleteFile(FileName);
-          CanClose := True;
-          Editor.Show;
-          tmr_selfkill.Enabled := True;
+          if not DontDeleteImg then DeleteFile(FileName);
+          CanClose := true;
+          if Editor <> nil then Editor.Show;
+          tmr_selfkill.Enabled := true;
         end;
     end;
 
@@ -140,6 +211,7 @@ procedure TFLoad.LoadFile(FileName: string; Editor: TForm);
     cbb_view.Enabled := B;
     btn_Open.Enabled := B;
     btn_Copy.Enabled := B;
+    btn_QRCode.Enabled := B;
   end;
 
 var
@@ -167,7 +239,7 @@ begin
       Cloader.Free;
       ReTry;
     end else begin
-      DeleteFile(FileName);
+      if not DontDeleteImg then DeleteFile(FileName);
       r := Cloader.GetLink;
       AddToRecentFiles(r, ExtractFileName(FileName), rfImg);
       if (GSettings.ShortLinkIndex > 0) and (GSettings.ShortImg) then
@@ -187,11 +259,11 @@ begin
       if GSettings.CopyLink then Clipboard.AsText := mmo_Link.Text;
       FreeAndNil(Cloader);
       pb.Position := pb.Max;
-      EnableBtns(True);
+      EnableBtns(true);
       GSettings.TrayIcon.Hint := r;
       if GSettings.ShowInTray then GSettings.TrayIcon.BalloonHint('Файл загружен', r);
-      CanClose := True;
-      tmr_killEditor.Enabled := True;
+      CanClose := true;
+      tmr_killEditor.Enabled := true;
     end;
   end;
 end;
@@ -216,9 +288,9 @@ end;
 
 procedure TFLoad.tmr_killEditorTimer(Sender: TObject);
 begin
-  EditorToKill.Close;
+  if EditorToKill <> nil then EditorToKill.Close;
   if CloseForm then begin
-    CanClose := True;
+    CanClose := true;
     Close;
   end;
   tmr_killEditor.Enabled := false;

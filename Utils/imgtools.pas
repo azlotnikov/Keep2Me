@@ -136,6 +136,13 @@ type
     procedure Draw(CanvasOut: TCanvas; Shift: TShiftState = []); override;
   end;
 
+type
+  TFArrow = class(TFShape)
+  public
+    procedure AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = []); override;
+    procedure Draw(CanvasOut: TCanvas; Shift: TShiftState = []); override;
+  end;
+
 Type
   TFShapeList = class
   private
@@ -673,6 +680,36 @@ begin
   h := ImagesData.Height div 2;
   W := ImagesData.Width div 2;
   ImagesData.Draw(CanvasOut, EndPoint.X - W, EndPoint.y - h, 0);
+  IMGSize := Point(PB.Width, PB.Height);
+end;
+
+{ TFArrow }
+
+procedure TFArrow.AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState);
+begin
+  EndPoint := P;
+end;
+
+procedure DrawArrow(P1, P2: TPoint; Canvas: TCanvas);
+var
+  Angle: real;
+  p3, p4: TPoint;
+begin
+  Canvas.MoveTo(P1.X, P1.y);
+  Canvas.LineTo(P2.X, P2.y);
+  Angle := 180 * ArcTan2(P2.y - P1.y, P2.X - P1.X) / pi;
+  p3 := Point(P2.X + Round(15 * cos(pi * (Angle + 150) / 180)), P2.y + Round(15 * sin(pi * (Angle + 150) / 180)));
+  p4 := Point(P2.X + Round(15 * cos(pi * (Angle - 150) / 180)), P2.y + Round(15 * sin(pi * (Angle - 150) / 180)));
+  Canvas.MoveTo(P2.X, P2.y);
+  Canvas.LineTo(p3.X, p3.y);
+  Canvas.MoveTo(P2.X, P2.y);
+  Canvas.LineTo(p4.X, p4.y);
+end;
+
+procedure TFArrow.Draw(CanvasOut: TCanvas; Shift: TShiftState);
+begin
+  SetColors(CanvasOut);
+  DrawArrow(StartPoint, EndPoint, CanvasOut);
   IMGSize := Point(PB.Width, PB.Height);
 end;
 

@@ -4,8 +4,8 @@ object FLoad: TFLoad
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = #1047#1072#1075#1088#1091#1079#1082#1072
-  ClientHeight = 153
-  ClientWidth = 413
+  ClientHeight = 162
+  ClientWidth = 411
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -21,7 +21,7 @@ object FLoad: TFLoad
     Left = 368
     Top = 57
     Width = 37
-    Height = 42
+    Height = 28
     Hint = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100
     ParentShowHint = False
     ShowHint = True
@@ -32,9 +32,9 @@ object FLoad: TFLoad
   end
   object btn_Open: TsSpeedButton
     Left = 368
-    Top = 105
+    Top = 91
     Width = 37
-    Height = 42
+    Height = 28
     Hint = #1054#1090#1082#1088#1099#1090#1100' '#1074' '#1073#1088#1072#1091#1079#1077#1088#1077
     ParentShowHint = False
     ShowHint = True
@@ -50,6 +50,22 @@ object FLoad: TFLoad
     Height = 13
     Caption = #1057#1089#1099#1083#1082#1072' '#1085#1072' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077':'
   end
+  object btn_QRCode: TsSpeedButton
+    Left = 368
+    Top = 125
+    Width = 37
+    Height = 28
+    OnClick = btn_QRCodeClick
+    SkinData.SkinSection = 'SPEEDBUTTON'
+    ImageIndex = 2
+    Images = Images
+  end
+  object img_qr: TImage
+    Left = 415
+    Top = 8
+    Width = 146
+    Height = 146
+  end
   object pb: TProgressBar
     Left = 8
     Top = 8
@@ -61,7 +77,7 @@ object FLoad: TFLoad
     Left = 8
     Top = 55
     Width = 354
-    Height = 90
+    Height = 99
     ReadOnly = True
     TabOrder = 2
   end
@@ -143,6 +159,20 @@ object FLoad: TFLoad
           E8E731D137AB58FFBD84D55F56D44F6EDC02CF1C8E673F286AEC765020702D4C
           5008225E12D2E51FAFFBAE7D7F78E79BDB8149CF051800A9CA65AD3F19B3E700
           00000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000000DC4944415478DA62FCFFFF3F0325801108407423106BA3
+          C98500F11A2C6C18B80AC4F5201340781D9446E7AFC32286C267829A06A337A0
+          F199B088A1F0D10D08C0C2C7AB8605CA6106E2AD58C20824E68D4F0D2C107181
+          1D50DA03970298B3764331327B375423339238260D0DD17D48343EF63E34F50C
+          0C6851838E0F4231363E988605E2512CDEB306627B24B9A35031189F05D90B27
+          D16C3E49240D0F4456287D0E8DCF0A1583D1E668341CDC4673FE6D3C6C14B520
+          7FC801F11D207E8E251C4062924872C8ECED409C0E4A45FC40CC8114DFC482BF
+          40FC0320C00006A13BA32284AC0C0000000049454E44AE426082}
       end>
     Left = 304
     Top = 30

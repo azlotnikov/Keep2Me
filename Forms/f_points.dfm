@@ -1,4 +1,5 @@
 object FPoints: TFPoints
+  Tag = -2
   Left = 0
   Top = 0
   Cursor = crDrag

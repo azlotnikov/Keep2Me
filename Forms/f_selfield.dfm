@@ -1,4 +1,5 @@
 object FSelField: TFSelField
+  Tag = -2
   Left = 0
   Top = 0
   AlphaBlend = True
