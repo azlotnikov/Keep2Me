@@ -463,9 +463,8 @@ begin
     s := HTTP.Get(SYS_UPDATE_CHECK_PAGE);
   except
   end;
-  if (Length(s) = 0) and (OnRun = 0) then ShowMessage(RU_SERVER_CONNECTION_ERROR);
-  if (Length(s) > 0) and (s <> SYS_KEEP_VERSION) then begin
-
+  if (Length(s) = 0) and (OnRun = 0) then ShowMessage(RU_SERVER_CONNECTION_ERROR)
+  else if (Length(s) > 0) and (s <> SYS_KEEP_VERSION) then begin
     if MessageDlg(Format(RU_UPDATE_AVAILABLE, [s, SYS_KEEP_VERSION]), mtConfirmation, mbYesNo, 0) <> mrYes then begin
       HTTP.Free;
       Exit;

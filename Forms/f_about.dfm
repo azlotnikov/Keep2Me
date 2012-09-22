@@ -31,7 +31,6 @@ object FAbout: TFAbout
     TabOrder = 0
     object ts_info: TTabSheet
       Caption = 'About'
-      ExplicitWidth = 352
       object img_logo: TImage
         Left = 3
         Top = 2
@@ -3607,7 +3606,7 @@ object FAbout: TFAbout
         Height = 21
         Alignment = taCenter
         Color = clBtnFace
-        NumbersOnly = True
+        ReadOnly = True
         TabOrder = 0
       end
       object edt_mail: TEdit
@@ -3617,7 +3616,7 @@ object FAbout: TFAbout
         Height = 21
         Alignment = taCenter
         Color = clBtnFace
-        NumbersOnly = True
+        ReadOnly = True
         TabOrder = 1
         Text = 'exp.razor@gmail.com'
       end
@@ -3625,7 +3624,6 @@ object FAbout: TFAbout
     object ts_logs: TTabSheet
       Caption = 'Changelog.txt'
       ImageIndex = 1
-      ExplicitWidth = 352
       object mmo_logs: TMemo
         Left = 0
         Top = 0
@@ -3636,13 +3634,11 @@ object FAbout: TFAbout
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitWidth = 352
       end
     end
     object ts_plugins: TTabSheet
       Caption = 'Plugins'
       ImageIndex = 2
-      ExplicitWidth = 352
       object mmo_modules: TMemo
         Left = 0
         Top = 0
@@ -3654,7 +3650,6 @@ object FAbout: TFAbout
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitWidth = 352
       end
     end
   end

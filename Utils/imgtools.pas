@@ -461,7 +461,6 @@ begin
   for i := 0 to High(Points) - 1 do bm2.Canvas.LineTo(Points[i].X, Points[i].y);
   CanvasOut.Draw(0, 0, bm1);
   CanvasOut.Draw(0, 0, bm2, 100);
-
   bm1.Free;
   bm2.Free;
   IMGSize := Point(PB.Width, PB.Height);
@@ -633,18 +632,27 @@ procedure TFResize.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
 var
   tmp: TBitmap;
   pW, pH: Integer;
+  per: Double;
 begin
   if IsDrawing then
     with CanvasOut do begin
       Brush.Style := bsClear;
       Pen.Color := clRed;
       Pen.Width := 2;
-      h := StartPoint.X - EndPoint.X;
-      v := StartPoint.y - EndPoint.y;
+      h := -StartPoint.X + EndPoint.X;
+      v := -StartPoint.y + EndPoint.y;
       if ssShift in Shift then begin
         Pen.Color := clGreen;
-        if h > v then v := h
-        else if v > h then h := v;
+        // if h > v then v := h
+        // else if v > h then h := v;
+        per := (h + v) / 2;
+        if PB.Width > PB.Height then begin
+          h := Trunc(per);
+          v := Trunc(PB.Width - ((PB.Width - per) * PB.Height) / PB.Width);
+        end else begin
+          v := Trunc(per);
+          h := Trunc(PB.Height - ((PB.Height - per) * PB.Width) / PB.Height);
+        end;
       end;
       Rectangle(1, 1, PB.Width - h, PB.Height - v);
     end

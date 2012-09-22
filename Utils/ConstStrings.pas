@@ -5,7 +5,7 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.9.1';
+  SYS_KEEP_VERSION = '0.9.2';
   SYS_CRYPT_KEY = 26123;
 
   SYS_CHANGELOG_FILE = 'changelog.txt';

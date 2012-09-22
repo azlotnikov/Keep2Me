@@ -88,6 +88,12 @@ type
   end;
 
 type
+  TOmpldrLoader = class(TLoader)
+  public
+    procedure LoadFile(FileName: string); override;
+  end;
+
+type
   TLoaderClass = class of TLoader;
 
 type
@@ -388,28 +394,40 @@ end;
 
 procedure TTrollWsLoader.LoadFile(FileName: string);
 const
-  Str = 'upload'', ''';
+  str0 = '<meta content="';
+  Str = '"url":"';
 var
   Stream: TIdMultipartFormDataStream;
-  s: string;
+  s, k: string;
 begin
   try
     Link := '';
     AError := false;
     HTTP.HandleRedirects := true;
+    k := '';
+    { try
+      s := HTTP.Get('http://troll.ws/');
+      except
+      end;
+      delete(s, Pos(str0, s), 1);
+      if Pos(str0, s) = 0 then begin
+      AError := true;
+      Exit;
+      end;
+      k := ParsSubString(s, str0, '"'); }
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFile('file', FileName, 'application/octet-stream');
-    Stream.AddFormField('handler', 'i');
-    Stream.AddFormField('submit', 'Upload');
+    Stream.AddFile('image[image]', FileName, 'application/octet-stream');
+    Stream.AddFormField('ut8', '');
+    Stream.AddFormField('authenticity_token', k);
     try
-      s := HTTP.Post('http://troll.ws/', Stream);
+      s := HTTP.Post('http://troll.ws/upload_image', Stream);
     except
     end;
     if (Pos(Str, s) = 0) then begin
       AError := true;
       Exit;
     end;
-    Link := 'http://troll.ws/i/' + ParsSubString(s, Str, '''') + ExtractFileExt(FileName);
+    Link := 'http://troll.ws' + ParsSubString(s, Str, '"');
   finally
     Stream.Free;
   end;
@@ -450,6 +468,35 @@ begin
 
 end;
 
+{ TFunkyImgLoader }
+
+procedure TOmpldrLoader.LoadFile(FileName: string);
+const
+  Str = '&nbsp;</div><div class="right"><a href="';
+var
+  Stream: TIdMultipartFormDataStream;
+  s: string;
+begin
+  try
+    Link := '';
+    AError := false;
+    HTTP.HandleRedirects := true;
+    Stream := TIdMultipartFormDataStream.Create;
+    Stream.AddFile('file1', FileName, 'application/octet-stream');
+    try
+      s := HTTP.Post('http://ompldr.org/upload', Stream);
+    except
+    end;
+    if (Pos(Str, s) = 0) then begin
+      AError := true;
+      Exit;
+    end;
+    Link := 'http://ompldr.org' + ParsSubString(s, Str, '"');
+  finally
+    Stream.Free;
+  end;
+end;
+
 initialization
 
 AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.2');
@@ -457,7 +504,8 @@ AddLoader(TQikrLoader, 'qikr.co', '0.1');
 AddLoader(TImgurLoader, 'imgur.com [API]', '0.1');
 AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.3');
 AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
-AddLoader(TTrollWsLoader, 'troll.ws', '0.1');
+AddLoader(TTrollWsLoader, 'troll.ws', '0.2');
 AddLoader(TImgsSuLoader, 'imgs.su', '0.1');
+AddLoader(TOmpldrLoader, 'ompldr.org', '0.1');
 
 end.

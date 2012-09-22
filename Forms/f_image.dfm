@@ -382,6 +382,7 @@ object FImage: TFImage
       end
       object mm_arrow: TMenuItem
         Caption = #1057#1090#1088#1077#1083#1082#1072
+        ImageIndex = 24
         OnClick = mm_arrowClick
       end
       object mm_text: TMenuItem
@@ -1234,7 +1235,7 @@ object FImage: TFImage
           6096F939A488C774B0FD25E73677A43982E81F23F09BC0D11AFC3BE695D273DE
           B542C1FBFF10E08F000300B87C3D4F76FFDEAD0000000049454E44AE426082}
       end>
-    Left = 432
+    Left = 440
     Top = 8
     Bitmap = {}
   end
@@ -1250,7 +1251,7 @@ object FImage: TFImage
   object tmr_BackGroundcheck: TTimer
     Interval = 50
     OnTimer = tmr_BackGroundcheckTimer
-    Left = 592
+    Left = 536
     Top = 8
   end
   object Smiles: TsAlphaImageList
