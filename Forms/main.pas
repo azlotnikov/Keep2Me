@@ -454,7 +454,7 @@ end;
 procedure CheckUpdates(OnRun: Integer);
 var
   HTTP: tidhttp;
-  s: string;
+  s, v: string;
 begin
   s := '';
   HTTP := tidhttp.Create(nil);
@@ -463,9 +463,12 @@ begin
     s := HTTP.Get(SYS_UPDATE_CHECK_PAGE);
   except
   end;
+  v := s;
+  Delete(v, 1, pos(SYS_UPDATE_TOKEN, s) + Length(SYS_UPDATE_TOKEN));
   if (Length(s) = 0) and (OnRun = 0) then ShowMessage(RU_SERVER_CONNECTION_ERROR)
-  else if (Length(s) > 0) and (s <> SYS_KEEP_VERSION) then begin
-    if MessageDlg(Format(RU_UPDATE_AVAILABLE, [s, SYS_KEEP_VERSION]), mtConfirmation, mbYesNo, 0) <> mrYes then begin
+  else if (pos(SYS_UPDATE_TOKEN, s) = 0) and (OnRun = 0) then ShowMessage(RU_SERVER_CONNECTION_ERROR)
+  else if (Length(s) > 0) and (v <> SYS_KEEP_VERSION) then begin
+    if MessageDlg(Format(RU_UPDATE_AVAILABLE, [v, SYS_KEEP_VERSION]), mtConfirmation, mbYesNo, 0) <> mrYes then begin
       HTTP.Free;
       Exit;
     end;
@@ -537,16 +540,16 @@ begin
   try
     SetLength(FirstBytes, 8);
     FS.Read(FirstBytes[1], 8);
-    if Copy(FirstBytes, 1, 2) = 'BM' then begin
+    if copy(FirstBytes, 1, 2) = 'BM' then begin
       Graphic := TBitmap.Create;
     end
     else if FirstBytes = #137'PNG'#13#10#26#10 then begin
       Graphic := TPngImage.Create;
     end
-    else if Copy(FirstBytes, 1, 3) = 'GIF' then begin
+    else if copy(FirstBytes, 1, 3) = 'GIF' then begin
       Graphic := TGIFImage.Create;
     end
-    else if Copy(FirstBytes, 1, 2) = #$FF#$D8 then begin
+    else if copy(FirstBytes, 1, 2) = #$FF#$D8 then begin
       Graphic := TJPEGImage.Create;
     end;
     if Assigned(Graphic) then begin
@@ -597,7 +600,7 @@ procedure TFMain.DoShortLinkFromBuf(Sender: TObject);
 var
   CShorter: TShorter;
 begin
-  if Pos('http://', Clipboard.AsText) <> 1 then begin
+  if pos('http://', Clipboard.AsText) <> 1 then begin
     GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Содержимое не является ссылкой');
     Exit;
   end;
@@ -953,13 +956,13 @@ end;
 
 procedure TFMain.TrayIconBalloonClick(Sender: TObject);
 begin
-  if Pos('http', GSettings.LastLink) > 0 then
+  if pos('http', GSettings.LastLink) > 0 then
     if GSettings.OpenLinksByClick then ShellExecute(Handle, 'open', PChar(GSettings.LastLink), nil, nil, SW_SHOW);
 end;
 
 procedure TFMain.TrayIconBalloonShow(Sender: TObject);
 begin
-  if Pos('http', TrayIcon.Hint) > 0 then GSettings.LastLink := TrayIcon.Hint
+  if pos('http', TrayIcon.Hint) > 0 then GSettings.LastLink := TrayIcon.Hint
   else GSettings.LastLink := '-1';
   TrayIcon.Hint := SYS_KEEP2ME;
 end;

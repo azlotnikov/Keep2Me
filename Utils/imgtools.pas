@@ -632,27 +632,17 @@ procedure TFResize.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
 var
   tmp: TBitmap;
   pW, pH: Integer;
-  per: Double;
 begin
   if IsDrawing then
     with CanvasOut do begin
       Brush.Style := bsClear;
       Pen.Color := clRed;
       Pen.Width := 2;
-      h := -StartPoint.X + EndPoint.X;
-      v := -StartPoint.y + EndPoint.y;
+      h := StartPoint.X - EndPoint.X;
+      v := StartPoint.y - EndPoint.y;
       if ssShift in Shift then begin
         Pen.Color := clGreen;
-        // if h > v then v := h
-        // else if v > h then h := v;
-        per := (h + v) / 2;
-        if PB.Width > PB.Height then begin
-          h := Trunc(per);
-          v := Trunc(PB.Width - ((PB.Width - per) * PB.Height) / PB.Width);
-        end else begin
-          v := Trunc(per);
-          h := Trunc(PB.Height - ((PB.Height - per) * PB.Width) / PB.Height);
-        end;
+        h := Trunc(v * PB.Width / PB.Height);
       end;
       Rectangle(1, 1, PB.Width - h, PB.Height - v);
     end

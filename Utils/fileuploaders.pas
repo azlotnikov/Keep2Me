@@ -19,6 +19,8 @@ uses
   IdFTP,
   IdFTPCommon,
   IdHashMessageDigest,
+  IdGlobal,
+  IdCoderMIME,
   Web.HTTPApp,
   ConstStrings,
   cript;
@@ -94,7 +96,7 @@ type
   end;
 
 type
-  TZalilRuFileLoader = class(TFileLoader)
+  TGFileLoader = class(TFileLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
@@ -359,7 +361,10 @@ begin
     uplink := ReplaceStr(uplink, 'amp;', '');
     extrainfo := ParsSubString(s, 'extra_info="', '"');
     uplink := uplink + '&extra_info=' + extrainfo + '&description=&userfile=' + ExtractfileName(FileName);
-    Stream.AddFile('file', FileName, 'multipart/form-data');
+    with Stream.AddFile('file', FileName, 'multipart/form-data') do begin
+      HeaderCharset := 'utf-8';       ///!!!!!!!!!!!!!!!!
+      HeaderEncoding := '8';
+    end;
     try
       s := HTTP.Put(uplink, Stream);
     except
@@ -469,7 +474,10 @@ begin
     Host := ParsSubString(s, HostStr, '"');
     token := ParsSubString(s, Str1, '"');
     Stream.AddFormField('authenticity_token', token);
-    Stream.AddFile('file', FileName, 'multipart/form-data');
+    with Stream.AddFile('file', FileName, 'multipart/form-data') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     HTTP.HandleRedirects := false;
     if Auth then HTTP.Request.CustomHeaders.Add('X-API-Key: ' + ApiKey);
     try
@@ -550,11 +558,11 @@ begin
   FTP.Quit;
 end;
 
-{ TZalilRuFileLoader }
+{ TGFileLoader }
 
-procedure TZalilRuFileLoader.LoadFile(FileName: string);
+procedure TGFileLoader.LoadFile(FileName: string);
 const
-  Str = '<div align="center">';
+  Str = 'type="text" value="';
 var
   Stream: TIdMultipartFormDataStream;
   s: string;
@@ -564,17 +572,20 @@ begin
     AError := false;
     Stream := TIdMultipartFormDataStream.Create;
     HTTP.HandleRedirects := true;
-    Stream.AddFile('file', FileName, 'multipart/form-data');
+    with Stream.AddFile('file', FileName, 'multipart/form-data') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     HTTP.HandleRedirects := true;
     try
-      s := HTTP.Post('http://zalil.ru/upload/', Stream);
+      s := HTTP.Post('http://gfile.ru/upload/', Stream);
     except
     end;
     if Pos(Str, s) = 0 then begin
       AError := true;
       Exit;
     end;
-    Link := ParsSubString(s, Str, '<');
+    Link := ParsSubString(s, Str, '"');
   finally
     Stream.Free;
   end;
@@ -584,6 +595,6 @@ initialization
 
 AddFileLoader(TRgHostFileLoader, 'rghost.ru [API]', '0.2', true);
 AddFileLoader(TSendSpaceFileLoader, 'sendspace.com [API]', '0.1', true);
-AddFileLoader(TZalilRuFileLoader, 'zalil.ru', '0.1', false);
+AddFileLoader(TGFileLoader, 'gfile.ru', '0.1', false);
 
 end.

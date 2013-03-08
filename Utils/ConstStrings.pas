@@ -5,7 +5,8 @@ interface
 const
 
   // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.9.2';
+  SYS_KEEP_VERSION = '0.9.3';
+  SYS_PLATFORM = ' x86';
   SYS_CRYPT_KEY = 26123;
 
   SYS_CHANGELOG_FILE = 'changelog.txt';
@@ -23,7 +24,8 @@ const
   SYS_SETTINGS_FOLDER = 'settings\';
   SYS_KEEP2ME = 'Keep2Me';
   SYS_USERAGENT = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)';
-  SYS_UPDATE_CHECK_PAGE = 'http://keep2.me/program/lastversion.php?clientversion=' + SYS_KEEP_VERSION;
+  SYS_UPDATE_CHECK_PAGE = 'http://keep2.me/program/lastversion2.php?clientversion=' + SYS_KEEP_VERSION;
+  SYS_UPDATE_TOKEN = 'K2M_VERSION';
   SYS_UPDATER_EXE_NAME = 'updater.exe';
 
   INI_COMMON_SETTINGS = 'CommonSettings';
@@ -32,7 +34,7 @@ const
   INI_FTP = 'FTP';
   INI_RECENTFILES = 'RecentFiles';
 
-  RU_NOT_ADMIN = 'Для корректной работы программы необходимы права Администратора';
+  RU_NOT_ADMIN = 'Для корректной работы программы необходимы права Администратора.';
   RU_SELECT_SCREEN_PART = 'Выделить область экрана';
   RU_SEND_FROM_BUFFER = 'Отправить из буфера обмена';
   RU_SEND_WINDOW_SCREEN = 'Отправить скриншот окна';

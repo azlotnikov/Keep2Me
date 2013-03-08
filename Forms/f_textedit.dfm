@@ -3,9 +3,11 @@ object FTextEdit: TFTextEdit
   Top = 0
   BorderStyle = bsSizeToolWin
   Caption = #1042#1074#1077#1076#1080#1090#1077' '#1090#1077#1082#1089#1090
-  ClientHeight = 156
+  ClientHeight = 157
   ClientWidth = 424
   Color = clBtnFace
+  Constraints.MinHeight = 211
+  Constraints.MinWidth = 440
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -19,7 +21,7 @@ object FTextEdit: TFTextEdit
   OnShow = FormShow
   DesignSize = (
     424
-    156)
+    157)
   PixelsPerInch = 96
   TextHeight = 13
   object btn_bold: TsSpeedButton
@@ -107,10 +109,11 @@ object FTextEdit: TFTextEdit
     Left = 8
     Top = 32
     Width = 408
-    Height = 116
+    Height = 117
     Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssBoth
     TabOrder = 2
+    ExplicitHeight = 116
   end
   object se_fsize: TSpinEdit
     Left = 202
@@ -130,7 +133,7 @@ object FTextEdit: TFTextEdit
     Height = 22
     DroppedDownWidth = 243
     MaxMRUCount = 0
-    FontName = 'Tahoma'
+    FontName = 'System'
     ItemIndex = 184
     Sorted = True
     TabOrder = 1

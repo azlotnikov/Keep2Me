@@ -28,6 +28,7 @@ object FAbout: TFAbout
     Width = 362
     Height = 273
     ActivePage = ts_info
+    Style = tsFlatButtons
     TabOrder = 0
     object ts_info: TTabSheet
       Caption = 'About'
@@ -3527,7 +3528,7 @@ object FAbout: TFAbout
         Top = 34
         Width = 217
         Height = 13
-        Caption = 'Copyright '#169' 2011 - 2012 Z.'#1056#1101#1081#1079#1086#1088' (Z.Razor)'
+        Caption = 'Copyright '#169' 2011 - 2013 Z.'#1056#1101#1081#1079#1086#1088' (Z.Razor)'
       end
       object lbl3: TLabel
         Left = 41
@@ -3624,11 +3625,15 @@ object FAbout: TFAbout
     object ts_logs: TTabSheet
       Caption = 'Changelog.txt'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object mmo_logs: TMemo
         Left = 0
         Top = 0
         Width = 354
-        Height = 245
+        Height = 242
         Align = alClient
         Color = clBtnFace
         ReadOnly = True
@@ -3639,11 +3644,15 @@ object FAbout: TFAbout
     object ts_plugins: TTabSheet
       Caption = 'Plugins'
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object mmo_modules: TMemo
         Left = 0
         Top = 0
         Width = 354
-        Height = 245
+        Height = 242
         Align = alClient
         Alignment = taCenter
         Color = clBtnFace

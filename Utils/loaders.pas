@@ -88,7 +88,7 @@ type
   end;
 
 type
-  TOmpldrLoader = class(TLoader)
+  TFilezPro = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
@@ -205,7 +205,7 @@ end;
 
 procedure THostingKartinokLoader.LoadFile(FileName: string);
 const
-  Str = '</label><input class="image-link" type="text" size="92" onclick="this.select();" value="';
+  Str = '<img src="http://s5.hostingkartinok.com/uploads/thumbs/';
 var
   Stream: TIdMultipartFormDataStream;
   s: string;
@@ -215,7 +215,7 @@ begin
     AError := false;
     Stream := TIdMultipartFormDataStream.Create;
     Stream.AddFile('image_1', FileName, 'application/octet-stream');
-    Stream.AddFormField('jpeg_quality', '70%');
+    Stream.AddFormField('jpeg_quality', '100%');
     Stream.AddFormField('resize_to', '500px');
     Stream.AddFormField('upload_type', 'standard');
     try
@@ -226,7 +226,7 @@ begin
       AError := true;
       Exit;
     end;
-    Link := ParsSubString(s, Str, '"');
+    Link := 'http://s5.hostingkartinok.com/uploads/images/' + ParsSubString(s, Str, '.') + ExtractFileExt(FileName);
   finally
     Stream.Free;
   end;
@@ -395,7 +395,7 @@ end;
 procedure TTrollWsLoader.LoadFile(FileName: string);
 const
   str0 = '<meta content="';
-  Str = '"url":"';
+  Str = '"name":"';
 var
   Stream: TIdMultipartFormDataStream;
   s, k: string;
@@ -427,13 +427,13 @@ begin
       AError := true;
       Exit;
     end;
-    Link := 'http://troll.ws' + ParsSubString(s, Str, '"');
+    Link := 'http://i.troll.ws/' + ParsSubString(s, Str, '"');
   finally
     Stream.Free;
   end;
 end;
 
-{ TImgsSu }
+{ TImgsSuLoader }
 
 procedure TImgsSuLoader.LoadFile(FileName: string);
 const
@@ -468,44 +468,72 @@ begin
 
 end;
 
-{ TFunkyImgLoader }
+{ TFilezPro }
 
-procedure TOmpldrLoader.LoadFile(FileName: string);
+procedure TFilezPro.LoadFile(FileName: string);
 const
-  Str = '&nbsp;</div><div class="right"><a href="';
+  Str = 'redirectAfterUpload(''';
+  str0 = 'Uploader.startUpload("';
+  str1 = '<input type="text" value="';
 var
   Stream: TIdMultipartFormDataStream;
-  s: string;
+  Post: tstringlist;
+  s, token: string;
 begin
   try
     Link := '';
     AError := false;
     HTTP.HandleRedirects := true;
+    Post := tstringlist.Create;
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFile('file1', FileName, 'application/octet-stream');
+    Post.Add('upload_file[]=' + ExtractFileName(FileName));
+    Post.Add('private=0');
+    Post.Add('member=0');
     try
-      s := HTTP.Post('http://ompldr.org/upload', Stream);
+      s := HTTP.Post('http://filez.pro/link_upload.php', Post);
+    except
+    end;
+    if (Pos(str0, s) = 0) then begin
+      AError := true;
+      Exit;
+    end;
+    token := ParsSubString(s, str0, '"');
+    Stream.AddFile('upfile_1362636679472', FileName, 'application/octet-stream');
+    Stream.AddFormField('private', '0');
+    Stream.AddFormField('member', '0');
+    try
+      s := HTTP.Post('http://filez.pro/cgi-bin/upload.cgi?upload_id=' + token, Stream);
     except
     end;
     if (Pos(Str, s) = 0) then begin
       AError := true;
       Exit;
     end;
-    Link := 'http://ompldr.org' + ParsSubString(s, Str, '"');
+    token := ParsSubString(s, Str, '''');
+    try
+      s := HTTP.Get(token);
+    except
+    end;
+    if (Pos(str1, s) = 0) then begin
+      AError := true;
+      Exit;
+    end;
+    Link := ParsSubString(s, str1, '"');
   finally
     Stream.Free;
+    Post.Free
   end;
 end;
 
 initialization
 
-AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.2');
+AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.3');
 AddLoader(TQikrLoader, 'qikr.co', '0.1');
 AddLoader(TImgurLoader, 'imgur.com [API]', '0.1');
 AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.3');
 AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
-AddLoader(TTrollWsLoader, 'troll.ws', '0.2');
+AddLoader(TTrollWsLoader, 'troll.ws', '0.3');
 AddLoader(TImgsSuLoader, 'imgs.su', '0.1');
-AddLoader(TOmpldrLoader, 'ompldr.org', '0.1');
+AddLoader(TFilezPro, 'filez.pro', '0.1');
 
 end.

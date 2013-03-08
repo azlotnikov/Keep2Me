@@ -1,48 +1,48 @@
-﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-		<PropertyGroup>
-			<ProjectGuid>{7CABB872-026D-464B-AC7E-AA172CFE42A9}</ProjectGuid>
-		</PropertyGroup>
-		<ItemGroup>
-			<Projects Include="keep2me.dproj">
-				<Dependencies/>
-			</Projects>
-			<Projects Include="Updater\updater.dproj">
-				<Dependencies/>
-			</Projects>
-		</ItemGroup>
-		<ProjectExtensions>
-			<Borland.Personality>Default.Personality.12</Borland.Personality>
-			<Borland.ProjectType/>
-			<BorlandProject>
-				<Default.Personality/>
-			</BorlandProject>
-		</ProjectExtensions>
-		<Target Name="keep2me">
-			<MSBuild Projects="keep2me.dproj"/>
-		</Target>
-		<Target Name="keep2me:Clean">
-			<MSBuild Projects="keep2me.dproj" Targets="Clean"/>
-		</Target>
-		<Target Name="keep2me:Make">
-			<MSBuild Projects="keep2me.dproj" Targets="Make"/>
-		</Target>
-		<Target Name="updater">
-			<MSBuild Projects="Updater\updater.dproj"/>
-		</Target>
-		<Target Name="updater:Clean">
-			<MSBuild Projects="Updater\updater.dproj" Targets="Clean"/>
-		</Target>
-		<Target Name="updater:Make">
-			<MSBuild Projects="Updater\updater.dproj" Targets="Make"/>
-		</Target>
-		<Target Name="Build">
-			<CallTarget Targets="keep2me;updater"/>
-		</Target>
-		<Target Name="Clean">
-			<CallTarget Targets="keep2me:Clean;updater:Clean"/>
-		</Target>
-		<Target Name="Make">
-			<CallTarget Targets="keep2me:Make;updater:Make"/>
-		</Target>
-		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')" Project="$(BDS)\Bin\CodeGear.Group.Targets"/>
-	</Project>
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{7CABB872-026D-464B-AC7E-AA172CFE42A9}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="keep2me.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Updater\updater.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="keep2me">
+        <MSBuild Projects="keep2me.dproj"/>
+    </Target>
+    <Target Name="keep2me:Clean">
+        <MSBuild Projects="keep2me.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="keep2me:Make">
+        <MSBuild Projects="keep2me.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="updater">
+        <MSBuild Projects="Updater\updater.dproj"/>
+    </Target>
+    <Target Name="updater:Clean">
+        <MSBuild Projects="Updater\updater.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="updater:Make">
+        <MSBuild Projects="Updater\updater.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="keep2me;updater"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="keep2me:Clean;updater:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="keep2me:Make;updater:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
