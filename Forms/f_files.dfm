@@ -2,7 +2,7 @@ object FFiles: TFFiles
   Left = 0
   Top = 0
   Caption = #1047#1072#1075#1088#1091#1079#1082#1072' '#1092#1072#1081#1083#1086#1074
-  ClientHeight = 172
+  ClientHeight = 183
   ClientWidth = 587
   Color = clBtnFace
   Constraints.MinHeight = 196
@@ -19,14 +19,14 @@ object FFiles: TFFiles
   OnCreate = FormCreate
   DesignSize = (
     587
-    172)
+    183)
   PixelsPerInch = 96
   TextHeight = 13
   object lv_files: TJvListView
     Left = 7
     Top = 8
     Width = 572
-    Height = 91
+    Height = 102
     Anchors = [akLeft, akTop, akRight, akBottom]
     Columns = <
       item
@@ -63,16 +63,16 @@ object FFiles: TFFiles
       end
       item
       end>
-    ExplicitHeight = 89
+    ExplicitHeight = 91
   end
   object pnl_buttons: TPanel
     Left = 8
-    Top = 105
+    Top = 116
     Width = 571
     Height = 41
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 1
-    ExplicitTop = 103
+    ExplicitTop = 105
     DesignSize = (
       571
       41)
@@ -136,15 +136,13 @@ object FFiles: TFFiles
   end
   object stat_hint: TStatusBar
     Left = 0
-    Top = 153
+    Top = 164
     Width = 587
     Height = 19
     Panels = <>
     SimplePanel = True
     SimpleText = #1052#1086#1078#1085#1086' '#1076#1086#1073#1072#1074#1080#1090#1100' '#1092#1072#1081#1083#1099' '#1074' '#1086#1095#1077#1088#1077#1076#1100' - '#1087#1077#1088#1077#1090#1072#1097#1080#1074' '#1080#1093' '#1085#1072' '#1089#1087#1080#1089#1086#1082
-    ExplicitLeft = 272
-    ExplicitTop = 152
-    ExplicitWidth = 0
+    ExplicitTop = 153
   end
   object Images: TsAlphaImageList
     DrawingStyle = dsTransparent

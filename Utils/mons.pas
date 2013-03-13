@@ -42,19 +42,9 @@ begin
 end;
 
 function TMonitorManager.GetRect(Index: Integer): TRect;
-var
-  i: Integer;
-  MaxWidth, MaxHeight: Integer;
 begin
-  MaxWidth := -maxint;
-  MaxHeight := -maxint;
-  if Index > 0 then exit(Screen.Monitors[Index - 1].BoundsRect);
-  with Screen do
-    for i := 0 to MonitorCount - 1 do begin
-      if Monitors[i].Left + Monitors[i].Width > MaxWidth then MaxWidth := Monitors[i].Left + Monitors[i].Width;
-      if Monitors[i].Top + Monitors[i].Height > MaxHeight then MaxHeight := Monitors[i].Top + Monitors[i].Height;
-    end;
-  result := Rect(0, 0, MaxWidth, MaxHeight);
+  if Index > 0 then result := Screen.Monitors[Index - 1].BoundsRect
+  else result := Screen.DesktopRect
 end;
 
 end.

@@ -2,15 +2,12 @@ object FFrameSize: TFFrameSize
   Tag = -2
   Left = 0
   Top = 0
-  AlphaBlend = True
   AlphaBlendValue = 100
-  AutoSize = True
   BorderStyle = bsNone
   Caption = 'FFrameSize'
-  ClientHeight = 13
-  ClientWidth = 21
-  Color = clHotLight
-  DoubleBuffered = True
+  ClientHeight = 15
+  ClientWidth = 23
+  Color = clMenuHighlight
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -22,14 +19,27 @@ object FFrameSize: TFFrameSize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object lbl_size: TLabel
+  object shp_frame: TShape
     Left = 0
     Top = 0
+    Width = 23
+    Height = 15
+    Align = alClient
+    Brush.Color = clHighlight
+    Pen.Color = clHotLight
+    ExplicitLeft = 16
+    ExplicitTop = 8
+    ExplicitWidth = 65
+    ExplicitHeight = 65
+  end
+  object lbl_size: TLabel
+    Left = 1
+    Top = 1
     Width = 21
     Height = 13
     Caption = '0x0'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clFuchsia
+    Font.Color = clBtnFace
     Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]

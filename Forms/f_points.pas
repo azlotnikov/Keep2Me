@@ -8,6 +8,7 @@ uses
   System.SysUtils,
   System.Variants,
   System.Classes,
+  System.Math,
   Vcl.Graphics,
   Vcl.Controls,
   Vcl.Forms,
@@ -59,8 +60,6 @@ begin
   if Button = mbLeft then begin
     Rx := Mouse.CursorPos.X;
     Ry := Mouse.CursorPos.Y;
-    bx := X;
-    by := Y;
     GLx := X; // координаты начала (Х)
     GLy := Y; // координаты начала (У)
     FSelField.StartSelect;
@@ -85,8 +84,10 @@ end;
 procedure TFPoints.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
   if not ActiveSelect then exit;
-  // X := Mouse.CursorPos.X;
-  // Y := Mouse.CursorPos.Y;
+  if X > ClientWidth then X := ClientWidth;
+  if Y > ClientHeight then Y := ClientHeight;
+  if X < 0 then X := 0;
+  if Y < 0 then Y := 0;
   if (X >= GLx) and (Y >= GLy) then begin
     with FSelField.shp_sel do begin
       Top := GLy;
@@ -128,16 +129,20 @@ begin
     end;
   end;
   FFrameSize.lbl_size.Caption := inttostr(abs(X - bx)) + 'x' + inttostr(abs(Y - by));
+  FFrameSize.ReCalcFormSize;
 end;
 
 procedure TFPoints.FormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   dc: HDC;
   bm: TBitMap;
-  dx, dy: Integer;
 begin
-  X := Mouse.CursorPos.X;
-  Y := Mouse.CursorPos.Y;
+  Rx := min(Mouse.CursorPos.X, Rx);
+  Ry := min(Mouse.CursorPos.Y, Ry);
+  if GSettings.MonIndex > 0 then begin
+    Rx := Max(Screen.Monitors[GSettings.MonIndex - 1].Left, Rx);
+    Ry := Max(Screen.Monitors[GSettings.MonIndex - 1].Top, Ry);
+  end;
   ActiveSelect := false;
   FSelField.shp_sel.Visible := false;
   FSelField.Hide;
@@ -149,18 +154,7 @@ begin
   bm := TBitMap.Create;
   bm.Width := FSelField.shp_sel.Width;
   bm.Height := FSelField.shp_sel.Height;
-  dx := 0;
-  dy := 0;
-  if GSettings.MonIndex > 0 then begin
-    dx := Screen.Monitors[GSettings.MonIndex - 1].Left;
-    dy := Screen.Monitors[GSettings.MonIndex - 1].Top;
-  end;
-  if (X >= GLx) and (Y >= GLy) then BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + GLx, dy + GLy, SRCCOPY)
-  else if (X <= GLx) and (Y <= GLy) then
-      BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + X, dy + Y, SRCCOPY)
-  else if (X < GLx) and (Y > GLy) then
-      BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + X, dy + GLy, SRCCOPY)
-  else BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, dx + GLx, dy + Y, SRCCOPY);
+  BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, Rx, Ry, SRCCOPY);
   RestoreAllForms;
   with TFImage.Create(nil) do begin
     img.Picture.Assign(bm);

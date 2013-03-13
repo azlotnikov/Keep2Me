@@ -272,7 +272,7 @@ procedure TFLoad.SavePlacement;
 var
   F: TIniFile;
 begin
-  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_LINK_FORM_NAME);
+  F := TIniFile.Create(GetSettingsFilePath + SYS_LINK_FORM_NAME);
   F.WriteInteger('Form', 'ViewIndex', cbb_view.ItemIndex);
   F.Free;
 end;
@@ -281,7 +281,7 @@ procedure TFLoad.LoadPlacement;
 var
   F: TIniFile;
 begin
-  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_LINK_FORM_NAME);
+  F := TIniFile.Create(GetSettingsFilePath + SYS_LINK_FORM_NAME);
   cbb_view.ItemIndex := F.ReadInteger('Form', 'ViewIndex', cbb_view.ItemIndex);
   F.Free;
 end;

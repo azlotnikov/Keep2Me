@@ -88,7 +88,7 @@ type
   end;
 
 type
-  TFilezPro = class(TLoader)
+  TFilezProLoader = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
@@ -470,7 +470,7 @@ end;
 
 { TFilezPro }
 
-procedure TFilezPro.LoadFile(FileName: string);
+procedure TFilezProLoader.LoadFile(FileName: string);
 const
   Str = 'redirectAfterUpload(''';
   str0 = 'Uploader.startUpload("';
@@ -525,6 +525,7 @@ begin
   end;
 end;
 
+
 initialization
 
 AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.3');
@@ -534,6 +535,5 @@ AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.3');
 AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
 AddLoader(TTrollWsLoader, 'troll.ws', '0.3');
 AddLoader(TImgsSuLoader, 'imgs.su', '0.1');
-AddLoader(TFilezPro, 'filez.pro', '0.1');
-
+AddLoader(TFilezProLoader, 'filez.pro', '0.1');
 end.

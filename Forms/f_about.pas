@@ -84,7 +84,7 @@ const
 var
   i: integer;
 begin
-  edt_version.text := SYS_KEEP_VERSION + SYS_PLATFORM;
+  edt_version.text := SYS_KEEP_VERSION + ' ' + SYS_PLATFORM;
   with mmo_modules do begin
     Clear;
     for i := 0 to High(LoadersArray) do Lines.Add(Format(outtext, [LoadersArray[i].Version, LoadersArray[i].Caption]));

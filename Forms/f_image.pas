@@ -345,11 +345,11 @@ end;
 
 procedure TFImage.FormCreate(Sender: TObject);
 begin
+  Application.InsertComponent(self);
   LoadPlacement;
   OriginImg := TBitmap.Create;
   ShapeList := TFShapeList.Create;
   ShapeList.img := img;
-  Application.InsertComponent(self);
   LoadSmiles;
 end;
 
@@ -424,7 +424,7 @@ var
   SaveResult: Integer;
 begin
   Hide;
-  FSName := ExtractFilePath(paramstr(0)) + GetScreenName;
+  FSName := GetSettingsFilePath + GetScreenName;
   // ShapeList.DrawAll(img.Canvas);
   SaveResult := 1;
   case TImgFormats(GSettings.ImgExtIndex) of
@@ -554,10 +554,10 @@ var
   F: TIniFile;
   i: Integer;
 begin
-  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_IMG_LOADER_FORM_NAME);
+  F := TIniFile.Create(GetSettingsFilePath + SYS_IMG_LOADER_FORM_NAME);
   with F do begin
-    WriteInteger('Form', 'Width', Width);
-    WriteInteger('Form', 'Height', Height);
+    WriteInteger('Form', 'Width', ClientWidth);
+    WriteInteger('Form', 'Height', ClientHeight);
     WriteInteger('Form', 'Top', Top);
     WriteInteger('Form', 'Left', Left);
     WriteBool('Form', 'Maximized', (WindowState = wsMaximized));
@@ -592,12 +592,12 @@ var
   F: TIniFile;
   i, K: Integer;
 begin
-  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_IMG_LOADER_FORM_NAME);
+  F := TIniFile.Create(GetSettingsFilePath + SYS_IMG_LOADER_FORM_NAME);
   with F do begin
     if ReadBool('Form', 'Maximized', false) then WindowState := wsMaximized
     else begin
-      Width := ReadInteger('Form', 'Width', Width);
-      Height := ReadInteger('Form', 'Height', Height);
+      ClientWidth := ReadInteger('Form', 'Width', ClientWidth);
+      ClientHeight := ReadInteger('Form', 'Height', ClientHeight);
       Top := ReadInteger('Form', 'Top', Top);
       Left := ReadInteger('Form', 'Left', Left);
     end;
@@ -708,7 +708,7 @@ var
   w, h: Word;
 begin
   t := TStringList.Create;
-  GetAllFiles(ExtractFilePath(paramstr(0)) + SYS_SMILES_FOLDER, t, true);
+  GetAllFiles(GetSettingsFilePath + SYS_SMILES_FOLDER, t, true);
   SetLength(SmilesList, t.Count);
   for i := 0 to t.Count - 1 do begin
     Smiles.LoadFromFile(t[i]);

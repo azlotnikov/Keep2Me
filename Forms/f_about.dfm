@@ -3625,10 +3625,6 @@ object FAbout: TFAbout
     object ts_logs: TTabSheet
       Caption = 'Changelog.txt'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object mmo_logs: TMemo
         Left = 0
         Top = 0
@@ -3644,10 +3640,6 @@ object FAbout: TFAbout
     object ts_plugins: TTabSheet
       Caption = 'Plugins'
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object mmo_modules: TMemo
         Left = 0
         Top = 0

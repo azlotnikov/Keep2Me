@@ -329,15 +329,15 @@ var
   F: TIniFile;
   i: Integer;
 begin
-  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_FILE_LOADER_FORM_NAME);
+  F := TIniFile.Create(GetSettingsFilePath + SYS_FILE_LOADER_FORM_NAME);
   with F do begin
-    WriteInteger('Form', 'Width', Width);
-    WriteInteger('Form', 'Height', Height);
+    WriteInteger('Form', 'Width', ClientWidth);
+    WriteInteger('Form', 'Height', ClientHeight);
     WriteInteger('Form', 'Top', Top);
     WriteInteger('Form', 'Left', Left);
     WriteBool('Form', 'Maximized', (WindowState = wsMaximized));
-    WriteInteger('List', 'Width', lv_files.Width);
-    WriteInteger('List', 'Height', lv_files.Height);
+    // WriteInteger('List', 'Width', lv_files.Width);
+    // WriteInteger('List', 'Height', lv_files.Height);
     for i := 0 to lv_files.Columns.count - 1 do
         WriteInteger('List_Column' + inttostr(i), 'Width', lv_files.Columns[i].Width);
     Free;
@@ -349,17 +349,17 @@ var
   F: TIniFile;
   i: Integer;
 begin
-  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_FILE_LOADER_FORM_NAME);
+  F := TIniFile.Create(GetSettingsFilePath + SYS_FILE_LOADER_FORM_NAME);
   with F do begin
     if ReadBool('Form', 'Maximized', false) then WindowState := wsMaximized
     else begin
-      Width := ReadInteger('Form', 'Width', Width);
-      Height := ReadInteger('Form', 'Height', Height);
+      ClientWidth := ReadInteger('Form', 'Width', ClientWidth);
+      ClientHeight := ReadInteger('Form', 'Height', ClientHeight);
       Top := ReadInteger('Form', 'Top', Top);
       Left := ReadInteger('Form', 'Left', Left);
     end;
-    lv_files.Width := ReadInteger('List', 'Width', lv_files.Width);
-    lv_files.Height := ReadInteger('List', 'Height', lv_files.Height);
+    // lv_files.Width := ReadInteger('List', 'Width', lv_files.Width);
+    // lv_files.Height := ReadInteger('List', 'Height', lv_files.Height);
     for i := 0 to lv_files.Columns.count - 1 do
         lv_files.Columns[i].Width := ReadInteger('List_Column' + inttostr(i), 'Width', lv_files.Columns[i].Width);
     Free;

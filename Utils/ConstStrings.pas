@@ -4,11 +4,14 @@ interface
 
 const
 
-  // NOT FINISHED!
-  SYS_KEEP_VERSION = '0.9.3';
-  SYS_PLATFORM = ' x86';
+  SYS_KEEP_VERSION = '0.9.4';
+  SYS_PLATFORM = 'x86';
+  // SYS_PLATFORM = 'x64';
+  SYS_BUILD_TYPE = 'alone';
+  // SYS_BUILD_TYPE = 'installation';
   SYS_CRYPT_KEY = 26123;
 
+  // NOT FINISHED!
   SYS_CHANGELOG_FILE = 'changelog.txt';
   SYS_SETTINGS_FILE_NAME = 'settings.ini';
   SYS_FILE_LOADER_FORM_NAME = 'form_fileloader.ini';

@@ -12,17 +12,18 @@ uses
   Vcl.Controls,
   Vcl.Forms,
   Vcl.Dialogs,
-  Vcl.StdCtrls;
+  Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
   TFFrameSize = class(TForm)
+    shp_frame: TShape;
     lbl_size: TLabel;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     { Private declarations }
   public
-    { Public declarations }
+    procedure ReCalcFormSize;
   end;
 
 implementation
@@ -37,6 +38,12 @@ end;
 procedure TFFrameSize.FormShow(Sender: TObject);
 begin
   SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+end;
+
+procedure TFFrameSize.ReCalcFormSize;
+begin
+  ClientHeight := lbl_size.Height + 2;
+  ClientWidth := lbl_size.Width + 2;
 end;
 
 end.

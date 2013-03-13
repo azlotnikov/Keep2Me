@@ -129,6 +129,7 @@ function GetFileSize(FileName: wideString): Int64;
 procedure GetAllFiles(Path: string; T: TStringList; ImgOnly: Boolean);
 procedure AddFileLink(Path: String; var A: TArrayOfLinkData);
 function HotKeyToText(K: THotKeyAction): String;
+function GetSettingsFilePath: string;
 
 var
   GSettings: TSettings;
@@ -136,14 +137,21 @@ var
 
 implementation
 
+function GetSettingsFilePath: string;
+begin
+  result := '';
+  if SYS_BUILD_TYPE = 'alone' then result := ExtractFilePath(paramstr(0))
+  else if SYS_BUILD_TYPE = 'installation' then result := '';
+end;
+
 function HotKeyToText(K: THotKeyAction): String;
 begin
-  Result := '';
-  if K.Ctrl then Result := Result + 'Ctrl+';
-  if K.Alt then Result := Result + 'Alt+';
-  if K.Shift then Result := Result + 'Shift+';
-  if K.Win then Result := Result + 'Win+';
-  Result := Result + HotKeysArray[K.RegKey].Caption;
+  result := '';
+  if K.Ctrl then result := result + 'Ctrl+';
+  if K.Alt then result := result + 'Alt+';
+  if K.Shift then result := result + 'Shift+';
+  if K.Win then result := result + 'Win+';
+  result := result + HotKeysArray[K.RegKey].Caption;
 end;
 
 procedure AddFileLink(Path: String; var A: TArrayOfLinkData);
@@ -190,20 +198,20 @@ var
   sr: TSearchRec;
 begin
   if FindFirst(FileName, faAnyFile, sr) = 0 then
-      Result := Int64(sr.FindData.nFileSizeHigh) shl Int64(32) + Int64(sr.FindData.nFileSizeLow)
-  else Result := -1;
+      result := Int64(sr.FindData.nFileSizeHigh) shl Int64(32) + Int64(sr.FindData.nFileSizeLow)
+  else result := -1;
   FindClose(sr);
 end;
 
 function CompareHotKeys(Key1, Key2: PHotKeyAction): Boolean;
 begin
-  Result := false;
+  result := false;
   if Key1^.Ctrl <> Key2^.Ctrl then Exit;
   if Key1^.Alt <> Key2^.Alt then Exit;
   if Key1^.Win <> Key2^.Win then Exit;
   if Key1^.Shift <> Key2^.Shift then Exit;
   if Key1^.Key <> Key2^.Key then Exit;
-  Result := true;
+  result := true;
 end;
 
 procedure MinimizeAllForms;
@@ -250,34 +258,34 @@ begin
   if Parameters <> '' then sei.lpParameters := PChar(Parameters)
   else sei.lpParameters := nil; // PAnsiChar;
   sei.nShow := SW_SHOWNORMAL; // Integer;
-  Result := ShellExecuteEx(@sei);
+  result := ShellExecuteEx(@sei);
 end;
 
 function ImgFormatToText(I: TImgFormats): String;
 begin
-  Result := '';
+  result := '';
   case I of
-    ifJpg: Result := '.jpg';
-    ifPng: Result := '.png';
-    ifBmp: Result := '.bmp';
-    ifGif: Result := '.gif';
+    ifJpg: result := '.jpg';
+    ifPng: result := '.png';
+    ifBmp: result := '.bmp';
+    ifGif: result := '.gif';
   end;
 end;
 
 function RecentFileTypeToString(R: TRecentFileType): string;
 begin
   case R of
-    rfImg: Result := 'img';
-    rfText: Result := 'text';
-    rfOther: Result := 'other';
+    rfImg: result := 'img';
+    rfText: result := 'text';
+    rfOther: result := 'other';
   end;
 end;
 
 function StringToRecentFileType(R: string): TRecentFileType;
 begin
-  if R = 'img' then Result := rfImg
-  else if R = 'text' then Result := rfText
-  else Result := rfOther;
+  if R = 'img' then result := rfImg
+  else if R = 'text' then result := rfText
+  else result := rfOther;
 end;
 
 procedure LoadRecentFiles;
@@ -286,8 +294,8 @@ var
   s: TRecentFileType;
   I: Integer;
 begin
-  if Not FileExists(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME) then Exit;
-  F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME);
+  if Not FileExists(ExtractFilePath(paramstr(0)) + SYS_RECENT_FILE_NAME) then Exit;
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_RECENT_FILE_NAME);
   for I := 0 to F.ReadInteger(INI_RECENTFILES, 'Length', -1) - 1 do
     with GSettings, F do begin
       SetLength(RecentFiles, Length(RecentFiles) + 1);
@@ -314,7 +322,7 @@ begin
       Caption := ACaption;
       LType := ALType;
     end;
-    F := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME);
+    F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_RECENT_FILE_NAME);
     F.WriteInteger(INI_RECENTFILES, 'Length', Length(RecentFiles));
     for I := 0 to High(RecentFiles) do begin
       F.WriteString(INI_RECENTFILES + inttostr(I), 'Link', RecentFiles[I].Link);
@@ -355,7 +363,7 @@ function RegisterMyHotKey(Key: PHotKeyAction; FHandle: THandle; Num: Integer; Ch
 var
   Modifiers: UINT;
 begin
-  Result := false;
+  result := false;
   if (not Key.Enabled) and (not Check) then Exit;
   Modifiers := 0;
   if Key.Alt then Modifiers := Modifiers or MOD_ALT;
@@ -363,7 +371,7 @@ begin
   if Key.Shift then Modifiers := Modifiers or MOD_SHIFT;
   if Key.Win then Modifiers := Modifiers or MOD_WIN;
   Key.RegKey := GlobalAddAtom(PChar('Keep2MeKey' + inttostr(Num)));
-  Result := RegisterHotKey(FHandle, Key^.RegKey, Modifiers, HotKeysArray[Key^.Key].Value);
+  result := RegisterHotKey(FHandle, Key^.RegKey, Modifiers, HotKeysArray[Key^.Key].Value);
 end;
 
 procedure Autorun(Flag: Boolean; NameParam, Path: String);

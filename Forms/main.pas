@@ -334,32 +334,31 @@ end;
 
 procedure TFMain.btn_ClearFormsSettingsClick(Sender: TObject);
 begin
-  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_FILE_LOADER_FORM_NAME) then
-      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_FILE_LOADER_FORM_NAME);
-  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_IMG_LOADER_FORM_NAME) then
-      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_IMG_LOADER_FORM_NAME);
+  if FileExists(GetSettingsFilePath + SYS_FILE_LOADER_FORM_NAME) then
+      DeleteFile(GetSettingsFilePath + SYS_FILE_LOADER_FORM_NAME);
+  if FileExists(GetSettingsFilePath + SYS_IMG_LOADER_FORM_NAME) then
+      DeleteFile(GetSettingsFilePath + SYS_IMG_LOADER_FORM_NAME);
 end;
 
 procedure TFMain.btn_ClearMainSettingsClick(Sender: TObject);
 begin
-  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME) then
-      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
+  if FileExists(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME) then
+      DeleteFile(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME);
   LoadSettings;
   ApplySettings;
 end;
 
 procedure TFMain.btn_ClearPluginsSettingsClick(Sender: TObject);
 begin
-  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_FILELOADERS_SETTINGS_FILE_NAME) then
-      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_FILELOADERS_SETTINGS_FILE_NAME);
-  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_IMGLOADERS_SETTINGS_FILE_NAME) then
-      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_IMGLOADERS_SETTINGS_FILE_NAME);
+  if FileExists(GetSettingsFilePath + SYS_FILELOADERS_SETTINGS_FILE_NAME) then
+      DeleteFile(GetSettingsFilePath + SYS_FILELOADERS_SETTINGS_FILE_NAME);
+  if FileExists(GetSettingsFilePath + SYS_IMGLOADERS_SETTINGS_FILE_NAME) then
+      DeleteFile(GetSettingsFilePath + SYS_IMGLOADERS_SETTINGS_FILE_NAME);
 end;
 
 procedure TFMain.btn_ClearRecentFilesClick(Sender: TObject);
 begin
-  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME) then
-      DeleteFile(ExtractFilePath(ParamStr(0)) + SYS_RECENT_FILE_NAME);
+  if FileExists(GetSettingsFilePath + SYS_RECENT_FILE_NAME) then DeleteFile(GetSettingsFilePath + SYS_RECENT_FILE_NAME);
   LoadRecentFiles;
   UpdateRecentFiles(self);
 end;
@@ -600,7 +599,7 @@ procedure TFMain.DoShortLinkFromBuf(Sender: TObject);
 var
   CShorter: TShorter;
 begin
-  if pos('http://', Clipboard.AsText) <> 1 then begin
+  if pos('http://', LowerCase(Clipboard.AsText)) <> 1 then begin
     GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Содержимое не является ссылкой');
     Exit;
   end;
@@ -693,7 +692,7 @@ begin
   GSettings.TrayIcon := TrayIcon;
   GSettings.UpdateRecentFiles := UpdateRecentFiles;
   LoadRecentFiles;
-  if FileExists(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME) and
+  if FileExists(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME) and
     not((ParamCount > 0) and (ParamStr(1) = SYS_SHOW_SETTINGS_PARAM)) then Visible := false
   else Visible := true;
   for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
@@ -724,7 +723,7 @@ begin
   UpdateRecentFiles(self);
   beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
   if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
-  ForceDirectories(ExtractFilePath(ParamStr(0)) + SYS_TMP_IMG_FOLDER);
+  ForceDirectories(GetSettingsFilePath + SYS_TMP_IMG_FOLDER);
 end;
 
 procedure TFMain.FormShow(Sender: TObject);
@@ -797,12 +796,16 @@ var
   f: TIniFile;
   i: Integer;
 begin
-  f := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
+  f := TIniFile.Create(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME);
   with f, GSettings do begin
     MonIndex := ReadInteger(INI_COMMON_SETTINGS, 'MonitorIndex', 0);
+    if MonIndex > Screen.MonitorCount - 1 then MonIndex := 0;
     LoaderIndex := ReadInteger(INI_COMMON_SETTINGS, 'LoaderIndex', 0);
+    if LoaderIndex > High(LoadersArray) then LoaderIndex := High(LoadersArray);
     ShortLinkIndex := ReadInteger(INI_COMMON_SETTINGS, 'ShortLinkIndex', 0);
+    if ShortLinkIndex > High(ShortersArray) then ShortLinkIndex := High(ShortersArray);
     FileLoaderIndex := ReadInteger(INI_COMMON_SETTINGS, 'FileLoaderIndex', 0);
+    if FileLoaderIndex > High(FileLoadersArray) then FileLoaderIndex := High(FileLoadersArray);
     AutoStart := ReadBool(INI_COMMON_SETTINGS, 'AutoStart', false);
     ShowInTray := ReadBool(INI_COMMON_SETTINGS, 'ShowInTray', true);
     HideLoadForm := ReadBool(INI_COMMON_SETTINGS, 'HideLoadForm', false);
@@ -894,8 +897,9 @@ var
   f: TIniFile;
   i: Integer;
 begin
-  f := TIniFile.Create(ExtractFilePath(ParamStr(0)) + SYS_SETTINGS_FILE_NAME);
+  f := TIniFile.Create(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME);
   f.WriteString(INI_COMMON_SETTINGS, 'Version', SYS_KEEP_VERSION);
+  f.WriteString(INI_COMMON_SETTINGS, 'Platform', SYS_PLATFORM);
   with f, GSettings do begin
     WriteInteger(INI_COMMON_SETTINGS, 'MonitorIndex', MonIndex);
     WriteInteger(INI_COMMON_SETTINGS, 'LoaderIndex', LoaderIndex);
