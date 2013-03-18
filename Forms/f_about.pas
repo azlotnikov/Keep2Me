@@ -80,7 +80,7 @@ end;
 
 procedure TFAbout.FormCreate(Sender: TObject);
 const
-  outtext = 'Версия: %s; Имя: %s';
+  outtext = '[ %s ] %s';
 var
   i: integer;
 begin

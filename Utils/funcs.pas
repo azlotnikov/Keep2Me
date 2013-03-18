@@ -75,6 +75,7 @@ type
 
 type
   TSettings = record
+    RealTimeSel: Boolean;
     LastLink: String;
     MonIndex: Integer;
     LoaderIndex: Integer;
@@ -91,7 +92,6 @@ type
     TrayIcon: TJvTrayIcon;
     RecentFiles: array of TRecentFile;
     UpdateRecentFiles: TNotifyEvent;
-    DontShowAdmin: Boolean;
     FastLoad: Boolean;
     Pastebin: TPasteBinSettings;
     ShortImg: Boolean;
@@ -218,6 +218,7 @@ procedure MinimizeAllForms;
 var
   I: Integer;
 begin
+
   with Application do begin
     for I := 0 to ComponentCount - 1 do
       if (Components[I] is TForm) and ((Components[I] as TForm).Tag <> -2) then

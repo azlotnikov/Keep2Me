@@ -25,4 +25,26 @@ object FPoints: TFPoints
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object img_staticfon: TImage
+    Left = 0
+    Top = 0
+    Width = 651
+    Height = 338
+    Align = alClient
+    Visible = False
+    OnMouseDown = FormMouseDown
+    OnMouseMove = FormMouseMove
+    OnMouseUp = FormMouseUp
+    ExplicitLeft = 272
+    ExplicitTop = 176
+    ExplicitWidth = 105
+    ExplicitHeight = 105
+  end
+  object tmr_hideform: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = tmr_hideformTimer
+    Left = 360
+    Top = 144
+  end
 end

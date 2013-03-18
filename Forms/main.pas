@@ -141,7 +141,6 @@ type
     cb_HideLoadForm: TCheckBox;
     cb_CopyLink: TCheckBox;
     cb_AutoStart: TCheckBox;
-    cb_ShowAdmin: TCheckBox;
     cb_FastLoad: TCheckBox;
     cbb_ImgExt: TComboBox;
     lbl_ImgExt: TLabel;
@@ -176,6 +175,10 @@ type
     cb_shortlinkFiles: TCheckBox;
     cb_shortlinkImg: TCheckBox;
     cb_EditImageFromFile: TCheckBox;
+    Grp_SelType: TGroupBox;
+    rb_staticsel: TRadioButton;
+    Btn_AboutSel: TsSpeedButton;
+    rb_realtimesel: TRadioButton;
 
     procedure FormCreate(Sender: TObject);
 
@@ -228,6 +231,7 @@ type
     procedure btn_ClearPluginsSettingsClick(Sender: TObject);
     procedure btn_ClearRecentFilesClick(Sender: TObject);
     procedure cb_ShowActionInTrayClick(Sender: TObject);
+    procedure Btn_AboutSelClick(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -269,13 +273,14 @@ begin
     cb_HideLoadForm.Checked := HideLoadForm;
     cb_ShowInTray.Checked := ShowInTray;
     cb_CopyLink.Checked := CopyLink;
-    cb_ShowAdmin.Checked := DontShowAdmin;
     cbb_ImgExt.ItemIndex := ImgExtIndex;
     cb_OpenByTrayClick.Checked := OpenLinksByClick;
     cb_FastLoad.Checked := FastLoad;
     cb_shortlinkFiles.Checked := ShortFiles;
     cb_shortlinkImg.Checked := ShortImg;
     cb_EditImageFromFile.Checked := EditImageFromFile;
+    rb_realtimesel.Checked := RealTimeSel;
+    rb_staticsel.Checked := not RealTimeSel;
     SetLength(tmpHotKeys, Length(Actions));
     for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
     with Pastebin do begin
@@ -303,6 +308,11 @@ begin
     Autorun(AutoStart, SYS_KEEP2ME, ParamStr(0));
   end;
   UpdateActions;
+end;
+
+procedure TFMain.Btn_AboutSelClick(Sender: TObject);
+begin
+  ShowMessage(RU_SEL_TYPES_ABOUT);
 end;
 
 procedure TFMain.btn_ApplySettingsClick(Sender: TObject);
@@ -591,7 +601,7 @@ end;
 
 procedure TFMain.DoScreenSelect(Sender: TObject);
 begin
-  // FSelField.AlphaBlend := true;
+  if GSettings.RealTimeSel then Hide;
   TFPoints.Create(nil).Show;
 end;
 
@@ -625,6 +635,7 @@ end;
 
 procedure TFMain.DoWindowSelect(Sender: TObject);
 begin
+  if GSettings.RealTimeSel then Hide;
   TrayIcon.BalloonHint(RU_HINT, RU_SELECTWINDOW_HINT);
   // FSelField.AlphaBlend := false;
   with TFWindows.Create(nil) do begin
@@ -722,7 +733,7 @@ begin
   cbb_FilesChange(self);
   UpdateRecentFiles(self);
   beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
-  if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
+  // if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
   ForceDirectories(GetSettingsFilePath + SYS_TMP_IMG_FOLDER);
 end;
 
@@ -744,13 +755,13 @@ begin
     HideLoadForm := cb_HideLoadForm.Checked;
     ShowInTray := cb_ShowInTray.Checked;
     CopyLink := cb_CopyLink.Checked;
-    DontShowAdmin := cb_ShowAdmin.Checked;
     ImgExtIndex := cbb_ImgExt.ItemIndex;
     OpenLinksByClick := cb_OpenByTrayClick.Checked;
     FastLoad := cb_FastLoad.Checked;
     ShortFiles := cb_shortlinkFiles.Checked;
     ShortImg := cb_shortlinkImg.Checked;
     EditImageFromFile := cb_EditImageFromFile.Checked;
+    RealTimeSel := rb_realtimesel.Checked;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to High(tmpHotKeys) do begin
       Actions[i] := tmpHotKeys[i];
@@ -811,12 +822,12 @@ begin
     HideLoadForm := ReadBool(INI_COMMON_SETTINGS, 'HideLoadForm', false);
     OpenLinksByClick := ReadBool(INI_COMMON_SETTINGS, 'OpenLinksByClick', true);
     CopyLink := ReadBool(INI_COMMON_SETTINGS, 'CopyLink', true);
-    DontShowAdmin := ReadBool(INI_COMMON_SETTINGS, 'DontShowAdmin', false);
     FastLoad := ReadBool(INI_COMMON_SETTINGS, 'FastLoad', false);
     ImgExtIndex := ReadInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', 1);
     ShortFiles := ReadBool(INI_COMMON_SETTINGS, 'ShortFiles', false);
     ShortImg := ReadBool(INI_COMMON_SETTINGS, 'ShortImg', false);
     EditImageFromFile := ReadBool(INI_COMMON_SETTINGS, 'EditImageFromFile', false);
+    RealTimeSel := ReadBool(INI_COMMON_SETTINGS, 'RealTimeSel', true);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         Enabled := ReadBool(INI_HOT_KEYS + inttostr(i), 'Enabled', Enabled);
@@ -909,13 +920,13 @@ begin
     WriteBool(INI_COMMON_SETTINGS, 'ShowInTray', ShowInTray);
     WriteBool(INI_COMMON_SETTINGS, 'HideLoadForm', HideLoadForm);
     WriteBool(INI_COMMON_SETTINGS, 'CopyLink', CopyLink);
-    WriteBool(INI_COMMON_SETTINGS, 'DontShowAdmin', DontShowAdmin);
     WriteBool(INI_COMMON_SETTINGS, 'OpenLinksByClick', OpenLinksByClick);
     WriteBool(INI_COMMON_SETTINGS, 'FastLoad', FastLoad);
     WriteBool(INI_COMMON_SETTINGS, 'ShortFiles', ShortFiles);
     WriteBool(INI_COMMON_SETTINGS, 'ShortImg', ShortImg);
     WriteInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', ImgExtIndex);
     WriteBool(INI_COMMON_SETTINGS, 'EditImageFromFile', EditImageFromFile);
+    WriteBool(INI_COMMON_SETTINGS, 'RealTimeSel', RealTimeSel);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         WriteInteger(INI_HOT_KEYS + inttostr(i), 'Key', Key);

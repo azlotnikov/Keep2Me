@@ -3646,7 +3646,6 @@ object FAbout: TFAbout
         Width = 354
         Height = 242
         Align = alClient
-        Alignment = taCenter
         Color = clBtnFace
         ReadOnly = True
         ScrollBars = ssVertical

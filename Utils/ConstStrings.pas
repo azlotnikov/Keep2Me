@@ -4,7 +4,7 @@ interface
 
 const
 
-  SYS_KEEP_VERSION = '0.9.4';
+  SYS_KEEP_VERSION = '0.9.5';
   SYS_PLATFORM = 'x86';
   // SYS_PLATFORM = 'x64';
   SYS_BUILD_TYPE = 'alone';
@@ -36,6 +36,10 @@ const
   INI_PASTEBIN = 'Pastebin';
   INI_FTP = 'FTP';
   INI_RECENTFILES = 'RecentFiles';
+
+  RU_SEL_TYPES_ABOUT = 'При Real-Time выделении видно все, что происходит на экране монитора в текущий момент. ' +
+    'При статическом выделении вы лишь вырезаете нужную область на уже сделанном скриншоте, ' +
+    'это может быть удобно, если нужно снять какие-то динамические элементы, требующие наводки курсора и т. д.';
 
   RU_NOT_ADMIN = 'Для корректной работы программы необходимы права Администратора.';
   RU_SELECT_SCREEN_PART = 'Выделить область экрана';

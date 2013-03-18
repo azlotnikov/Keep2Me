@@ -357,8 +357,8 @@ object FMain: TFMain
         382
         405)
       object btn_ClearFormsSettings: TsSpeedButton
-        Left = 9
-        Top = 167
+        Left = 3
+        Top = 203
         Width = 370
         Height = 22
         Anchors = [akLeft, akTop, akRight]
@@ -371,8 +371,8 @@ object FMain: TFMain
         Images = Images
       end
       object btn_ClearMainSettings: TsSpeedButton
-        Left = 9
-        Top = 195
+        Left = 3
+        Top = 231
         Width = 370
         Height = 22
         Anchors = [akLeft, akTop, akRight]
@@ -383,8 +383,8 @@ object FMain: TFMain
         Images = Images
       end
       object btn_ClearPluginsSettings: TsSpeedButton
-        Left = 9
-        Top = 223
+        Left = 3
+        Top = 259
         Width = 370
         Height = 22
         Anchors = [akLeft, akTop, akRight]
@@ -395,12 +395,12 @@ object FMain: TFMain
         Images = Images
       end
       object btn_ClearRecentFiles: TsSpeedButton
-        Left = 9
-        Top = 251
+        Left = 3
+        Top = 287
         Width = 370
         Height = 22
         Anchors = [akLeft, akTop, akRight]
-        Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1085#1077#1076#1072#1074#1085#1080#1077' '#1092#1072#1081#1083#1099
+        Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1087#1086#1089#1083#1077#1076#1085#1080#1077' '#1079#1072#1075#1088#1091#1079#1082#1080
         OnClick = btn_ClearRecentFilesClick
         SkinData.SkinSection = 'SPEEDBUTTON'
         ImageIndex = 20
@@ -410,7 +410,7 @@ object FMain: TFMain
         Left = 3
         Top = 1
         Width = 371
-        Height = 160
+        Height = 144
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
         object cb_ShowInTray: TCheckBox
@@ -447,37 +447,67 @@ object FMain: TFMain
           Caption = #1040#1074#1090#1086#1079#1072#1087#1091#1089#1082
           TabOrder = 0
         end
-        object cb_ShowAdmin: TCheckBox
-          Left = 9
-          Top = 79
-          Width = 361
-          Height = 17
-          Caption = #1053#1077' '#1087#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1091#1074#1077#1076#1086#1084#1083#1077#1085#1080#1077' '#1086#1073' '#1086#1090#1089#1091#1090#1089#1090#1074#1080#1080' '#1087#1088#1072#1074' '#1040#1076#1084#1080#1085#1080#1089#1090#1088#1072#1090#1086#1088#1072
-          TabOrder = 4
-        end
         object cb_FastLoad: TCheckBox
           Left = 9
-          Top = 97
+          Top = 79
           Width = 328
           Height = 17
           Caption = #1053#1077' '#1087#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1088#1077#1076#1072#1082#1090#1086#1088' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1081' ('#1073#1099#1089#1090#1088#1072#1103' '#1079#1072#1075#1088#1091#1079#1082#1072')'
-          TabOrder = 5
+          TabOrder = 4
         end
         object cb_OpenByTrayClick: TCheckBox
           Left = 9
-          Top = 115
+          Top = 97
           Width = 208
           Height = 17
           Caption = #1054#1090#1082#1088#1099#1074#1072#1090#1100' '#1089#1089#1099#1083#1082#1080' '#1087#1086' '#1082#1083#1080#1082#1091' '#1074' '#1090#1088#1077#1077
-          TabOrder = 6
+          TabOrder = 5
         end
         object cb_EditImageFromFile: TCheckBox
           Left = 9
-          Top = 133
+          Top = 115
           Width = 272
           Height = 17
           Caption = #1054#1090#1082#1088#1099#1074#1072#1090#1100' '#1088#1077#1076#1072#1082#1090#1086#1088' '#1076#1083#1103' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1081' '#1080#1079' '#1092#1072#1081#1083#1072
-          TabOrder = 7
+          TabOrder = 6
+        end
+      end
+      object Grp_SelType: TGroupBox
+        Left = 3
+        Top = 151
+        Width = 370
+        Height = 46
+        Anchors = [akLeft, akTop, akRight]
+        Caption = #1057#1087#1086#1089#1086#1073' '#1074#1099#1076#1077#1083#1077#1085#1080#1103' '#1086#1073#1083#1072#1089#1090#1080' '#1085#1072' '#1101#1082#1088#1072#1085#1077
+        TabOrder = 1
+        object Btn_AboutSel: TsSpeedButton
+          Left = 322
+          Top = 16
+          Width = 23
+          Height = 22
+          Flat = True
+          OnClick = Btn_AboutSelClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 21
+          Images = Images
+        end
+        object rb_staticsel: TRadioButton
+          Left = 155
+          Top = 18
+          Width = 161
+          Height = 17
+          Caption = #1057#1090#1072#1090#1080#1095#1077#1089#1082#1086#1077' '#1074#1099#1076#1077#1083#1077#1085#1080#1077
+          TabOrder = 0
+        end
+        object rb_realtimesel: TRadioButton
+          Left = 9
+          Top = 18
+          Width = 129
+          Height = 17
+          Caption = 'Real-Time '#1074#1099#1076#1077#1083#1077#1085#1080#1077
+          Checked = True
+          TabOrder = 1
+          TabStop = True
         end
       end
     end
@@ -1305,6 +1335,34 @@ object FMain: TFMain
           7F1E45FE2219692843FA1C0307F3303C3FE45CD31853E47CAF8324BF78DEBB15
           86BD1E3060720A7780934BE07A1F68D17E778301FB8388CFC0C30418B2F465B6
           D3047F09D9C7E9A70003001C0BAD768A80DA340000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000002A04944415478DAA453CF4F1341147EB3BBDD2EDB6D2B05
+          8112A268B1D4608388311E9468344A62238947FF0213B998E8C59B8977128C27
+          0F9AF80718888847632531249A20D2004551F951A114BA6D77B77467679D195A
+          2A270F4EF2EDBC7DEF7DDFBE7DF306B9AE0BFFB324FE88BF0640028020D237D4
+          060825A8718EA2A39AB74A310DAE4B13DDDF401CBA11C0B3893D81BFD6A0DA20
+          DD3D7BBAA33B1A696ED57C5E1F2BB054DA3516BE652F7DFEB236645AF6539AF7
+          F64005357228A83CBC9588F71187681B992C6CD46381E8B15020D2190A8F4FCE
+          0577F226D444AA026E5855C4E1A1C1937D05BDA8E97A01269EC40F94F660240D
+          6B3959BB76B9AB6FFCCDD761ABECCC507746E051E2247A4F85BB0B85A2661826
+          B0C68EBE4C714C26333C2576540616DBB52C2D1A097533CE7E05AE83CFB7B769
+          AD7ABEB0FFC5B1F706270CF4E6A0455D87F4521E52291D44498460B0B1957168
+          DAB3BD5F20B8431440751C073076402F94C0B4CAD01F53E0F6F546482D9BF0EA
+          9D0982E40576E8B68D55C6A9F78060843146D62E06BD5806421020518247778E
+          F0F0E3171B2079B5FDEA089210E3D4051CBC9ADBB64CA3226AA2EC03B19A78F3
+          FE4FBECB6AE38186DAE58AC938CCAE36114FAFFCCA6D2A6A0064C5CF81E8604D
+          3D3FC3C1EC9A9F219F2B6619A72EE0E0B195C5E534ADCDF02801F078FD20C96A
+          7D5CA9CD7C0CD806636B65759171EABFE0924CC532476793C960CFC0D57883FF
+          904F5234B832FC9D87FD878FF3DDD4778C858F53B3B86C8ED2B1E7E78BD89923
+          449B267701782EDEF0A8B17BEDB1DE132D5D3D4D6A30D4B047DCB63697E672EB
+          F33369DB9C1F013B39E15696F8BCD40458254D14CD2074B681D07F01507B0F55
+          0C57DB9601777D0EC8A70F407E6C524796628B72714D80F542AD42FAC70DA657
+          110C5618E5923F020C00A3802C2609EEF9880000000049454E44AE426082}
       end>
     Left = 328
     Top = 16

@@ -21,12 +21,15 @@ uses
 
 type
   TFPoints = class(TForm)
+    img_staticfon: TImage;
+    tmr_hideform: TTimer;
     procedure FormShow(Sender: TObject);
     procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure tmr_hideformTimer(Sender: TObject);
   private
     ActiveSelect: Boolean;
     GLx, GLy: Integer;
@@ -149,20 +152,25 @@ begin
   FFrameSize.Hide;
   Hide;
   if not(Button = mbLeft) then exit;
-  MinimizeAllForms;
-  dc := GetDC(0);
+  // MinimizeAllForms; // !
   bm := TBitMap.Create;
   bm.Width := FSelField.shp_sel.Width;
   bm.Height := FSelField.shp_sel.Height;
-  BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, Rx, Ry, SRCCOPY);
-  RestoreAllForms;
+  if not GSettings.RealTimeSel then begin
+    BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, img_staticfon.Canvas.Handle, min(GLx, X), min(GLy, Y), SRCCOPY);
+  end else begin
+    dc := GetDC(0);
+    BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, Rx, Ry, SRCCOPY);
+  end;
+  // RestoreAllForms; // !
   with TFImage.Create(nil) do begin
     img.Picture.Assign(bm);
     OriginImg.Assign(bm);
+    bm.FreeImage;
+    bm.Free;
+    tmr_hideform.Enabled := true;
     StartWork;
   end;
-  bm.FreeImage;
-  bm.Free;
   Close;
 end;
 
@@ -175,8 +183,21 @@ begin
 end;
 
 procedure TFPoints.StartSelect;
+var
+  dc: HDC;
 begin
   BoundsRect := MonitorManager.GetRect(GSettings.MonIndex);
+  if not GSettings.RealTimeSel then begin
+    dc := GetDC(0);
+    AlphaBlend := false;
+    img_staticfon.Visible := true;
+    BitBlt(img_staticfon.Canvas.Handle, 0, 0, Width, Height, dc, Left, Top, SRCCOPY);
+  end;
+end;
+
+procedure TFPoints.tmr_hideformTimer(Sender: TObject);
+begin
+  Hide;
 end;
 
 end.
