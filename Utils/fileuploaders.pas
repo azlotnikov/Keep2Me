@@ -102,6 +102,12 @@ type
   end;
 
 type
+  TDataFileHostLoader = class(TFileLoader)
+  public
+    procedure LoadFile(FileName: string); override;
+  end;
+
+type
   TFileLoaderClass = class of TFileLoader;
 
 type
@@ -362,7 +368,8 @@ begin
     extrainfo := ParsSubString(s, 'extra_info="', '"');
     uplink := uplink + '&extra_info=' + extrainfo + '&description=&userfile=' + ExtractfileName(FileName);
     with Stream.AddFile('file', FileName, 'multipart/form-data') do begin
-      HeaderCharset := 'utf-8';       ///!!!!!!!!!!!!!!!!
+      HeaderCharset := 'utf-8';
+      /// !!!!!!!!!!!!!!!!
       HeaderEncoding := '8';
     end;
     try
@@ -591,10 +598,45 @@ begin
   end;
 end;
 
+{ TDataFileHostLoader }
+
+procedure TDataFileHostLoader.LoadFile(FileName: string);
+const
+  Str = 'http://www.datafilehost.com/download';
+var
+  Stream: TIdMultipartFormDataStream;
+  s: string;
+begin
+  try
+    Link := '';
+    AError := false;
+    Stream := TIdMultipartFormDataStream.Create;
+    HTTP.HandleRedirects := true;
+    with Stream.AddFile('upfile', FileName, 'multipart/form-data') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
+    Stream.AddFormField('MAX_FILE_SIZE', '105906176');
+    HTTP.HandleRedirects := true;
+    try
+      s := HTTP.Post('http://www.datafilehost.com/upload.php', Stream);
+    except
+    end;
+    if Pos(Str, s) = 0 then begin
+      AError := true;
+      Exit;
+    end;
+    Link := Str + ParsSubString(s, Str, '''');
+  finally
+    Stream.Free;
+  end;
+end;
+
 initialization
 
 AddFileLoader(TRgHostFileLoader, 'rghost.ru [API]', '0.2', true);
 AddFileLoader(TSendSpaceFileLoader, 'sendspace.com [API]', '0.1', true);
 AddFileLoader(TGFileLoader, 'gfile.ru', '0.1', false);
+AddFileLoader(TDataFileHostLoader, 'datafilehost.com', '0.1', false);
 
 end.

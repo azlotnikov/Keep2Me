@@ -64,7 +64,7 @@ uses
   pastebin_tools,
   cript,
   ConstStrings,
-  fileuploaders;
+  fileuploaders, sSkinManager;
 
 type
   TFMain = class(TForm)
@@ -179,6 +179,8 @@ type
     rb_staticsel: TRadioButton;
     Btn_AboutSel: TsSpeedButton;
     rb_realtimesel: TRadioButton;
+    skin1: TsSkinManager;
+    cb_useskin: TCheckBox;
 
     procedure FormCreate(Sender: TObject);
 
@@ -232,6 +234,7 @@ type
     procedure btn_ClearRecentFilesClick(Sender: TObject);
     procedure cb_ShowActionInTrayClick(Sender: TObject);
     procedure Btn_AboutSelClick(Sender: TObject);
+    procedure cb_useskinClick(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -281,6 +284,7 @@ begin
     cb_EditImageFromFile.Checked := EditImageFromFile;
     rb_realtimesel.Checked := RealTimeSel;
     rb_staticsel.Checked := not RealTimeSel;
+    cb_useskin.Checked := UseSkin;
     SetLength(tmpHotKeys, Length(Actions));
     for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
     with Pastebin do begin
@@ -455,6 +459,11 @@ begin
   tmpHotKeys[cbb_HotKeysActions.ItemIndex].ShowMenuItem := cb_ShowActionInTray.Checked;
 end;
 
+procedure TFMain.cb_useskinClick(Sender: TObject);
+begin
+  skin1.Active := cb_useskin.Checked;
+end;
+
 procedure TFMain.cb_WinKeyClick(Sender: TObject);
 begin
   tmpHotKeys[cbb_HotKeysActions.ItemIndex].Win := cb_WinKey.Checked;
@@ -613,19 +622,17 @@ begin
     GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Содержимое не является ссылкой');
     Exit;
   end;
-  if GSettings.ShortLinkIndex > 0 then begin
-    CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
-    CShorter.SetLoadBar(nil);
-    CShorter.LoadFile(Clipboard.AsText);
-    if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')
-    else begin
-      Clipboard.AsText := CShorter.GetLink;
-      GSettings.TrayIcon.Hint := Clipboard.AsText;
-      GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, Clipboard.AsText);
-    end;
-    CShorter.Free;
-  end
-  else GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не выбран сервис укорачивания ссылок');
+  CShorter := ShortersArray[GSettings.ShortLinkIndex].Obj.Create;
+  CShorter.SetLoadBar(nil);
+  CShorter.LoadFile(Clipboard.AsText);
+  if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')
+  else begin
+    Clipboard.AsText := CShorter.GetLink;
+    GSettings.TrayIcon.Hint := Clipboard.AsText;
+    GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, Clipboard.AsText);
+  end;
+  CShorter.Free;
+
 end;
 
 procedure TFMain.DoShowSettings(Sender: TObject);
@@ -718,7 +725,6 @@ begin
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
   UpdateActions;
-  cbb_ShortLink.Items.Add(RU_NO);
   for i := 0 to High(ShortersArray) do cbb_ShortLink.Items.Add(ShortersArray[i].Caption);
   for i := 0 to High(HotKeysArray) do cbb_HotKeys.Items.Add(HotKeysArray[i].Caption);
   for i := 0 to High(PastebinLangs) do cbb_pb_deflang.Items.Add(PastebinLangs[i].Caption);
@@ -762,6 +768,7 @@ begin
     ShortImg := cb_shortlinkImg.Checked;
     EditImageFromFile := cb_EditImageFromFile.Checked;
     RealTimeSel := rb_realtimesel.Checked;
+    UseSkin := cb_useskin.Checked;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to High(tmpHotKeys) do begin
       Actions[i] := tmpHotKeys[i];
@@ -809,6 +816,9 @@ var
 begin
   f := TIniFile.Create(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME);
   with f, GSettings do begin
+    { if ReadString(INI_COMMON_SETTINGS, 'Version', SYS_KEEP_VERSION) <= '0.9.5' then
+      ShowMessage
+      ('В этой версии по умолчанию включен измененный внешний вид. Отключить его можно в Настройки - Остальные'); }
     MonIndex := ReadInteger(INI_COMMON_SETTINGS, 'MonitorIndex', 0);
     if MonIndex > Screen.MonitorCount - 1 then MonIndex := 0;
     LoaderIndex := ReadInteger(INI_COMMON_SETTINGS, 'LoaderIndex', 0);
@@ -828,6 +838,7 @@ begin
     ShortImg := ReadBool(INI_COMMON_SETTINGS, 'ShortImg', false);
     EditImageFromFile := ReadBool(INI_COMMON_SETTINGS, 'EditImageFromFile', false);
     RealTimeSel := ReadBool(INI_COMMON_SETTINGS, 'RealTimeSel', true);
+    UseSkin := ReadBool(INI_COMMON_SETTINGS, 'UseSkin', false);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         Enabled := ReadBool(INI_HOT_KEYS + inttostr(i), 'Enabled', Enabled);
@@ -927,6 +938,7 @@ begin
     WriteInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', ImgExtIndex);
     WriteBool(INI_COMMON_SETTINGS, 'EditImageFromFile', EditImageFromFile);
     WriteBool(INI_COMMON_SETTINGS, 'RealTimeSel', RealTimeSel);
+    WriteBool(INI_COMMON_SETTINGS, 'UseSkin', UseSkin);
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         WriteInteger(INI_HOT_KEYS + inttostr(i), 'Key', Key);

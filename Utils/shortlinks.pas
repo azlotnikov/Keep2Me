@@ -239,9 +239,9 @@ end;
 
 initialization
 
+AddShorter(TQikrLoader, 'qikr.co', '0.1');
 AddShorter(TIsGdLoader, 'is.gd', '0.1');
 // AddShorter(TZtAmLoader, 'zt.am', '0.1');
-AddShorter(TQikrLoader, 'qikr.co', '0.1');
 AddShorter(TTinyUrlLoader, 'tinyurl.com', '0.1');
 
 end.

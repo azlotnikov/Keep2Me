@@ -75,6 +75,7 @@ type
 
 type
   TSettings = record
+    UseSkin: Boolean;
     RealTimeSel: Boolean;
     LastLink: String;
     MonIndex: Integer;

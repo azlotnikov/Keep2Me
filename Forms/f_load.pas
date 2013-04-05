@@ -242,9 +242,9 @@ begin
       if not DontDeleteImg then DeleteFile(FileName);
       r := Cloader.GetLink;
       AddToRecentFiles(r, ExtractFileName(FileName), rfImg);
-      if (GSettings.ShortLinkIndex > 0) and (GSettings.ShortImg) then
+      if (GSettings.ShortImg) then
         try
-          CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
+          CShorter := ShortersArray[GSettings.ShortLinkIndex].Obj.Create;
           CShorter.SetLoadBar(pb);
           CShorter.LoadFile(r);
           if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')

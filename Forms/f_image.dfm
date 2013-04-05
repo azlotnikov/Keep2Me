@@ -13,11 +13,14 @@ object FImage: TFImage
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  KeyPreview = True
   Menu = mm
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
   OnCreate = FormCreate
+  OnKeyPress = FormKeyPress
+  OnMouseWheel = scrlbxMouseWheel
   PixelsPerInch = 96
   TextHeight = 13
   object pnl_Tools: TPanel
@@ -26,6 +29,7 @@ object FImage: TFImage
     Width = 77
     Height = 422
     Align = alRight
+    BevelOuter = bvSpace
     TabOrder = 0
     object btn_DoLoad: TsSpeedButton
       Left = 6
@@ -84,6 +88,7 @@ object FImage: TFImage
     Width = 707
     Height = 422
     Align = alClient
+    BorderStyle = bsNone
     Color = clBtnFace
     ParentColor = False
     TabOrder = 2
@@ -91,11 +96,10 @@ object FImage: TFImage
     object img_fon: TImage
       Left = 0
       Top = 0
-      Width = 703
-      Height = 418
+      Width = 707
+      Height = 422
       Align = alClient
       IncrementalDisplay = True
-      OnMouseEnter = img_fonMouseEnter
       ExplicitLeft = 424
       ExplicitTop = 144
       ExplicitWidth = 105
@@ -115,7 +119,6 @@ object FImage: TFImage
       Height = 105
       Cursor = crCross
       OnMouseDown = imgMouseDown
-      OnMouseEnter = pbMouseEnter
       OnMouseMove = imgMouseMove
       OnMouseUp = imgMouseUp
       OnPaint = pbPaint
@@ -123,8 +126,8 @@ object FImage: TFImage
     object pb_Resizeborder: TPaintBox
       Left = 0
       Top = 0
-      Width = 703
-      Height = 418
+      Width = 707
+      Height = 422
       Align = alClient
       Visible = False
       OnPaint = pb_ResizeborderPaint
@@ -138,6 +141,7 @@ object FImage: TFImage
     Width = 37
     Height = 422
     Align = alLeft
+    BevelOuter = bvSpace
     TabOrder = 1
     object btn_Brush: TsSpeedButton
       Tag = 1
@@ -1249,7 +1253,7 @@ object FImage: TFImage
     Top = 8
   end
   object tmr_BackGroundcheck: TTimer
-    Interval = 50
+    Interval = 65
     OnTimer = tmr_BackGroundcheckTimer
     Left = 536
     Top = 8

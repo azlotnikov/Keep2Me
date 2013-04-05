@@ -63,7 +63,6 @@ object FFiles: TFFiles
       end
       item
       end>
-    ExplicitHeight = 91
   end
   object pnl_buttons: TPanel
     Left = 8
@@ -72,7 +71,6 @@ object FFiles: TFFiles
     Height = 41
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 1
-    ExplicitTop = 105
     DesignSize = (
       571
       41)
@@ -142,7 +140,6 @@ object FFiles: TFFiles
     Panels = <>
     SimplePanel = True
     SimpleText = #1052#1086#1078#1085#1086' '#1076#1086#1073#1072#1074#1080#1090#1100' '#1092#1072#1081#1083#1099' '#1074' '#1086#1095#1077#1088#1077#1076#1100' - '#1087#1077#1088#1077#1090#1072#1097#1080#1074' '#1080#1093' '#1085#1072' '#1089#1087#1080#1089#1086#1082
-    ExplicitTop = 153
   end
   object Images: TsAlphaImageList
     DrawingStyle = dsTransparent

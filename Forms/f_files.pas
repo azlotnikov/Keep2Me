@@ -186,9 +186,9 @@ begin
         Links[Index].Status := lsOK;
         ALink := FileLoader.GetLink;
         AddToRecentFiles(ALink, ExtractFileName(Links[Index].FilePath), rfOther);
-        if (GSettings.ShortLinkIndex > 0) and (GSettings.ShortFiles) then
+        if (GSettings.ShortFiles) then
           try
-            CShorter := ShortersArray[GSettings.ShortLinkIndex - 1].Obj.Create;
+            CShorter := ShortersArray[GSettings.ShortLinkIndex].Obj.Create;
             CShorter.SetLoadBar(nil);
             CShorter.LoadFile(ALink);
             if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')

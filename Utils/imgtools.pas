@@ -191,6 +191,10 @@ type
   PPRows = ^TPRows;
   TPRows = Array [0 .. 1000000] of PRow;
 
+type
+  TRGBTripleArray = array [0 .. 1000] of TRGBTriple;
+  PRGBTripleArray = ^TRGBTripleArray;
+
 const
   MaxKernelSize = 100;
 
@@ -450,6 +454,8 @@ procedure TFSelPencil.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
 var
   i: Integer;
   bm1, bm2: TBitmap;
+  // lBrush: LOGBRUSH;
+  // hPenl: hPen;
 begin
   bm1 := TBitmap.Create;
   bm1.SetSize(PB.Width, PB.Height);
@@ -457,6 +463,11 @@ begin
   bm2 := TBitmap.Create;
   bm2.Assign(bm1);
   SetColors(bm2.Canvas);
+  // lBrush.lbStyle := BS_SOLID;
+  // lBrush.lbColor := RGB(0, 0, 0);
+  // lBrush.lbHatch := 0; // ignored
+  // hPenl := ExtCreatePen(PS_GEOMETRIC or PS_SOLID or PS_ENDCAP_FLAT, bm2.Canvas.Pen.Width, &lBrush, 0, nil);
+  // bm2.Canvas.Pen.Handle := hPenl;
   bm2.Canvas.MoveTo(Points[0].X, Points[0].y);
   for i := 0 to High(Points) - 1 do bm2.Canvas.LineTo(Points[i].X, Points[i].y);
   CanvasOut.Draw(0, 0, bm1);
@@ -587,6 +598,8 @@ end;
 { TFCut }
 
 procedure TFCut.AddPoint(P: TPoint; CanvasOut: TCanvas; Shift: TShiftState = []);
+var
+  size_text: string;
 begin
   EndPoint := P;
   with CanvasOut do begin
@@ -595,6 +608,14 @@ begin
     Pen.Width := 1;
     Pen.Style := psDashDot;
     Rectangle(StartPoint.X, StartPoint.y, EndPoint.X, EndPoint.y);
+    Font.Color := clRed;
+    Font.Style := [fsBold];
+    size_text := Format('%dx%d', [Abs(StartPoint.X - EndPoint.X), Abs(EndPoint.y - StartPoint.y)]);
+    Brush.Color := clWhite;
+    Brush.Style := bsSolid;
+    Pen.Style := psClear;
+    Rectangle(EndPoint.X, EndPoint.y, EndPoint.X + TextWidth(size_text), EndPoint.y + TextHeight(size_text));
+    TextOut(EndPoint.X, EndPoint.y, size_text);
   end;
 end;
 
@@ -632,10 +653,12 @@ procedure TFResize.Draw(CanvasOut: TCanvas; Shift: TShiftState = []);
 var
   tmp: TBitmap;
   pW, pH: Integer;
+  size_text: string;
 begin
   if IsDrawing then
     with CanvasOut do begin
       Brush.Style := bsClear;
+      Pen.Style := psSolid;
       Pen.Color := clRed;
       Pen.Width := 2;
       h := StartPoint.X - EndPoint.X;
@@ -645,11 +668,22 @@ begin
         h := Trunc(v * PB.Width / PB.Height);
       end;
       Rectangle(1, 1, PB.Width - h, PB.Height - v);
+      Font.Color := clRed;
+      Font.Style := [fsBold];
+      size_text := Format('%dx%d', [Abs(StartPoint.X - EndPoint.X), Abs(EndPoint.y - StartPoint.y)]);
+      Brush.Color := clWhite;
+      Brush.Style := bsSolid;
+      Pen.Style := psClear;
+      Rectangle(PB.Width - h, PB.Height - v, PB.Width - h + TextWidth(size_text),
+        PB.Height - v + TextHeight(size_text));
+      TextOut(PB.Width - h, PB.Height - v, size_text);
     end
   else begin
     tmp := TBitmap.Create;
     tmp.Width := PB.Width;
     tmp.Height := PB.Height;
+    if (PB.Width - h) < 1 then h := PB.Width - 2;
+    if (PB.Height - v) < 1 then v := PB.Height - 2;
     tmp.Canvas.CopyRect(Rect(0, 0, tmp.Width, tmp.Height), CanvasOut, Rect(0, 0, tmp.Width, tmp.Height));
     try
       Stretch(PB.Width - h, PB.Height - v, rfLanczos3, 0, tmp);

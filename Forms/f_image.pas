@@ -139,12 +139,11 @@ type
     procedure mm_showleftpanelClick(Sender: TObject);
     procedure tmr_BackGroundcheckTimer(Sender: TObject);
     procedure mm_smileClick(Sender: TObject);
-    procedure pbMouseEnter(Sender: TObject);
     procedure scrlbxMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
       var Handled: Boolean);
     procedure mm_infoClick(Sender: TObject);
-    procedure img_fonMouseEnter(Sender: TObject);
     procedure mm_arrowClick(Sender: TObject);
+    procedure FormKeyPress(Sender: TObject; var Key: Char);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
@@ -287,6 +286,10 @@ end;
 procedure TFImage.imgMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
   if not ActiveDraw then exit;
+  { if (X > scrlbx.Width + scrlbx.HorzScrollBar.ScrollPos) and (X < img.Width) then
+    scrlbx.ScrollBy(scrlbx.Width + scrlbx.HorzScrollBar.ScrollPos - X, 0);
+    if (Y > scrlbx.Height + scrlbx.VertScrollBar.ScrollPos) and (Y < img.Height) then
+    scrlbx.ScrollBy(0, scrlbx.Height + scrlbx.VertScrollBar.ScrollPos - Y); }
   if (tmpShape is TFResize) or (tmpShape is TFCut) then begin
     tmpShape.EndPoint := Point(X, Y);
     CopyShift := Shift;
@@ -330,11 +333,6 @@ begin
   UpdateCaption;
 end;
 
-procedure TFImage.img_fonMouseEnter(Sender: TObject);
-begin
-  scrlbx.SetFocus;
-end;
-
 procedure TFImage.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   SavePlacement;
@@ -351,6 +349,12 @@ begin
   ShapeList := TFShapeList.Create;
   ShapeList.img := img;
   LoadSmiles;
+end;
+
+procedure TFImage.FormKeyPress(Sender: TObject; var Key: Char);
+begin
+  if Key in ['=', '+'] then spin_penwidth.Value := spin_penwidth.Value + 1
+  else if Key in ['-'] then spin_penwidth.Value := spin_penwidth.Value - 1;
 end;
 
 procedure TFImage.mm_arrowClick(Sender: TObject);
@@ -508,11 +512,6 @@ begin
   btn_SelPen.down := true;
 end;
 
-procedure TFImage.pbMouseEnter(Sender: TObject);
-begin
-  scrlbx.SetFocus;
-end;
-
 procedure TFImage.pbPaint(Sender: TObject);
 begin
   if (ActiveDraw) and (not pb_Resizeborder.Visible) then tmpShape.Draw(pb.Canvas);
@@ -530,7 +529,7 @@ end;
 
 procedure TFImage.ReloadBackGround;
 const
-  SqSize = 12;
+  SqSize = 9;
 var
   i, j: Integer;
 begin
@@ -543,7 +542,7 @@ begin
     for j := 0 to img_fon.Height div SqSize + 1 do
       with img_fon.Picture.Bitmap.Canvas do begin
         if (i mod 2 + j mod 2 = 0) or (i mod 2 + j mod 2 = 2) then Brush.Color := clWhite
-        else Brush.Color := $CCCCCC;
+        else Brush.Color := clSilver; // $CCCCCC;
         Pen.Color := Brush.Color;
         Rectangle(SqSize * i, SqSize * j, SqSize * (i + 1), SqSize * (j + 1));
       end;
@@ -583,7 +582,7 @@ var
 begin
   if WheelDelta < 0 then d := 7
   else d := -7;
-  if ssCtrl in Shift then scrlbx.HorzScrollBar.Position := scrlbx.HorzScrollBar.Position + d
+  if getasynckeystate(VK_CONTROL) <> 0 then scrlbx.HorzScrollBar.Position := scrlbx.HorzScrollBar.Position + d
   else scrlbx.VertScrollBar.Position := scrlbx.VertScrollBar.Position + d;
 end;
 
@@ -607,6 +606,7 @@ begin
     pnl_Colors.ForegroundColor := ReadInteger('Colors', 'Pen', pnl_Colors.ForegroundColor);
     pnl_Colors.BackgroundColor := ReadInteger('Colors', 'Brush', pnl_Colors.BackgroundColor);
     cbb_smiles.ItemIndex := ReadInteger('Smiles', 'Index', cbb_smiles.ItemIndex);
+    if cbb_smiles.ItemIndex > cbb_smiles.Items.Count - 1 then cbb_smiles.ItemIndex := 0;
     K := ReadInteger('Tools', 'Active', 1);
     for i := 0 to ComponentCount - 1 do
       if (Components[i] is TsSpeedButton) and (Components[i].Tag = K) then begin
