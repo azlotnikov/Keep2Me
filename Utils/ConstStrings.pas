@@ -4,7 +4,7 @@ interface
 
 const
 
-  SYS_KEEP_VERSION = '0.9.6';
+  SYS_KEEP_VERSION = '0.9.6.1';
   SYS_PLATFORM = 'x86';
   // SYS_PLATFORM = 'x64';
   SYS_BUILD_TYPE = 'alone';

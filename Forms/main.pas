@@ -64,7 +64,7 @@ uses
   pastebin_tools,
   cript,
   ConstStrings,
-  fileuploaders, sSkinManager;
+  fileuploaders, sSkinManager, sComboBoxes;
 
 type
   TFMain = class(TForm)
@@ -179,8 +179,8 @@ type
     rb_staticsel: TRadioButton;
     Btn_AboutSel: TsSpeedButton;
     rb_realtimesel: TRadioButton;
-    skin1: TsSkinManager;
-    cb_useskin: TCheckBox;
+    cbb_SelColor: TsColorBox;
+    Lbl_SelColor: TLabel;
 
     procedure FormCreate(Sender: TObject);
 
@@ -234,7 +234,7 @@ type
     procedure btn_ClearRecentFilesClick(Sender: TObject);
     procedure cb_ShowActionInTrayClick(Sender: TObject);
     procedure Btn_AboutSelClick(Sender: TObject);
-    procedure cb_useskinClick(Sender: TObject);
+    procedure cbb_SelColorChange(Sender: TObject);
   private
     tmpHotKeys: array of THotKeyAction;
     procedure InitMonitors;
@@ -284,7 +284,7 @@ begin
     cb_EditImageFromFile.Checked := EditImageFromFile;
     rb_realtimesel.Checked := RealTimeSel;
     rb_staticsel.Checked := not RealTimeSel;
-    cb_useskin.Checked := UseSkin;
+    cbb_SelColor.Selected := SelColor;
     SetLength(tmpHotKeys, Length(Actions));
     for i := 0 to High(Actions) do tmpHotKeys[i] := Actions[i];
     with Pastebin do begin
@@ -418,6 +418,11 @@ begin
   tmpHotKeys[cbb_HotKeysActions.ItemIndex].Key := cbb_HotKeys.ItemIndex;
 end;
 
+procedure TFMain.cbb_SelColorChange(Sender: TObject);
+begin
+  GSettings.SelColor := cbb_SelColor.Selected;
+end;
+
 procedure TFMain.cb_AltKeyClick(Sender: TObject);
 begin
   tmpHotKeys[cbb_HotKeysActions.ItemIndex].Alt := cb_AltKey.Checked;
@@ -457,11 +462,6 @@ end;
 procedure TFMain.cb_ShowActionInTrayClick(Sender: TObject);
 begin
   tmpHotKeys[cbb_HotKeysActions.ItemIndex].ShowMenuItem := cb_ShowActionInTray.Checked;
-end;
-
-procedure TFMain.cb_useskinClick(Sender: TObject);
-begin
-  skin1.Active := cb_useskin.Checked;
 end;
 
 procedure TFMain.cb_WinKeyClick(Sender: TObject);
@@ -768,7 +768,7 @@ begin
     ShortImg := cb_shortlinkImg.Checked;
     EditImageFromFile := cb_EditImageFromFile.Checked;
     RealTimeSel := rb_realtimesel.Checked;
-    UseSkin := cb_useskin.Checked;
+    SelColor := cbb_SelColor.Selected;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to High(tmpHotKeys) do begin
       Actions[i] := tmpHotKeys[i];
@@ -838,7 +838,7 @@ begin
     ShortImg := ReadBool(INI_COMMON_SETTINGS, 'ShortImg', false);
     EditImageFromFile := ReadBool(INI_COMMON_SETTINGS, 'EditImageFromFile', false);
     RealTimeSel := ReadBool(INI_COMMON_SETTINGS, 'RealTimeSel', true);
-    UseSkin := ReadBool(INI_COMMON_SETTINGS, 'UseSkin', false);
+    SelColor := StringToColor(ReadString(INI_COMMON_SETTINGS, 'SelColor', 'clHighlight'));
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         Enabled := ReadBool(INI_HOT_KEYS + inttostr(i), 'Enabled', Enabled);
@@ -938,7 +938,7 @@ begin
     WriteInteger(INI_COMMON_SETTINGS, 'ImgExtIndex', ImgExtIndex);
     WriteBool(INI_COMMON_SETTINGS, 'EditImageFromFile', EditImageFromFile);
     WriteBool(INI_COMMON_SETTINGS, 'RealTimeSel', RealTimeSel);
-    WriteBool(INI_COMMON_SETTINGS, 'UseSkin', UseSkin);
+    WriteString(INI_COMMON_SETTINGS, 'SelColor', ColorToString(SelColor));
     for i := 0 to High(Actions) do
       with Actions[i] do begin
         WriteInteger(INI_HOT_KEYS + inttostr(i), 'Key', Key);
@@ -996,7 +996,10 @@ end;
 
 procedure TFMain.TrayIconClick(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if Button = mbLeft then DoScreenSelect(self);
+  if Button = mbLeft then begin
+    // GSettings.RealTimeSel := true;
+    DoScreenSelect(self);
+  end;
 end;
 
 procedure TFMain.UpdateActions;

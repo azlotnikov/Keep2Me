@@ -7,7 +7,7 @@ object FFrameSize: TFFrameSize
   Caption = 'FFrameSize'
   ClientHeight = 15
   ClientWidth = 23
-  Color = clMenuHighlight
+  Color = clRed
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -16,6 +16,7 @@ object FFrameSize: TFFrameSize
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   OnClose = FormClose
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -26,7 +27,6 @@ object FFrameSize: TFFrameSize
     Height = 15
     Align = alClient
     Brush.Color = clHighlight
-    Pen.Color = clHotLight
     ExplicitLeft = 16
     ExplicitTop = 8
     ExplicitWidth = 65

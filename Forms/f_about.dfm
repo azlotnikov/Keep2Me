@@ -13,15 +13,23 @@ object FAbout: TFAbout
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  GlassFrame.Left = 8
-  GlassFrame.Top = 8
-  GlassFrame.Right = 8
-  GlassFrame.Bottom = 8
+  GlassFrame.Bottom = 38
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object BtnOk: TsSpeedButton
+    Left = 208
+    Top = 279
+    Width = 136
+    Height = 24
+    Caption = 'OK'
+    OnClick = btn_okClick
+    SkinData.SkinSection = 'SPEEDBUTTON'
+    ImageIndex = 0
+    Images = images
+  end
   object pgc_tabs: TPageControl
     Left = -1
     Top = 0
@@ -3601,9 +3609,9 @@ object FAbout: TFAbout
           #1072#1085#1103#1077#1090#1089#1103' '#1087#1086#1076' GNU General '#13#10'Public License.'
       end
       object edt_version: TEdit
-        Left = 184
+        Left = 205
         Top = 53
-        Width = 157
+        Width = 136
         Height = 21
         Alignment = taCenter
         Color = clBtnFace
@@ -3611,9 +3619,9 @@ object FAbout: TFAbout
         TabOrder = 0
       end
       object edt_mail: TEdit
-        Left = 184
+        Left = 205
         Top = 80
-        Width = 157
+        Width = 136
         Height = 21
         Alignment = taCenter
         Color = clBtnFace
@@ -3653,16 +3661,34 @@ object FAbout: TFAbout
       end
     end
   end
-  object btn_ok: TButton
-    Left = 248
-    Top = 279
-    Width = 104
-    Height = 25
-    BiDiMode = bdLeftToRight
-    Caption = 'OK'
-    Default = True
-    ParentBiDiMode = False
-    TabOrder = 1
-    OnClick = btn_okClick
+  object images: TsAlphaImageList
+    Items = <
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C0000021C4944415478DA62FCFFFF3F032580898142C002221867
+          0801598C4006900372D01F20C10D349B9911A20A443181E5E581782D9057C3F0
+          F7FF8EFF11AFF1B8E0FB3F06865F500C32F0EF7F01867FFF27A6B9241903D92D
+          40151EA478818DE11F439FA1BCBEE9972F5F18E29D62F419FE30B4C0BD400030
+          0235D72B48C83BC80BC9497DFCFCF1F7C163876E005DD380EE020FA0FFCFC09C
+          0676FA0FA0D3FF306408730906AB89AB287CF9FAE5DFD14B47EF005D3111A876
+          0BC280FF404D7FFEB724F9271A8268301F22EEC3C1C49625C923A9FCE0C10386
+          53974FDDFDF0E1C352A09AB90CBFFF2345E39F7F2D317E317ACF9E3D638AF08A
+          3000F1819A7359FE33D54B8BCBA87EFDF395E5E587170F3F7DFAB0091880ED40
+          0C7121C280FF354B562CBCC4CEC9F6EBD4ED53CC0E768E3A401BE2C564C5357E
+          B0FC607FF7E1CDD38FEFDEEF67F80B8C3E060688CE6D3F2001044A898C7DFC0C
+          400DA03068317636D37AFAF319A700A700C3FB6FEF197EBCF8F6FAE3DDF74718
+          9819921858993E30ECFE09D70CD60B263C381818E4988198116C88B49DBCC60F
+          DE5FDCBF5FFEFCF0F9ECFB33FF991812180EFC7E0AD68C0410063042539C02D0
+          1073660F0669C6162E137E99EF173EDDF9FFF05F2AC3F13FD7191EFDC3885F64
+          034061C10BC40240CCC760CC64C9A0C390C670E67F27C3D5FF57806220AB7F40
+          6910FEC500F23410C00C0039811D8839A034333457FC83E23F50FC1789FE0737
+          801200106000BB1C04DA4E75922D0000000049454E44AE426082}
+      end>
+    Left = 264
+    Top = 48
+    Bitmap = {}
   end
 end

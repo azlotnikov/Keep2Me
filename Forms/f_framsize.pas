@@ -12,7 +12,9 @@ uses
   Vcl.Controls,
   Vcl.Forms,
   Vcl.Dialogs,
-  Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  funcs;
 
 type
   TFFrameSize = class(TForm)
@@ -20,6 +22,7 @@ type
     lbl_size: TLabel;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -33,6 +36,11 @@ implementation
 procedure TFFrameSize.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Action := caFree;
+end;
+
+procedure TFFrameSize.FormCreate(Sender: TObject);
+begin
+  shp_frame.Brush.Color := GSettings.SelColor;
 end;
 
 procedure TFFrameSize.FormShow(Sender: TObject);

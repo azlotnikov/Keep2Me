@@ -22,7 +22,7 @@ uses
   ConstStrings,
   loaders,
   shortlinks,
-  fileuploaders;
+  fileuploaders, Vcl.Buttons, sSpeedButton, Vcl.ImgList, acAlphaImageList;
 
 type
   TFAbout = class(TForm)
@@ -43,7 +43,8 @@ type
     lbl6: TLabel;
     lbl7: TLabel;
     lbl8: TLabel;
-    btn_ok: TButton;
+    images: TsAlphaImageList;
+    BtnOk: TsSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure btn_okClick(Sender: TObject);
     procedure ClickLink(Sender: TObject);

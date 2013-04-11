@@ -11,6 +11,7 @@ uses
   System.SysUtils,
   Vcl.Forms,
   Vcl.Menus,
+  Vcl.Graphics,
   JvTrayIcon,
   acAlphaImageList,
   loaders,
@@ -75,7 +76,7 @@ type
 
 type
   TSettings = record
-    UseSkin: Boolean;
+    SelColor: TColor;
     RealTimeSel: Boolean;
     LastLink: String;
     MonIndex: Integer;

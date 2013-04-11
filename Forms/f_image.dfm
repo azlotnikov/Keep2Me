@@ -35,18 +35,19 @@ object FImage: TFImage
       Left = 6
       Top = 2
       Width = 65
-      Height = 50
+      Height = 55
       BiDiMode = bdLeftToRight
       Caption = #1047#1072#1075#1088#1091#1079#1080#1090#1100#13#10'(Alt+Enter)'
-      Layout = blGlyphTop
+      Layout = blGlyphBottom
       ParentBiDiMode = False
       OnClick = mm_LoadClick
       SkinData.SkinSection = 'SPEEDBUTTON'
+      ImageIndex = 1
       Images = Images
     end
     object lbl_penwidth: TLabel
       Left = 6
-      Top = 55
+      Top = 57
       Width = 40
       Height = 26
       Caption = #1064#1080#1088#1080#1085#1072#13#10#1082#1080#1089#1090#1080':'

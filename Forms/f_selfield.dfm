@@ -27,7 +27,6 @@ object FSelField: TFSelField
     Width = 9
     Height = 9
     Brush.Color = clHighlight
-    Pen.Color = clBlue
     Visible = False
   end
   object shp_wnd: TShape

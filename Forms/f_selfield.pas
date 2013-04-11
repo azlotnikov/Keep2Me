@@ -42,6 +42,7 @@ begin
   Color := $00FF00;
   TransparentColorValue := $00FF00;
   TransparentColor := true;
+  shp_sel.Brush.Color := GSettings.SelColor;
 end;
 
 procedure TFSelField.FormShow(Sender: TObject);
