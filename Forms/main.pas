@@ -710,9 +710,8 @@ begin
   GSettings.TrayIcon := TrayIcon;
   GSettings.UpdateRecentFiles := UpdateRecentFiles;
   LoadRecentFiles;
-  if FileExists(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME) and
-    not((ParamCount > 0) and (ParamStr(1) = SYS_SHOW_SETTINGS_PARAM)) then Visible := false
-  else Visible := true;
+  Visible := not(FileExists(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME) and
+    not((ParamCount > 0) and (ParamStr(1) = SYS_SHOW_SETTINGS_PARAM)));
   for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
   AddHotKeyAction(true, RU_SELECT_SCREEN_PART, true, true, false, false, 3, DoScreenSelect, pm_SelectScreen);
   AddHotKeyAction(false, RU_SEND_FROM_BUFFER, true, true, false, false, 4, DoBufferSend, pm_BufferSend);

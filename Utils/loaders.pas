@@ -6,6 +6,7 @@ uses
   Winapi.WinInet,
   System.Classes,
   System.SysUtils,
+  System.StrUtils,
   Vcl.ComCtrls,
   IdHTTP,
   IdComponent,
@@ -205,7 +206,7 @@ end;
 
 procedure THostingKartinokLoader.LoadFile(FileName: string);
 const
-  Str = '<img src="http://s5.hostingkartinok.com/uploads/thumbs/';
+  Str = '<img src="http://s';
 var
   Stream: TIdMultipartFormDataStream;
   s: string;
@@ -214,7 +215,10 @@ begin
     Link := '';
     AError := false;
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFile('image_1', FileName, 'application/octet-stream');
+    with Stream.AddFile('image_1', FileName, 'application/octet-stream') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     Stream.AddFormField('jpeg_quality', '100%');
     Stream.AddFormField('resize_to', '500px');
     Stream.AddFormField('upload_type', 'standard');
@@ -226,7 +230,8 @@ begin
       AError := true;
       Exit;
     end;
-    Link := 'http://s5.hostingkartinok.com/uploads/images/' + ParsSubString(s, Str, '.') + ExtractFileExt(FileName);
+    Link := 'http://s' + ParsSubString(s, Str, '.png') + ExtractFileExt(FileName);
+    Link := ReplaceStr(Link, '/thumbs/', '/images/');
   finally
     Stream.Free;
   end;
@@ -245,7 +250,10 @@ begin
     Link := '';
     AError := false;
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFile('image1', FileName, 'application/octet-stream');
+    with Stream.AddFile('image1', FileName, 'application/octet-stream') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     Stream.AddFormField('tags1', 'Без тегов');
     Stream.AddFormField('user_uniq_key', 'yes');
     try
@@ -278,7 +286,10 @@ begin
     AError := false;
     Stream := TIdMultipartFormDataStream.Create;
     Stream.AddFormField('key', myAPI);
-    Stream.AddFile('image', FileName, 'application/octet-stream');
+    with Stream.AddFile('image', FileName, 'application/octet-stream') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     try
       s := HTTP.Post('http://imgur.com/api/upload.xml', Stream);
     except
@@ -307,7 +318,10 @@ begin
     AError := false;
     HTTP.HandleRedirects := true;
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFile('file1', FileName, 'application/octet-stream');
+    with Stream.AddFile('file1', FileName, 'application/octet-stream') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     Stream.AddFormField('caption', '');
     Stream.AddFormField('resize', '0');
     Stream.AddFormField('B1', 'Upload Image');
@@ -416,7 +430,10 @@ begin
       end;
       k := ParsSubString(s, str0, '"'); }
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFile('image[image]', FileName, 'application/octet-stream');
+    with Stream.AddFile('image[image]', FileName, 'application/octet-stream') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     Stream.AddFormField('ut8', '');
     Stream.AddFormField('authenticity_token', k);
     try
@@ -447,7 +464,10 @@ begin
     AError := false;
     HTTP.HandleRedirects := true;
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFile('file', FileName, 'application/octet-stream');
+    with Stream.AddFile('file', FileName, 'application/octet-stream') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     Stream.AddFormField('url', 'http://');
     Stream.AddFormField('resize', '0');
     Stream.AddFormField('retype', '0');
@@ -498,7 +518,10 @@ begin
       Exit;
     end;
     token := ParsSubString(s, str0, '"');
-    Stream.AddFile('upfile_1362636679472', FileName, 'application/octet-stream');
+    with Stream.AddFile('upfile_1362636679472', FileName, 'application/octet-stream') do begin
+      HeaderCharset := 'utf-8';
+      HeaderEncoding := '8';
+    end;
     Stream.AddFormField('private', '0');
     Stream.AddFormField('member', '0');
     try
@@ -525,10 +548,9 @@ begin
   end;
 end;
 
-
 initialization
 
-AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.3');
+AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.4');
 AddLoader(TQikrLoader, 'qikr.co', '0.1');
 AddLoader(TImgurLoader, 'imgur.com [API]', '0.1');
 AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.3');
@@ -536,4 +558,5 @@ AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
 AddLoader(TTrollWsLoader, 'troll.ws', '0.3');
 AddLoader(TImgsSuLoader, 'imgs.su', '0.1');
 AddLoader(TFilezProLoader, 'filez.pro', '0.1');
+
 end.
