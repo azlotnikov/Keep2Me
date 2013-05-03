@@ -4,7 +4,7 @@ interface
 
 const
 
-  SYS_KEEP_VERSION = '0.9.6.2';
+  SYS_KEEP_VERSION = '0.9.6.4';
   SYS_PLATFORM = 'x86';
   // SYS_PLATFORM = 'x64';
   SYS_BUILD_TYPE = 'alone';
@@ -46,7 +46,8 @@ const
   RU_SEND_FROM_BUFFER = 'Отправить из буфера обмена';
   RU_SEND_WINDOW_SCREEN = 'Отправить скриншот окна';
   RU_SEND_TO_PASTEBIN = 'Отправить на Pastebin.com';
-  RU_OPEN_IMAGE_AND_LOAD = 'Загрузить изображение из файла';
+  RU_OPEN_IMAGE_AND_LOAD = 'Открыть и загрузить изображение';
+  RU_OPEN_FILE_AND_LOAD = 'Открыть и загрузить файл';
   RU_LOAD_FILES_FROM_BUF = 'Загрузить файлы из буфера';
   RU_SHORT_LINK_FROM_BUF = 'Укоротить ссылку из буфера';
   RU_SHOW_SETTNGS = 'Показать настройки';

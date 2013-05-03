@@ -64,7 +64,7 @@ uses
   pastebin_tools,
   cript,
   ConstStrings,
-  fileuploaders, sSkinManager, sComboBoxes;
+  fileuploaders, sSkinManager, sComboBoxes, JvDialogs;
 
 type
   TFMain = class(TForm)
@@ -181,6 +181,8 @@ type
     rb_realtimesel: TRadioButton;
     cbb_SelColor: TsColorBox;
     Lbl_SelColor: TLabel;
+    OpenFileDlg: TJvOpenDialog;
+    pm_OpenAndLoadFile: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
 
@@ -215,6 +217,7 @@ type
     procedure DoOpenAndSendImage(Sender: TObject);
     procedure DoLoadFilesFromBuf(Sender: TObject);
     procedure DoShortLinkFromBuf(Sender: TObject);
+    procedure DoOpenAndLoadFile(Sender: TObject);
 
     procedure ExitKeep;
     procedure FormShow(Sender: TObject);
@@ -312,6 +315,8 @@ begin
     Autorun(AutoStart, SYS_KEEP2ME, ParamStr(0));
   end;
   UpdateActions;
+  cb_ShowActionInTray.Checked := GSettings.Actions[0].ShowMenuItem;
+  cb_EnableKey.Checked := GSettings.Actions[0].Enabled;
 end;
 
 procedure TFMain.Btn_AboutSelClick(Sender: TObject);
@@ -584,6 +589,17 @@ begin
   end;
 end;
 
+procedure TFMain.DoOpenAndLoadFile(Sender: TObject);
+var
+  T: Tstringlist;
+begin
+  if OpenFileDlg.Execute then begin
+    T := Tstringlist.Create;
+    T.Add(OpenFileDlg.FileName);
+    TFFiles.Create(nil).StartLoad(T);
+  end;
+end;
+
 procedure TFMain.DoOpenAndSendImage(Sender: TObject);
 begin
   if OpenImageDlg.Execute then
@@ -638,6 +654,7 @@ end;
 procedure TFMain.DoShowSettings(Sender: TObject);
 begin
   Show;
+  BringToFront;
 end;
 
 procedure TFMain.DoWindowSelect(Sender: TObject);
@@ -710,8 +727,6 @@ begin
   GSettings.TrayIcon := TrayIcon;
   GSettings.UpdateRecentFiles := UpdateRecentFiles;
   LoadRecentFiles;
-  Visible := not(FileExists(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME) and
-    not((ParamCount > 0) and (ParamStr(1) = SYS_SHOW_SETTINGS_PARAM)));
   for i := Ord(Low(TImgFormats)) to Ord(High(TImgFormats)) do cbb_ImgExt.Items.Add(ImgFormatToText(TImgFormats(i)));
   AddHotKeyAction(true, RU_SELECT_SCREEN_PART, true, true, false, false, 3, DoScreenSelect, pm_SelectScreen);
   AddHotKeyAction(false, RU_SEND_FROM_BUFFER, true, true, false, false, 4, DoBufferSend, pm_BufferSend);
@@ -721,6 +736,7 @@ begin
   AddHotKeyAction(false, RU_OPEN_IMAGE_AND_LOAD, true, true, false, false, 8, DoOpenAndSendImage, pm_LoadImageFromFile);
   AddHotKeyAction(false, RU_LOAD_FILES_FROM_BUF, true, true, false, false, 9, DoLoadFilesFromBuf, pm_filesfrombuf);
   AddHotKeyAction(false, RU_SHORT_LINK_FROM_BUF, true, true, false, false, 10, DoShortLinkFromBuf, pm_ShortLinkFromBuf);
+  AddHotKeyAction(false, RU_OPEN_FILE_AND_LOAD, true, true, false, false, 11, DoOpenAndLoadFile, pm_OpenAndLoadFile);
   MonitorManager := TMonitorManager.Create;
   InitMonitors;
   UpdateActions;
@@ -740,6 +756,8 @@ begin
   beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
   // if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
   ForceDirectories(GetSettingsFilePath + SYS_TMP_IMG_FOLDER);
+  Visible := not(FileExists(GetSettingsFilePath + SYS_SETTINGS_FILE_NAME) and
+    not((ParamCount > 0) and (ParamStr(1) = SYS_SHOW_SETTINGS_PARAM)));
 end;
 
 procedure TFMain.FormShow(Sender: TObject);
@@ -897,8 +915,7 @@ end;
 
 procedure TFMain.pm_SettingsClick(Sender: TObject);
 begin
-  self.Show;
-  BringToFront;
+  DoShowSettings(self);
 end;
 
 procedure TFMain.rb_pb_accountClick(Sender: TObject);
