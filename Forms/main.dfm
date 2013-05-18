@@ -296,7 +296,7 @@ object FMain: TFMain
         end
         object cb_shortlinkFiles: TCheckBox
           Left = 9
-          Top = 40
+          Top = 44
           Width = 161
           Height = 17
           Caption = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1076#1083#1103' '#1092#1072#1081#1083#1086#1074
@@ -304,7 +304,7 @@ object FMain: TFMain
         end
         object cb_shortlinkImg: TCheckBox
           Left = 9
-          Top = 58
+          Top = 62
           Width = 199
           Height = 17
           Caption = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1076#1083#1103' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1081
@@ -492,7 +492,12 @@ object FMain: TFMain
           BoundLabel.UseSkinColor = True
           SkinData.SkinSection = 'COMBOBOX'
           Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
-          Color = clBtnFace
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          ParentFont = False
           TabOrder = 7
           OnChange = cbb_SelColorChange
         end

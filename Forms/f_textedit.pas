@@ -22,7 +22,7 @@ uses
   acAlphaImageList,
   JvExStdCtrls,
   JvCombobox,
-  JvColorCombo;
+  JvColorCombo, sColorSelect;
 
 type
   TFTextEdit = class(TForm)
@@ -41,6 +41,7 @@ type
     btn_EnterText: TsSpeedButton;
     btn_font: TsSpeedButton;
     cbb_font: TJvFontComboBox;
+    btn_fontcolor: TsColorSelect;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mm_ExitClick(Sender: TObject);
@@ -53,13 +54,13 @@ type
     procedure btn_fontClick(Sender: TObject);
     procedure cbb_fontChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btn_fontcolorChange(Sender: TObject);
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   private
     { Private declarations }
   public
     NAdd: Boolean;
-    NText: String;
   end;
 
 implementation
@@ -81,12 +82,12 @@ begin
   if btn_bold.Down then Include(S, fsBold)
   else Exclude(S, fsBold);
   mmo_text.Font.Style := S;
+  mmo_text.OnChange(mmo_text);
 end;
 
 procedure TFTextEdit.btn_EnterTextClick(Sender: TObject);
 begin
   NAdd := true;
-  NText := mmo_text.Text;
   Close;
 end;
 
@@ -102,6 +103,12 @@ begin
   cbb_font.Visible := btn_font.Down;
 end;
 
+procedure TFTextEdit.btn_fontcolorChange(Sender: TObject);
+begin
+  mmo_text.Font.Color := btn_fontcolor.ColorValue;
+  mmo_text.OnChange(mmo_text);
+end;
+
 procedure TFTextEdit.btn_italicClick(Sender: TObject);
 var
   S: TFontStyles;
@@ -110,6 +117,7 @@ begin
   if btn_italic.Down then Include(S, fsItalic)
   else Exclude(S, fsItalic);
   mmo_text.Font.Style := S;
+  mmo_text.OnChange(mmo_text);
 end;
 
 procedure TFTextEdit.btn_strikedClick(Sender: TObject);
@@ -120,6 +128,7 @@ begin
   if btn_striked.Down then Include(S, fsStrikeOut)
   else Exclude(S, fsStrikeOut);
   mmo_text.Font.Style := S;
+  mmo_text.OnChange(mmo_text);
 end;
 
 procedure TFTextEdit.btn_underlinedClick(Sender: TObject);
@@ -130,11 +139,13 @@ begin
   if btn_underlined.Down then Include(S, fsUnderline)
   else Exclude(S, fsUnderline);
   mmo_text.Font.Style := S;
+  mmo_text.OnChange(mmo_text);
 end;
 
 procedure TFTextEdit.cbb_fontChange(Sender: TObject);
 begin
   mmo_text.Font.Name := cbb_font.FontName;
+  mmo_text.OnChange(mmo_text);
 end;
 
 procedure TFTextEdit.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -145,7 +156,6 @@ end;
 procedure TFTextEdit.FormCreate(Sender: TObject);
 begin
   NAdd := false;
-  NText := '';
   mmo_text.Font.Size := se_fsize.Value;
   cbb_font.FontName := mmo_text.Font.Name;
 end;

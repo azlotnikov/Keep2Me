@@ -261,7 +261,7 @@ begin
       pb.Position := pb.Max;
       EnableBtns(true);
       GSettings.TrayIcon.Hint := r;
-      if GSettings.ShowInTray then GSettings.TrayIcon.BalloonHint('Файл загружен', r);
+      if GSettings.ShowInTray then GSettings.TrayIcon.BalloonHint('Изображение загружено', r, btInfo, 4000, false);
       CanClose := true;
       tmr_killEditor.Enabled := true;
     end;

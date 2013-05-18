@@ -154,6 +154,8 @@ type
     SmilesList: array of TsAlphaImageList;
     function GetScreenName: string;
     procedure TextEditFormClose(Sender: TObject; var Action: TCloseAction);
+    procedure TextEditMemoChange(Sender: TObject);
+    procedure SetTextStyle(Sender: TObject);
     procedure SavePlacement;
     procedure LoadPlacement;
     procedure ReloadBackGround;
@@ -312,6 +314,8 @@ begin
     Enabled := false;
     with TFTextEdit.Create(nil) do begin
       OnClose := TextEditFormClose;
+      mmo_text.OnChange := TextEditMemoChange;
+      btn_fontcolor.ColorValue := tmpShape.PenF.Color;
       mmo_text.Font.Color := tmpShape.PenF.Color;
       Show;
     end
@@ -514,7 +518,12 @@ end;
 
 procedure TFImage.pbPaint(Sender: TObject);
 begin
-  if (ActiveDraw) and (not pb_Resizeborder.Visible) then tmpShape.Draw(pb.Canvas);
+  if ActiveDraw and (not pb_Resizeborder.Visible) then tmpShape.Draw(pb.Canvas);
+  if ActiveDraw and (tmpShape is TFText) and (not tmpShape.IsDrawing) then begin
+    tmpShape.IsDrawing := true;
+    tmpShape.Draw(pb.Canvas);
+    tmpShape.IsDrawing := false;
+  end;
 end;
 
 procedure TFImage.pb_ResizeborderPaint(Sender: TObject);
@@ -775,20 +784,32 @@ begin
   img.Picture.Bitmap.PixelFormat := pf32bit;
 end;
 
+procedure TFImage.SetTextStyle(Sender: TObject);
+begin
+  (tmpShape as TFText).Text := (Sender as TFTextEdit).mmo_text.Text;
+  (tmpShape as TFText).Styles := (Sender as TFTextEdit).mmo_text.Font.Style;
+  (tmpShape as TFText).FSize := (Sender as TFTextEdit).mmo_text.Font.Size;
+  (tmpShape as TFText).FontName := (Sender as TFTextEdit).mmo_text.Font.Name;
+  (tmpShape as TFText).PenF.Color := (Sender as TFTextEdit).mmo_text.Font.Color;
+  (tmpShape as TFText).IsDrawing := false;
+end;
+
 procedure TFImage.TextEditFormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  if (Sender as TFTextEdit).NAdd then begin
-    (tmpShape as TFText).Text := (Sender as TFTextEdit).NText;
-    (tmpShape as TFText).Styles := (Sender as TFTextEdit).mmo_text.Font.Style;
-    (tmpShape as TFText).FSize := (Sender as TFTextEdit).mmo_text.Font.Size;
-    (tmpShape as TFText).FontName := (Sender as TFTextEdit).mmo_text.Font.Name;
-    (tmpShape as TFText).IsDrawing := false;
+  if (Sender as TFTextEdit).NAdd and (Length((Sender as TFTextEdit).mmo_text.Text) <> 0) then begin
+    SetTextStyle(Sender);
     tmpShape.Draw(img.Canvas);
   end
   else ShapeList.DeleteLast;
   Action := caFree;
   Enabled := true;
   ActiveDraw := false;
+  pb.Invalidate;
+end;
+
+procedure TFImage.TextEditMemoChange(Sender: TObject);
+begin
+  SetTextStyle((Sender as TMemo).Parent);
   pb.Invalidate;
 end;
 

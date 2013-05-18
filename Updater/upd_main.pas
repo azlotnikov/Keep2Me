@@ -13,13 +13,11 @@ uses
 type
   TFMain = class(TForm)
     pb: TProgressBar;
-    Images: TsAlphaImageList;
     stat: TStatusBar;
     AntiFreeze: TIdAntiFreeze;
     HTTP: TIdHTTP;
     cb_close: TCheckBox;
     lbl_info: TLabel;
-    lbl_Admin: TLabel;
     btn_update: TButton;
     tmr_exit: TTimer;
     procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
@@ -157,6 +155,13 @@ begin
 end;
 
 procedure TFMain.btn_updateClick(Sender: TObject);
+const
+{$IFDEF WIN32}
+  SYS_UPDATE_FILE_LIST = 'http://keep2.me/program/fileslist.php';
+{$ENDIF}
+{$IFDEF WIN64}
+  SYS_UPDATE_FILE_LIST = 'http://keep2.me/program64/fileslist.php';
+{$ENDIF}
 var
   t: tstringlist;
   i: integer;
@@ -176,7 +181,7 @@ begin
   stat.Panels[0].Text := 'Получаем список файлов';
   t := tstringlist.Create;
   try
-    t.Text := HTTP.Get('http://keep2.me/program/fileslist.php');
+    t.Text := HTTP.Get(SYS_UPDATE_FILE_LIST);
   except
   end;
   if t.Text = '' then begin
@@ -262,13 +267,19 @@ end;
 
 procedure TFMain.FormCreate(Sender: TObject);
 begin
+{$IFDEF WIN32}
+  Caption := Caption + ' x86';
+{$ENDIF}
+{$IFDEF WIN64}
+  Caption := Caption + ' x64';
+{$ENDIF}
   Show;
   if ParamCount > 0 then
     if ParamStr(1) = 'STARTUPDATE' then begin
       Sleep(1000);
       btn_update.Click;
     end;
-  MoveFile(PChar(ExtractFilePath(ParamStr(0)) + 'dgs.png'), PChar(ExtractFilePath(ParamStr(0)) + 'smiles\dgs.png'));
+  // MoveFile(PChar(ExtractFilePath(ParamStr(0)) + 'dgs.png'), PChar(ExtractFilePath(ParamStr(0)) + 'smiles\dgs.png'));
 end;
 
 procedure TFMain.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);

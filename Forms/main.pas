@@ -40,12 +40,14 @@ uses
   JvCtrls,
   JvComponentBase,
   JvTrayIcon,
+  JvDialogs,
   IdHTTP,
   IdBaseComponent,
   IdAntiFreezeBase,
   acAlphaImageList,
   sSpeedButton,
   sPageControl,
+  sComboBoxes,
   f_points,
   f_image,
   f_about,
@@ -64,7 +66,7 @@ uses
   pastebin_tools,
   cript,
   ConstStrings,
-  fileuploaders, sSkinManager, sComboBoxes, JvDialogs;
+  fileuploaders;
 
 type
   TFMain = class(TForm)

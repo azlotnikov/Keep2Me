@@ -23,6 +23,7 @@ uses
   Vcl.ComCtrls,
   JvExComCtrls,
   JvListView,
+  JvTrayIcon,
   acAlphaImageList,
   sSpeedButton,
   funcs,
@@ -191,7 +192,8 @@ begin
             CShorter := ShortersArray[GSettings.ShortLinkIndex].Obj.Create;
             CShorter.SetLoadBar(nil);
             CShorter.LoadFile(ALink);
-            if CShorter.Error then GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку')
+            if CShorter.Error then
+                GSettings.TrayIcon.BalloonHint(SYS_KEEP2ME, 'Не удалось укоротить ссылку', btInfo, 4000, false)
             else ALink := CShorter.GetLink;
           except
             FreeAndNil(CShorter);
@@ -201,7 +203,7 @@ begin
 
         if GSettings.ShowInTray then begin
           GSettings.TrayIcon.Hint := Links[Index].Link;
-          GSettings.TrayIcon.BalloonHint('Файл загружен', Links[Index].Link);
+          GSettings.TrayIcon.BalloonHint('Файл загружен', Links[Index].Link, btInfo, 4000, false);
         end;
         if GSettings.CopyLink then Clipboard.AsText := Links[Index].Link;
       end;

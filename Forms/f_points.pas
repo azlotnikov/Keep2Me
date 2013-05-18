@@ -131,7 +131,7 @@ begin
       FFrameSize.Left := Rx - FFrameSize.Width;
     end;
   end;
-  FFrameSize.lbl_size.Caption := inttostr(abs(X - bx)) + 'x' + inttostr(abs(Y - by));
+  FFrameSize.lbl_size.Caption := Format('%dx%d', [FSelField.shp_sel.Width, FSelField.shp_sel.Height]);
   FFrameSize.ReCalcFormSize;
 end;
 

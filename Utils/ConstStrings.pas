@@ -4,9 +4,18 @@ interface
 
 const
 
-  SYS_KEEP_VERSION = '0.9.6.4';
+{$IFDEF WIN32}
+  SYS_KEEP_VERSION = '0.9.7';
+{$ENDIF}
+{$IFDEF WIN64}
+  SYS_KEEP_VERSION = '0.9.7';
+{$ENDIF}
+{$IFDEF WIN32}
   SYS_PLATFORM = 'x86';
-  // SYS_PLATFORM = 'x64';
+{$ENDIF}
+{$IFDEF WIN64}
+  SYS_PLATFORM = 'x64';
+{$ENDIF}
   SYS_BUILD_TYPE = 'alone';
   // SYS_BUILD_TYPE = 'installation';
   SYS_CRYPT_KEY = 26123;
@@ -27,7 +36,12 @@ const
   SYS_SETTINGS_FOLDER = 'settings\';
   SYS_KEEP2ME = 'Keep2Me';
   SYS_USERAGENT = 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)';
+{$IFDEF WIN32}
   SYS_UPDATE_CHECK_PAGE = 'http://keep2.me/program/lastversion.php?clientversion=' + SYS_KEEP_VERSION;
+{$ENDIF}
+{$IFDEF WIN64}
+  SYS_UPDATE_CHECK_PAGE = 'http://keep2.me/program64/lastversion.php?clientversion=' + SYS_KEEP_VERSION;
+{$ENDIF}
   SYS_UPDATE_TOKEN = 'K2M_VERSION';
   SYS_UPDATER_EXE_NAME = 'updater.exe';
 
@@ -58,7 +72,7 @@ const
   RU_SERVER_CONNECTION_ERROR = 'Ошибка соедниния с сервером';
   RU_UPDATE_AVAILABLE = 'Keep2Me: Доступно обновление  %s (ваша версия: %s). Обновить программу?';
   RU_ERROR_FIND_UPDATER = 'Ошибка: Не удалось найти ';
-  RU_UPTODATE_VERSION = 'У вас актуальная версия';
+  RU_UPTODATE_VERSION = 'У вас актуальная версия (' + SYS_KEEP_VERSION + ')';
   RU_IMG_LOAD_ERROR = 'Ошибка загрузки изображения: ';
   RU_HOTKEYS_ARE_EQUAL = 'Эта комбинация уже зарегестрирована для текущего действия!';
   RU_HOTKEY_IS_FREE = 'Комбинация свободна!';
