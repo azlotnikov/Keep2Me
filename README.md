@@ -16,11 +16,12 @@
 - Recent files.
 - Custom hotkeys for all actions.
 - Auto update.
+- 64-bit Windows support.
 
 ##Links
-[github.io/Keep2Me](http://zrazor.github.io/Keep2Me)
-[zhyk.ru](http://zhyk.ru/)
-[zt.am](http://zt.am/)
+- [github.io/Keep2Me](http://zrazor.github.io/Keep2Me)
+- [zhyk.ru](http://zhyk.ru/)
+- [zt.am](http://zt.am/)
 
 ##Third-party
 - AlphaSkins
