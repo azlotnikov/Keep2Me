@@ -44,6 +44,7 @@ object FPasteBin: TFPasteBin
     Gutter.ShowLineNumbers = True
     WantTabs = True
     OnChange = syn_codeChange
+    FontSmoothing = fsmNone
   end
   object pnl_actions: TPanel
     Left = 0

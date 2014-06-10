@@ -8,8 +8,9 @@ uses
 
 type
   TMyHotKey = record
-    Caption: String;
-    Value: Word;
+  public
+    Caption: string;
+    Value  : Word;
   end;
 
 var
@@ -22,8 +23,8 @@ implementation
 procedure AddToHotKeys(Caption: string; Value: Integer);
 begin
   SetLength(HotKeysArray, Length(HotKeysArray) + 1);
-  HotKeysArray[High(HotKeysArray)].Caption := Caption;
-  HotKeysArray[High(HotKeysArray)].Value := Value;
+  HotKeysArray[high(HotKeysArray)].Caption := Caption;
+  HotKeysArray[high(HotKeysArray)].Value   := Value;
 end;
 
 initialization

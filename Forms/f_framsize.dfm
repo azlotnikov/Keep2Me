@@ -7,7 +7,7 @@ object FFrameSize: TFFrameSize
   Caption = 'FFrameSize'
   ClientHeight = 15
   ClientWidth = 23
-  Color = clRed
+  Color = clNavy
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -20,18 +20,6 @@ object FFrameSize: TFFrameSize
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object shp_frame: TShape
-    Left = 0
-    Top = 0
-    Width = 23
-    Height = 15
-    Align = alClient
-    Brush.Color = clHighlight
-    ExplicitLeft = 16
-    ExplicitTop = 8
-    ExplicitWidth = 65
-    ExplicitHeight = 65
-  end
   object lbl_size: TLabel
     Left = 1
     Top = 1
@@ -44,5 +32,17 @@ object FFrameSize: TFFrameSize
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
+  end
+  object shp_frame: TShape
+    Left = 0
+    Top = 0
+    Width = 23
+    Height = 15
+    Align = alClient
+    Brush.Style = bsClear
+    ExplicitLeft = 16
+    ExplicitTop = 8
+    ExplicitWidth = 65
+    ExplicitHeight = 65
   end
 end

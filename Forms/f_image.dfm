@@ -99,8 +99,12 @@ object FImage: TFImage
       Top = 0
       Width = 707
       Height = 422
+      Cursor = crCross
       Align = alClient
       IncrementalDisplay = True
+      OnMouseDown = imgMouseDown
+      OnMouseMove = imgMouseMove
+      OnMouseUp = imgMouseUp
       ExplicitLeft = 424
       ExplicitTop = 144
       ExplicitWidth = 105
@@ -129,6 +133,7 @@ object FImage: TFImage
       Top = 0
       Width = 707
       Height = 422
+      Cursor = crArrow
       Align = alClient
       Visible = False
       OnPaint = pb_ResizeborderPaint
@@ -160,7 +165,7 @@ object FImage: TFImage
     object btn_line: TsSpeedButton
       Tag = 2
       Left = 6
-      Top = 38
+      Top = 35
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -172,7 +177,7 @@ object FImage: TFImage
     object btn_Rect: TsSpeedButton
       Tag = 3
       Left = 6
-      Top = 69
+      Top = 63
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -184,7 +189,7 @@ object FImage: TFImage
     object btn_Ellipse: TsSpeedButton
       Tag = 4
       Left = 6
-      Top = 100
+      Top = 91
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -196,7 +201,7 @@ object FImage: TFImage
     object btn_rectclear: TsSpeedButton
       Tag = 5
       Left = 6
-      Top = 131
+      Top = 119
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -208,7 +213,7 @@ object FImage: TFImage
     object btn_ellipseclear: TsSpeedButton
       Tag = 6
       Left = 6
-      Top = 162
+      Top = 147
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -220,7 +225,7 @@ object FImage: TFImage
     object btn_Text: TsSpeedButton
       Tag = 7
       Left = 6
-      Top = 224
+      Top = 203
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -232,7 +237,7 @@ object FImage: TFImage
     object btn_SelPen: TsSpeedButton
       Tag = 8
       Left = 6
-      Top = 255
+      Top = 231
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -244,7 +249,7 @@ object FImage: TFImage
     object btn_Blur: TsSpeedButton
       Tag = 9
       Left = 6
-      Top = 286
+      Top = 259
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -256,7 +261,7 @@ object FImage: TFImage
     object btn_cut: TsSpeedButton
       Tag = 10
       Left = 6
-      Top = 317
+      Top = 287
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -268,7 +273,7 @@ object FImage: TFImage
     object btn_Resize: TsSpeedButton
       Tag = 11
       Left = 6
-      Top = 348
+      Top = 315
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -280,7 +285,7 @@ object FImage: TFImage
     object btn_smile: TsSpeedButton
       Tag = 12
       Left = 6
-      Top = 379
+      Top = 371
       Width = 23
       Height = 25
       GroupIndex = 1
@@ -292,13 +297,25 @@ object FImage: TFImage
     object btn_arrow: TsSpeedButton
       Tag = 13
       Left = 6
-      Top = 193
+      Top = 175
       Width = 23
       Height = 25
       GroupIndex = 1
       Flat = True
       SkinData.SkinSection = 'SPEEDBUTTON'
       ImageIndex = 24
+      Images = Images
+    end
+    object btn_pipet: TsSpeedButton
+      Tag = 13
+      Left = 6
+      Top = 343
+      Width = 23
+      Height = 25
+      GroupIndex = 1
+      Flat = True
+      SkinData.SkinSection = 'SPEEDBUTTON'
+      ImageIndex = 25
       Images = Images
     end
   end
@@ -344,13 +361,19 @@ object FImage: TFImage
       object mm_redo: TMenuItem
         Caption = #1042#1077#1088#1085#1091#1090#1100' '#1076#1077#1081#1089#1090#1074#1080#1077
         ImageIndex = 15
-        ShortCut = 16466
+        ShortCut = 24666
         OnClick = mm_redoClick
       end
       object mm_deleteall: TMenuItem
         Caption = #1059#1073#1088#1072#1090#1100' '#1074#1089#1077' '#1080#1079#1084#1077#1085#1077#1085#1080#1103
         ImageIndex = 2
         OnClick = mm_deleteallClick
+      end
+      object mni_pastefrombuf: TMenuItem
+        Caption = #1042#1089#1090#1072#1074#1080#1090#1100' '#1080#1079#1086#1073#1088#1072#1078#1077#1085#1080#1077' '#1080#1079' '#1073#1091#1092#1077#1088#1072
+        ImageIndex = 26
+        ShortCut = 16470
+        OnClick = mni_pastefrombufClick
       end
     end
     object mm_tools: TMenuItem
@@ -414,6 +437,11 @@ object FImage: TFImage
         Caption = #1048#1079#1084#1077#1085#1080#1090#1100' '#1088#1072#1079#1084#1077#1088
         ImageIndex = 22
         OnClick = mm_ResizeClick
+      end
+      object mm_pipet: TMenuItem
+        Caption = #1055#1080#1087#1077#1090#1082#1072
+        ImageIndex = 25
+        OnClick = mm_pipetClick
       end
       object mm_smile: TMenuItem
         Caption = #1057#1084#1072#1081#1083
@@ -1239,6 +1267,53 @@ object FImage: TFImage
           39F95DAD0BE525027103B4FF345811991F716CDC548DAED10572DC84B5C2EB12
           6096F939A488C774B0FD25E73677A43982E81F23F09BC0D11AFC3BE695D273DE
           B542C1FBFF10E08F000300B87C3D4F76FFDEAD0000000049454E44AE426082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000001E44944415478DA62FCFFFF3F03258085919111CEB102B2
+          8B80B4259282BF500C0240ABEC7E3230147F656060FDCCC0D0F3FBFFFF7D2CB8
+          34A2039866D5FE7EBF4F4F9F321CE9EEE6FECDC0B08F650D50B3250167226B7E
+          BA7F3FC31F7676860F0C0C6C7F405EC0A3D90688F3819AF702357B226B3EBA6A
+          D5896F0C0C0DFF4006DCC2118840D1098E2B5618DF8D8C64C1A1792738109FB8
+          BA8235303131312007E8BF7FFF26EC888828709D3C39E0E99E3D5835830D78E6
+          E20261B0B030303333C334AB7CF8F081EB475CCFFA6F317A0CFA2121C6FB56AD
+          3A0D8C8DCDFF9134832D46773A54B3536E7155A1A18280C5C92597D61F5FB3E6
+          6C68589829D0E6A0FF10EFC1310B2ECD7B2EBFBA23C4C3F6727B67F4EB170202
+          13BEAF5A5500545283ACFE36B2017FFEFC51FEF4E9936341592D5C7351B4F349
+          A0D8FEBF7FFFDE01DAB60459E33620BE0532E0FCF9F360FFB3B3B3DB76F44D2D
+          8269CE0AB63EF2F5EBD7C3C0C0BD8B4D230C300B0B0B337CF9F24589935F549B
+          45DA5808A439DEC3E00050EC08D055F7802E6038FFED1BC316A0E21340FC163D
+          D038393919A4A5A5635F7FFC71DDD2DE35978787279683834311E42A620028E2
+          E580CE3707E64A3EA05FEF02F13B5090A0E1DF68F41F583E0319C00FC45C50C3
+          4031F30F0FFE8BC406AB05083000C69AFF59230B0C940000000049454E44AE42
+          6082}
+      end
+      item
+        ImageFormat = ifPNG
+        ImgData = {
+          89504E470D0A1A0A0000000D49484452000000100000001008060000001FF3FF
+          610000001974455874536F6674776172650041646F626520496D616765526561
+          647971C9653C000002054944415478DA629C62CF00068C8C0C70709F5393ED01
+          B7B60F90290A157AADF0F5EA16C5EFD77FC1D4FCFF0FA15910DA186602B13188
+          21F4E23A8B9EBBAB9845529E24887F62DEA4E74F76AEA963E067F803557B1688
+          D3C1164FB6871B70C62D2CC9F8F2E5CB0CD2F173193838D818F8F979C0121F3F
+          7E61F8F1E317C3D385C90CBABABA0CBB56CD0319600276C1DF7F0827A865CD65
+          38B97809C3A1433B819AF9197879791958595919BE7CFDCAF0E9E3470631BB22
+          06B5C80886ED2BE6C1F5B0FCFD8B3000E4ADA8986886FBF7EE3160038A4A4A60
+          35C87A505CF0171832FFFEFD63905350C06AC05FA0DC7F262606643D282EF807
+          34E0CFBF7F0CF8000B30BA505CF0E71FAA0D7F9065B10046A001C87A58FEFC45
+          F502210398989919FEA0B8E00FAA01BF097861FAB1CF0C4F346384BF738830FC
+          FEF913CD054478E1C6CB1F0CCF34E3C4BE0AAAC47CFFF26509CB6F025E987AF8
+          03C3DD37BF115E00C64268B22BD7F445970BFE032D6479F88581419A13C90034
+          2F5C7EF09EC12BC484E1C6270686CF50EF1E7BC3C0E01AA86BBC61E1910296B5
+          CF1818FCC4191824D920D1F817CD0059BEFF0C6B161C80F3998181F8DDDE9661
+          F7CC6D671999982680F220C87EDE5001866D535EFE34FEF9EB17DE3008EF38C2
+          F0E0CA956F1F3F3CAFFC76B06F360BD400B1875F196EC5F1B23310024FF492E4
+          99DFDF39F7EDEEA17D20BD000106007314E7205004DDC50000000049454E44AE
+          426082}
       end>
     Left = 440
     Top = 8
@@ -1254,7 +1329,7 @@ object FImage: TFImage
     Top = 8
   end
   object tmr_BackGroundcheck: TTimer
-    Interval = 65
+    Interval = 50
     OnTimer = tmr_BackGroundcheckTimer
     Left = 536
     Top = 8

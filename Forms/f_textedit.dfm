@@ -17,7 +17,7 @@ object FTextEdit: TFTextEdit
   Font.Style = []
   Menu = mm
   OldCreateOrder = False
-  Position = poDesigned
+  Position = poOwnerFormCenter
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
@@ -164,7 +164,6 @@ object FTextEdit: TFTextEdit
     Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssBoth
     TabOrder = 2
-    ExplicitWidth = 408
   end
   object se_fsize: TSpinEdit
     Left = 234
@@ -184,7 +183,7 @@ object FTextEdit: TFTextEdit
     Height = 22
     DroppedDownWidth = 275
     MaxMRUCount = 0
-    FontName = 'Simplified Arabic'
+    FontName = 'Eras Demi ITC'
     ItemIndex = 184
     Sorted = True
     TabOrder = 1

@@ -25,17 +25,20 @@ var
   I: LongInt;
 begin
   case Length(S) of
-    2: begin
+    2:
+      begin
         I := Map[S[1]] + (Map[S[2]] shl 6);
         SetLength(Result, 1);
         Move(I, Result[1], Length(Result))
       end;
-    3: begin
+    3:
+      begin
         I := Map[S[1]] + (Map[S[2]] shl 6) + (Map[S[3]] shl 12);
         SetLength(Result, 2);
         Move(I, Result[1], Length(Result))
       end;
-    4: begin
+    4:
+      begin
         I := Map[S[1]] + (Map[S[2]] shl 6) + (Map[S[3]] shl 12) + (Map[S[4]] shl 18);
         SetLength(Result, 3);
         Move(I, Result[1], Length(Result))
@@ -47,9 +50,10 @@ function PreProcess(const S: AnsiString): AnsiString;
 var
   SS: AnsiString;
 begin
-  SS := S;
+  SS     := S;
   Result := '';
-  while SS <> '' do begin
+  while SS <> '' do
+  begin
     Result := Result + Decode(Copy(SS, 1, 4));
     Delete(SS, 1, 4)
   end
@@ -57,14 +61,15 @@ end;
 
 function InternalDecrypt(const S: AnsiString; Key: Word): AnsiString;
 var
-  I: Word;
+  I   : Word;
   Seed: Word;
 begin
   Result := S;
-  Seed := Key;
-  for I := 1 to Length(Result) do begin
+  Seed   := Key;
+  for I  := 1 to Length(Result) do
+  begin
     Result[I] := AnsiChar(Byte(Result[I]) xor (Seed shr 8));
-    Seed := (Byte(S[I]) + Seed) * Word(C1) + Word(C2)
+    Seed      := (Byte(S[I]) + Seed) * Word(C1) + Word(C2)
   end
 end;
 
@@ -82,9 +87,12 @@ begin
   I := 0;
   Move(S[1], I, Length(S));
   case Length(S) of
-    1: Result := Map[I mod 64] + Map[(I shr 6) mod 64];
-    2: Result := Map[I mod 64] + Map[(I shr 6) mod 64] + Map[(I shr 12) mod 64];
-    3: Result := Map[I mod 64] + Map[(I shr 6) mod 64] + Map[(I shr 12) mod 64] + Map[(I shr 18) mod 64]
+    1:
+      Result := Map[I mod 64] + Map[(I shr 6) mod 64];
+    2:
+      Result := Map[I mod 64] + Map[(I shr 6) mod 64] + Map[(I shr 12) mod 64];
+    3:
+      Result := Map[I mod 64] + Map[(I shr 6) mod 64] + Map[(I shr 12) mod 64] + Map[(I shr 18) mod 64]
   end
 end;
 
@@ -92,9 +100,10 @@ function PostProcess(const S: AnsiString): AnsiString;
 var
   SS: AnsiString;
 begin
-  SS := S;
+  SS     := S;
   Result := '';
-  while SS <> '' do begin
+  while SS <> '' do
+  begin
     Result := Result + Encode(Copy(SS, 1, 3));
     Delete(SS, 1, 3)
   end
@@ -102,14 +111,15 @@ end;
 
 function InternalEncrypt(const S: AnsiString; Key: Word): AnsiString;
 var
-  I: Word;
+  I   : Word;
   Seed: Word;
 begin
   Result := S;
-  Seed := Key;
-  for I := 1 to Length(Result) do begin
+  Seed   := Key;
+  for I  := 1 to Length(Result) do
+  begin
     Result[I] := AnsiChar(Byte(Result[I]) xor (Seed shr 8));
-    Seed := (Byte(Result[I]) + Seed) * Word(C1) + Word(C2)
+    Seed      := (Byte(Result[I]) + Seed) * Word(C1) + Word(C2)
   end
 end;
 

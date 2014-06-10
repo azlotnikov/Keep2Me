@@ -18,8 +18,9 @@ uses
 
 type
   TFFrameSize = class(TForm)
+  published
+    lbl_size : TLabel;
     shp_frame: TShape;
-    lbl_size: TLabel;
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -40,7 +41,7 @@ end;
 
 procedure TFFrameSize.FormCreate(Sender: TObject);
 begin
-  shp_frame.Brush.Color := GSettings.SelColor;
+  Color := GSettings.SelColor;
 end;
 
 procedure TFFrameSize.FormShow(Sender: TObject);
@@ -51,7 +52,7 @@ end;
 procedure TFFrameSize.ReCalcFormSize;
 begin
   ClientHeight := lbl_size.Height + 2;
-  ClientWidth := lbl_size.Width + 2;
+  ClientWidth  := lbl_size.Width + 2;
 end;
 
 end.

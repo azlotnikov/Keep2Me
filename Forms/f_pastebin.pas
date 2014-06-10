@@ -35,33 +35,34 @@ uses
 
 type
   TFPasteBin = class(TForm)
-    syn_code: TSynEdit;
-    HTTP: TIdHTTP;
+  published
+    syn_code   : TSynEdit;
+    HTTP       : TIdHTTP;
     pnl_actions: TPanel;
-    lbl_syntax: TLabel;
-    cbb_syntax: TComboBox;
-    lbl_expire: TLabel;
-    cbb_expire: TComboBox;
-    pb: TProgressBar;
+    lbl_syntax : TLabel;
+    cbb_syntax : TComboBox;
+    lbl_expire : TLabel;
+    cbb_expire : TComboBox;
+    pb         : TProgressBar;
     lbl_private: TLabel;
     cbb_private: TComboBox;
     lbl_caption: TLabel;
     edt_caption: TEdit;
-    Images: TsAlphaImageList;
-    btn_load: TsSpeedButton;
-    lbl_link: TLabel;
-    edt_link: TEdit;
-    btn_copy: TsSpeedButton;
-    btn_open: TsSpeedButton;
-    mm: TMainMenu;
-    mm_menu: TMenuItem;
-    mm_close: TMenuItem;
-    mm_load: TMenuItem;
-    mm_clear: TMenuItem;
-    mm_link: TMenuItem;
-    mm_copy: TMenuItem;
-    mm_open: TMenuItem;
-    sb_info: TsStatusBar;
+    Images     : TsAlphaImageList;
+    btn_load   : TsSpeedButton;
+    lbl_link   : TLabel;
+    edt_link   : TEdit;
+    btn_copy   : TsSpeedButton;
+    btn_open   : TsSpeedButton;
+    mm         : TMainMenu;
+    mm_menu    : TMenuItem;
+    mm_close   : TMenuItem;
+    mm_load    : TMenuItem;
+    mm_clear   : TMenuItem;
+    mm_link    : TMenuItem;
+    mm_copy    : TMenuItem;
+    mm_open    : TMenuItem;
+    sb_info    : TsStatusBar;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -91,7 +92,7 @@ const
 procedure TFPasteBin.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+  Params.ExStyle   := Params.ExStyle or WS_EX_APPWINDOW;
   Params.WndParent := GetDesktopWindow;
 end;
 
@@ -102,18 +103,20 @@ end;
 
 procedure TFPasteBin.btn_loadClick(Sender: TObject);
 var
-  post: TStringList;
+  post         : TStringList;
   userkey, s, k: string;
 begin
-  if (not GSettings.Pastebin.Anon) and (cbb_private.ItemIndex = 2) then begin
+  if (not GSettings.Pastebin.Anon) and (cbb_private.ItemIndex = 2) then
+  begin
     ShowMessage('Приватная загрузка доступна только авторизованным пользователям!');
     exit;
   end;
-  edt_link.Text := '';
+  edt_link.Text    := '';
   btn_load.Enabled := False;
-  post := TStringList.Create;
-  userkey := '';
-  if not GSettings.Pastebin.Anon then begin
+  post             := TStringList.Create;
+  userkey          := '';
+  if not GSettings.Pastebin.Anon then
+  begin
     post.Add('api_dev_key=' + API_DEV_KEY);
     post.Add('api_user_name=' + GSettings.Pastebin.Login);
     post.Add('api_user_password=' + GSettings.Pastebin.Password);
@@ -121,7 +124,8 @@ begin
       s := HTTP.post('http://pastebin.com/api/api_login.php', post);
     except
     end;
-    if pos('Bad API request', s) > 0 then begin
+    if pos('Bad API request', s) > 0 then
+    begin
       ShowMessage('Login Error:' + s);
       post.Free;
       btn_load.Enabled := true;
@@ -130,7 +134,8 @@ begin
     userkey := s;
     post.Clear;
   end;
-  with post do begin
+  with post do
+  begin
     Add('api_option=paste');
     Add('api_dev_key=' + API_DEV_KEY);
     Add('api_paste_code=' + syn_code.Text);
@@ -146,20 +151,26 @@ begin
   end;
   post.Free;
   btn_load.Enabled := true;
-  if pos('Bad API request', s) > 0 then begin
+  if pos('Bad API request', s) > 0 then
+  begin
     ShowMessage('Load Error:' + s);
     exit;
   end;
   edt_link.Text := s;
-  if GSettings.Pastebin.CopyLink then Clipboard.AsText := s;
-  if edt_caption.Text = '' then k := '(Без заголовка) ' + timetostr(now)
-  else k := edt_caption.Text;
-  if GSettings.ShowInTray then begin
+  if GSettings.Pastebin.CopyLink then
+    Clipboard.AsText := s;
+  if edt_caption.Text = '' then
+    k := '(Без заголовка) ' + timetostr(now)
+  else
+    k := edt_caption.Text;
+  if GSettings.ShowInTray then
+  begin
     GSettings.TrayIcon.Hint := s;
     GSettings.TrayIcon.BalloonHint('Pastebin.com', s);
   end;
   AddToRecentFiles(s, k, rfText);
-  if GSettings.Pastebin.CloseForm then Close;
+  if GSettings.Pastebin.CloseForm then
+    Close;
 end;
 
 procedure TFPasteBin.btn_openClick(Sender: TObject);
@@ -183,14 +194,17 @@ var
   i: integer;
 begin
   Application.InsertComponent(self);
-  HTTP.ReadTimeout := 30000;
+  HTTP.ReadTimeout    := 30000;
   HTTP.ConnectTimeout := 20000;
-  for i := 0 to High(PastebinLangs) do cbb_syntax.Items.Add(PastebinLangs[i].Caption);
+  for i               := 0 to high(PastebinLangs) do
+    cbb_syntax.Items.Add(PastebinLangs[i].Caption);
   cbb_syntax.ItemIndex := GSettings.Pastebin.SyntaxIndex;
   cbb_syntaxChange(nil);
-  for i := 0 to High(PastebinExpires) do cbb_expire.Items.Add(PastebinExpires[i].Caption);
+  for i := 0 to high(PastebinExpires) do
+    cbb_expire.Items.Add(PastebinExpires[i].Caption);
   cbb_expire.ItemIndex := GSettings.Pastebin.ExpireIndex;
-  for i := 0 to High(PastebinPrivates) do cbb_private.Items.Add(PastebinPrivates[i].Caption);
+  for i                := 0 to high(PastebinPrivates) do
+    cbb_private.Items.Add(PastebinPrivates[i].Caption);
   cbb_private.ItemIndex := GSettings.Pastebin.PrivateIndex;
 end;
 
@@ -201,7 +215,7 @@ end;
 
 procedure TFPasteBin.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
 begin
-  pb.Max := AWorkCountMax;
+  pb.Max      := AWorkCountMax;
   pb.Position := 0;
 end;
 

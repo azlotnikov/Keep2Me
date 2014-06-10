@@ -17,6 +17,7 @@ uses
 
 type
   TFSelField = class(TForm)
+  published
     shp_sel: TShape;
     shp_wnd: TShape;
     procedure FormShow(Sender: TObject);
@@ -39,10 +40,10 @@ end;
 
 procedure TFSelField.FormCreate(Sender: TObject);
 begin
-  Color := $00FF00;
+  Color                 := $00FF00;
   TransparentColorValue := $00FF00;
-  TransparentColor := true;
-  shp_sel.Brush.Color := GSettings.SelColor;
+  TransparentColor      := true;
+  shp_sel.Brush.Color   := GSettings.SelColor;
 end;
 
 procedure TFSelField.FormShow(Sender: TObject);

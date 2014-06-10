@@ -13,16 +13,17 @@ uses
 type
   TShorter = class
   private
-    HTTP: TidHTTP;
-    COO: TIdCookieManager;
-    PB: TProgressBar;
+    HTTP  : TidHTTP;
+    COO   : TIdCookieManager;
+    PB    : TProgressBar;
     AError: Boolean;
-    Link: String;
-    Function GetError: Boolean;
+    Link  : string;
+    function GetError: Boolean;
     procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
     procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
   public
-    property Error: Boolean read GetError;
+    property Error: Boolean
+      read   GetError;
     function GetLink: string; virtual;
     procedure SetLoadBar(sPB: TProgressBar);
     procedure LoadFile(Url: string); virtual; abstract;
@@ -60,8 +61,8 @@ type
 type
   ShortersElement = record
     Obj: TShorterClass;
-    Caption: String;
-    Version: String;
+    Caption: string;
+    Version: string;
   end;
 
 var
@@ -78,7 +79,8 @@ end;
 function ParsSubString(defString, LeftString, RightString: string): string;
 begin
   Result := '';
-  if (Pos(LeftString, defString) = 0) or (Pos(RightString, defString) = 0) then Exit;
+  if (Pos(LeftString, defString) = 0) or (Pos(RightString, defString) = 0) then
+    Exit;
   Result := Copy(defString, Pos(LeftString, defString) + Length(LeftString),
     PosEx(RightString, defString, Pos(LeftString, defString) + Length(LeftString)) - Pos(LeftString, defString) -
     Length(LeftString));
@@ -87,14 +89,14 @@ end;
 
 constructor TShorter.Create;
 begin
-  HTTP := TidHTTP.Create;
-  HTTP.ReadTimeout := 12000;
-  HTTP.ConnectTimeout := 20000;
-  HTTP.HandleRedirects := true;
+  HTTP                   := TidHTTP.Create;
+  HTTP.ReadTimeout       := 12000;
+  HTTP.ConnectTimeout    := 20000;
+  HTTP.HandleRedirects   := true;
   HTTP.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/9.0.1';
-  COO := TIdCookieManager.Create(HTTP);
-  HTTP.AllowCookies := true;
-  HTTP.CookieManager := COO;
+  COO                    := TIdCookieManager.Create(HTTP);
+  HTTP.AllowCookies      := true;
+  HTTP.CookieManager     := COO;
 end;
 
 procedure TShorter.Free;
@@ -110,17 +112,19 @@ end;
 
 procedure TShorter.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
 begin
-  if PB <> nil then PB.Position := AWorkCount div 1024;
+  if PB <> nil then
+    PB.Position := AWorkCount div 1024;
 end;
 
 procedure TShorter.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
 begin
-  if PB <> nil then PB.Max := AWorkCountMax div 1024;
+  if PB <> nil then
+    PB.Max := AWorkCountMax div 1024;
 end;
 
 procedure TShorter.SetLoadBar(sPB: TProgressBar);
 begin
-  PB := sPB;
+  PB          := sPB;
   HTTP.OnWork := HTTPWork;
 end;
 
@@ -136,13 +140,15 @@ var
 begin
   try
     AError := false;
-    Link := '';
+    Link   := '';
     try
       s := HTTP.get('http://zt.am/go.php?u=' + Url);
     except
     end;
-    if Pos('http', s) > 0 then Link := s
-    else AError := true;
+    if Pos('http', s) > 0 then
+      Link := s
+    else
+      AError := true;
   finally
   end;
 end;
@@ -157,13 +163,14 @@ var
 begin
   try
     AError := false;
-    Link := '';
-    Url := HTTPEncode(Url);
+    Link   := '';
+    Url    := HTTPEncode(Url);
     try
       s := HTTP.get('http://tinyurl.com/create.php?source=indexpage&url=' + Url + '&submit=Make+TinyURL%21&alias=');
     except
     end;
-    if Pos(Str, s) = 0 then begin
+    if Pos(Str, s) = 0 then
+    begin
       AError := true;
       Exit;
     end;
@@ -178,13 +185,13 @@ procedure TIsGdLoader.LoadFile(Url: string);
 const
   Str = 'class="tb" id="short_url" value="';
 var
-  s: string;
+  s   : string;
   post: tstringlist;
 begin
   try
     AError := false;
-    Link := '';
-    post := tstringlist.Create;
+    Link   := '';
+    post   := tstringlist.Create;
     post.add('url=' + Url);
     post.add('shorturl=');
     post.add('opt=0');
@@ -192,7 +199,8 @@ begin
       s := HTTP.post('http://is.gd/create.php', post);
     except
     end;
-    if Pos(Str, s) = 0 then begin
+    if Pos(Str, s) = 0 then
+    begin
       AError := true;
       Exit;
     end;
@@ -212,13 +220,14 @@ var
 begin
   try
     AError := false;
-    Link := '';
+    Link   := '';
     // Url := HTTPEncode(Url);
     try
       s := HTTP.get('http://qikr.co/submit.php?url=' + Url);
     except
     end;
-    if Pos(Str, s) = 0 then begin
+    if Pos(Str, s) = 0 then
+    begin
       AError := true;
       Exit;
     end;
@@ -227,11 +236,12 @@ begin
   end;
 end;
 
-procedure AddShorter(AObj: TShorterClass; ACaption, AVersion: String);
+procedure AddShorter(AObj: TShorterClass; ACaption, AVersion: string);
 begin
   SetLength(ShortersArray, Length(ShortersArray) + 1);
-  with ShortersArray[High(ShortersArray)] do begin
-    Obj := AObj;
+  with ShortersArray[high(ShortersArray)] do
+  begin
+    Obj     := AObj;
     Caption := ACaption;
     Version := AVersion;
   end;
@@ -239,7 +249,7 @@ end;
 
 initialization
 
-AddShorter(TQikrLoader, 'qikr.co', '0.1');
+// AddShorter(TQikrLoader, 'qikr.co', '0.1');
 AddShorter(TIsGdLoader, 'is.gd', '0.1');
 // AddShorter(TZtAmLoader, 'zt.am', '0.1');
 AddShorter(TTinyUrlLoader, 'tinyurl.com', '0.1');

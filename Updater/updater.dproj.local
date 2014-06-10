@@ -2,16 +2,16 @@
 <BorlandProject>
 	<Transactions>
     <Transaction>1899.12.30 00:00:00.000.790,=C:\Users\Root\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.673,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\unitIsAdmin.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.916,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\unitIsAdmin.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\unitIsAdmin.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.760,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\unitIsAdmin.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Updater\unitIsAdmin.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.981,=C:\Users\Root\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.567,=C:\Users\Root\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.342,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\upd_main.pas=C:\Users\Root\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.483,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\updater.dproj=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Updater\updater.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.712,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\updater.dproj=C:\Users\Root\Documents\RAD Studio\Projects\Project1.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.342,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\upd_main.dfm=C:\Users\Root\Documents\RAD Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.133,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\upd_main.dfm=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Updater\upd_main.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.133,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\upd_main.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Updater\upd_main.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.981,=C:\Users\Root\Documents\RAD Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.712,C:\Users\Root\Documents\RAD Studio\Projects\Project1.dproj=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\updater.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.916,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\unitIsAdmin.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\unitIsAdmin.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.342,C:\Users\Root\Documents\RAD Studio\Projects\Unit1.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\upd_main.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.133,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Updater\upd_main.dfm=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\upd_main.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.133,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Updater\upd_main.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\upd_main.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.760,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Updater\unitIsAdmin.pas=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Utils\unitIsAdmin.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.483,C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\Updater\updater.dproj=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\updater.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.342,C:\Users\Root\Documents\RAD Studio\Projects\Unit1.dfm=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\upd_main.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.673,=C:\Users\Root\Documents\RAD Studio\Projects\Keep2me\unitIsAdmin.pas</Transaction>
   </Transactions>
 </BorlandProject>

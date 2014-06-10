@@ -20,6 +20,7 @@ uses
 
 type
   TFWindows = class(TForm)
+  published
     procedure FormShow(Sender: TObject);
     procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormCreate(Sender: TObject);
@@ -36,17 +37,19 @@ implementation
 
 function WindowSnap(windowHandle: HWND; Bmp: TBitmap): boolean;
 var
-  R: TRect;
+  R              : TRect;
   user32DLLHandle: THandle;
-  printWindowAPI: function(sourceHandle: HWND; destinationHandle: HDC; nFlags: UINT): BOOL; stdcall;
+  printWindowAPI : function(sourceHandle: HWND; destinationHandle: HDC; nFlags: UINT): BOOL; stdcall;
 begin
-  result := False;
+  result          := False;
   user32DLLHandle := GetModuleHandle(user32);
-  if user32DLLHandle <> 0 then begin
+  if user32DLLHandle <> 0 then
+  begin
     @printWindowAPI := GetProcAddress(user32DLLHandle, 'PrintWindow');
-    if @printWindowAPI <> nil then begin
+    if @printWindowAPI <> nil then
+    begin
       GetWindowRect(windowHandle, R);
-      Bmp.Width := R.Right - R.Left;
+      Bmp.Width  := R.Right - R.Left;
       Bmp.Height := R.Bottom - R.Top;
       Bmp.Canvas.Lock;
       try
@@ -71,26 +74,28 @@ end;
 
 procedure TFWindows.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
-  R: TRect;
-  H: HWND;
+  R   : TRect;
+  H   : HWND;
   tBmp: TBitmap;
 begin
-  if Button = mbRight then begin
+  if Button = mbRight then
+  begin
     Hide;
     H := WindowFromPoint(Mouse.CursorPos);
     H := GetAncestor(H, GA_ROOTOWNER);
     GetWindowRect(H, R);
     Show;
     FSelField.Show;
-    with FSelField.shp_wnd do begin
-      Top := R.Top + 7;
-      Left := R.Left + 7;
-      Width := R.Width - 14;
-      Height := R.Height - 14;
+    with FSelField.shp_wnd do
+    begin
+      Top     := R.Top + 7;
+      Left    := R.Left + 7;
+      Width   := R.Width - 14;
+      Height  := R.Height - 14;
       Visible := true;
     end;
-  end
-  else if Button = mbLeft then begin
+  end else if Button = mbLeft then
+  begin
     Hide;
     FSelField.Hide;
     H := WindowFromPoint(Mouse.CursorPos);
@@ -99,7 +104,8 @@ begin
     FSelField.shp_wnd.Visible := False;
     // FSelField.AlphaBlendValue := 100;
     tBmp := TBitmap.Create;
-    with TFImage.Create(nil) do begin
+    with TFImage.Create(nil) do
+    begin
       WindowSnap(H, tBmp);
       // JclGraphics.ScreenShot(tBmp, 0, 0, R.Right - R.Left, R.Bottom - R.Top, H);
       tBmp.PixelFormat := pf24bit;

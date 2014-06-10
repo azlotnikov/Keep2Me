@@ -22,26 +22,28 @@ uses
   acAlphaImageList,
   JvExStdCtrls,
   JvCombobox,
-  JvColorCombo, sColorSelect;
+  JvColorCombo,
+  sColorSelect;
 
 type
   TFTextEdit = class(TForm)
-    mmo_text: TMemo;
-    mm: TMainMenu;
-    mm_Menu: TMenuItem;
-    mm_EnterText: TMenuItem;
-    mm_Exit: TMenuItem;
-    Images: TsAlphaImageList;
-    btn_bold: TsSpeedButton;
-    btn_italic: TsSpeedButton;
-    btn_striked: TsSpeedButton;
+  published
+    mmo_text      : TMemo;
+    mm            : TMainMenu;
+    mm_Menu       : TMenuItem;
+    mm_EnterText  : TMenuItem;
+    mm_Exit       : TMenuItem;
+    Images        : TsAlphaImageList;
+    btn_bold      : TsSpeedButton;
+    btn_italic    : TsSpeedButton;
+    btn_striked   : TsSpeedButton;
     btn_underlined: TsSpeedButton;
-    se_fsize: TSpinEdit;
-    lbl_fontsize: TLabel;
-    btn_EnterText: TsSpeedButton;
-    btn_font: TsSpeedButton;
-    cbb_font: TJvFontComboBox;
-    btn_fontcolor: TsColorSelect;
+    se_fsize      : TSpinEdit;
+    lbl_fontsize  : TLabel;
+    btn_EnterText : TsSpeedButton;
+    btn_font      : TsSpeedButton;
+    cbb_font      : TJvFontComboBox;
+    btn_fontcolor : TsColorSelect;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mm_ExitClick(Sender: TObject);
@@ -70,7 +72,7 @@ implementation
 procedure TFTextEdit.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  Params.ExStyle := Params.ExStyle or WS_EX_APPWINDOW;
+  Params.ExStyle   := Params.ExStyle or WS_EX_APPWINDOW;
   Params.WndParent := GetDesktopWindow;
 end;
 
@@ -79,8 +81,10 @@ var
   S: TFontStyles;
 begin
   S := mmo_text.Font.Style;
-  if btn_bold.Down then Include(S, fsBold)
-  else Exclude(S, fsBold);
+  if btn_bold.Down then
+    Include(S, fsBold)
+  else
+    Exclude(S, fsBold);
   mmo_text.Font.Style := S;
   mmo_text.OnChange(mmo_text);
 end;
@@ -93,11 +97,12 @@ end;
 
 procedure TFTextEdit.btn_fontClick(Sender: TObject);
 begin
-  if btn_font.Down then begin
-    mmo_text.Top := 56;
+  if btn_font.Down then
+  begin
+    mmo_text.Top    := 56;
     mmo_text.Height := mmo_text.Height - 24;
   end else begin
-    mmo_text.Top := 32;
+    mmo_text.Top    := 32;
     mmo_text.Height := mmo_text.Height + 24;
   end;
   cbb_font.Visible := btn_font.Down;
@@ -114,8 +119,10 @@ var
   S: TFontStyles;
 begin
   S := mmo_text.Font.Style;
-  if btn_italic.Down then Include(S, fsItalic)
-  else Exclude(S, fsItalic);
+  if btn_italic.Down then
+    Include(S, fsItalic)
+  else
+    Exclude(S, fsItalic);
   mmo_text.Font.Style := S;
   mmo_text.OnChange(mmo_text);
 end;
@@ -125,8 +132,10 @@ var
   S: TFontStyles;
 begin
   S := mmo_text.Font.Style;
-  if btn_striked.Down then Include(S, fsStrikeOut)
-  else Exclude(S, fsStrikeOut);
+  if btn_striked.Down then
+    Include(S, fsStrikeOut)
+  else
+    Exclude(S, fsStrikeOut);
   mmo_text.Font.Style := S;
   mmo_text.OnChange(mmo_text);
 end;
@@ -136,8 +145,10 @@ var
   S: TFontStyles;
 begin
   S := mmo_text.Font.Style;
-  if btn_underlined.Down then Include(S, fsUnderline)
-  else Exclude(S, fsUnderline);
+  if btn_underlined.Down then
+    Include(S, fsUnderline)
+  else
+    Exclude(S, fsUnderline);
   mmo_text.Font.Style := S;
   mmo_text.OnChange(mmo_text);
 end;
@@ -155,17 +166,17 @@ end;
 
 procedure TFTextEdit.FormCreate(Sender: TObject);
 begin
-  NAdd := false;
+  NAdd               := false;
   mmo_text.Font.Size := se_fsize.Value;
-  cbb_font.FontName := mmo_text.Font.Name;
+  cbb_font.FontName  := mmo_text.Font.Name;
 end;
 
 procedure TFTextEdit.FormShow(Sender: TObject);
 begin
-  SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
+  // SetWindowPos(Handle, HWND_TOPMOST, Left, Top, Width, Height, SWP_NOACTIVATE or SWP_NOMOVE or SWP_NOSIZE);
   BringToFront;
   Left := Mouse.CursorPos.X - 10;
-  Top := Mouse.CursorPos.Y - 10;
+  Top  := Mouse.CursorPos.Y - 10;
   mmo_text.SetFocus;
 end;
 
@@ -177,7 +188,9 @@ end;
 
 procedure TFTextEdit.se_fsizeChange(Sender: TObject);
 begin
-  if se_fsize.Text <> '' then mmo_text.Font.Size := se_fsize.Value;
+  if se_fsize.Text <> '' then
+    mmo_text.Font.Size := se_fsize.Value;
+  mmo_text.OnChange(mmo_text);
 end;
 
 end.

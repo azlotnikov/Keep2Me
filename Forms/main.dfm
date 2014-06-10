@@ -354,66 +354,16 @@ object FMain: TFMain
       DesignSize = (
         382
         405)
-      object btn_ClearFormsSettings: TsSpeedButton
-        Left = 4
-        Top = 239
-        Width = 370
-        Height = 22
-        Anchors = [akLeft, akTop, akRight]
-        BiDiMode = bdLeftToRight
-        Caption = #1059#1076#1072#1083#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1086#1083#1086#1078#1077#1085#1080#1103' '#1092#1086#1088#1084
-        ParentBiDiMode = False
-        OnClick = btn_ClearFormsSettingsClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 20
-        Images = Images
-      end
-      object btn_ClearMainSettings: TsSpeedButton
-        Left = 4
-        Top = 267
-        Width = 370
-        Height = 22
-        Anchors = [akLeft, akTop, akRight]
-        Caption = #1059#1076#1072#1083#1080#1090#1100' '#1086#1089#1085#1086#1074#1085#1099#1077' '#1085#1072#1089#1090#1088#1086#1081#1082#1080
-        OnClick = btn_ClearMainSettingsClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 20
-        Images = Images
-      end
-      object btn_ClearPluginsSettings: TsSpeedButton
-        Left = 4
-        Top = 295
-        Width = 370
-        Height = 22
-        Anchors = [akLeft, akTop, akRight]
-        Caption = #1059#1076#1072#1083#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1083#1072#1075#1080#1085#1086#1074
-        OnClick = btn_ClearPluginsSettingsClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 20
-        Images = Images
-      end
-      object btn_ClearRecentFiles: TsSpeedButton
-        Left = 4
-        Top = 323
-        Width = 370
-        Height = 22
-        Anchors = [akLeft, akTop, akRight]
-        Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1087#1086#1089#1083#1077#1076#1085#1080#1077' '#1079#1072#1075#1088#1091#1079#1082#1080
-        OnClick = btn_ClearRecentFilesClick
-        SkinData.SkinSection = 'SPEEDBUTTON'
-        ImageIndex = 20
-        Images = Images
-      end
       object grp_OtherSettings: TGroupBox
         Left = 3
         Top = 1
         Width = 371
-        Height = 171
+        Height = 186
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 0
         object Lbl_SelColor: TLabel
           Left = 26
-          Top = 141
+          Top = 158
           Width = 134
           Height = 13
           Caption = #1062#1074#1077#1090' '#1074#1099#1076#1077#1083#1077#1085#1080#1103' '#1086#1073#1083#1072#1089#1090#1080':'
@@ -478,8 +428,8 @@ object FMain: TFMain
         end
         object cbb_SelColor: TsColorBox
           Left = 193
-          Top = 138
-          Width = 153
+          Top = 155
+          Width = 160
           Height = 22
           BoundLabel.Indent = 0
           BoundLabel.Font.Charset = DEFAULT_CHARSET
@@ -501,11 +451,19 @@ object FMain: TFMain
           TabOrder = 7
           OnChange = cbb_SelColorChange
         end
+        object cb_AutoCheckUpdate: TCheckBox
+          Left = 9
+          Top = 133
+          Width = 296
+          Height = 17
+          Caption = #1040#1074#1090#1086#1084#1072#1090#1080#1095#1077#1082#1072#1103' '#1087#1088#1086#1074#1077#1088#1082#1072' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1081' '#1087#1088#1080' '#1079#1072#1087#1091#1089#1082#1077
+          TabOrder = 8
+        end
       end
       object Grp_SelType: TGroupBox
-        Left = 4
-        Top = 178
-        Width = 370
+        Left = 3
+        Top = 193
+        Width = 371
         Height = 46
         Anchors = [akLeft, akTop, akRight]
         Caption = #1057#1087#1086#1089#1086#1073' '#1074#1099#1076#1077#1083#1077#1085#1080#1103' '#1086#1073#1083#1072#1089#1090#1080' '#1085#1072' '#1101#1082#1088#1072#1085#1077
@@ -538,6 +496,67 @@ object FMain: TFMain
           Checked = True
           TabOrder = 1
           TabStop = True
+        end
+      end
+      object grp_DelButtons: TGroupBox
+        Left = 3
+        Top = 245
+        Width = 371
+        Height = 109
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        TabOrder = 2
+        DesignSize = (
+          371
+          109)
+        object btn_ClearFormsSettings: TsSpeedButton
+          Left = 13
+          Top = 8
+          Width = 340
+          Height = 22
+          Anchors = [akLeft, akTop, akRight]
+          BiDiMode = bdLeftToRight
+          Caption = #1059#1076#1072#1083#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1086#1083#1086#1078#1077#1085#1080#1103' '#1092#1086#1088#1084
+          ParentBiDiMode = False
+          OnClick = btn_ClearFormsSettingsClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 20
+          Images = Images
+        end
+        object btn_ClearMainSettings: TsSpeedButton
+          Left = 13
+          Top = 31
+          Width = 340
+          Height = 22
+          Anchors = [akLeft, akTop, akRight]
+          Caption = #1059#1076#1072#1083#1080#1090#1100' '#1086#1089#1085#1086#1074#1085#1099#1077' '#1085#1072#1089#1090#1088#1086#1081#1082#1080
+          OnClick = btn_ClearMainSettingsClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 20
+          Images = Images
+        end
+        object btn_ClearPluginsSettings: TsSpeedButton
+          Left = 13
+          Top = 54
+          Width = 340
+          Height = 22
+          Anchors = [akLeft, akTop, akRight]
+          Caption = #1059#1076#1072#1083#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1083#1072#1075#1080#1085#1086#1074
+          OnClick = btn_ClearPluginsSettingsClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 20
+          Images = Images
+        end
+        object btn_ClearRecentFiles: TsSpeedButton
+          Left = 13
+          Top = 77
+          Width = 340
+          Height = 22
+          Anchors = [akLeft, akTop, akRight]
+          Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1087#1086#1089#1083#1077#1076#1085#1080#1077' '#1079#1072#1075#1088#1091#1079#1082#1080
+          OnClick = btn_ClearRecentFilesClick
+          SkinData.SkinSection = 'SPEEDBUTTON'
+          ImageIndex = 20
+          Images = Images
         end
       end
     end
@@ -629,9 +648,9 @@ object FMain: TFMain
         object lbl_pb_deflang: TLabel
           Left = 16
           Top = 25
-          Width = 65
+          Width = 59
           Height = 13
-          Caption = #1055#1086#1076#1089#1090#1074#1077#1090#1082#1072':'
+          Caption = #1055#1086#1076#1089#1074#1077#1090#1082#1072':'
         end
         object lbl_pb_expire: TLabel
           Left = 16

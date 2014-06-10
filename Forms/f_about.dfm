@@ -4,7 +4,7 @@ object FAbout: TFAbout
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsDialog
   Caption = #1054' '#1055#1088#1086#1075#1088#1072#1084#1084#1077
-  ClientHeight = 311
+  ClientHeight = 315
   ClientWidth = 360
   Color = clBtnFace
   DoubleBuffered = True
@@ -20,11 +20,17 @@ object FAbout: TFAbout
   PixelsPerInch = 96
   TextHeight = 13
   object BtnOk: TsSpeedButton
-    Left = 208
-    Top = 279
-    Width = 136
+    Left = 8
+    Top = 283
+    Width = 344
     Height = 24
     Caption = 'OK'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     OnClick = btn_okClick
     SkinData.SkinSection = 'SPEEDBUTTON'
     ImageIndex = 0
@@ -34,12 +40,25 @@ object FAbout: TFAbout
     Left = -1
     Top = 0
     Width = 362
-    Height = 273
+    Height = 277
     ActivePage = ts_info
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
     Style = tsFlatButtons
     TabOrder = 0
     object ts_info: TTabSheet
-      Caption = 'About'
+      Caption = #1048#1085#1092#1086#1088#1084#1072#1094#1080#1103
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      ExplicitHeight = 242
       object img_logo: TImage
         Left = 3
         Top = 2
@@ -3534,9 +3553,15 @@ object FAbout: TFAbout
       object lbl2: TLabel
         Left = 41
         Top = 34
-        Width = 217
+        Width = 220
         Height = 13
-        Caption = 'Copyright '#169' 2011 - 2013 Z.'#1056#1101#1081#1079#1086#1088' (Z.Razor)'
+        Caption = 'Copyright '#169' Z.'#1056#1101#1081#1079#1086#1088' (Z.Razor) 2011 - 2014 '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
       end
       object lbl3: TLabel
         Left = 41
@@ -3544,17 +3569,29 @@ object FAbout: TFAbout
         Width = 39
         Height = 13
         Caption = #1042#1077#1088#1089#1080#1103':'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
       end
       object lbl4: TLabel
         Left = 41
-        Top = 83
+        Top = 79
         Width = 102
         Height = 13
         Caption = 'Email '#1088#1072#1079#1088#1072#1073#1086#1090#1095#1080#1082#1072':'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
       end
       object lbl5: TLabel
         Left = 41
-        Top = 108
+        Top = 101
         Width = 180
         Height = 13
         Cursor = crHandPoint
@@ -3569,7 +3606,7 @@ object FAbout: TFAbout
       end
       object lbl6: TLabel
         Left = 41
-        Top = 127
+        Top = 116
         Width = 83
         Height = 13
         Cursor = crHandPoint
@@ -3599,20 +3636,67 @@ object FAbout: TFAbout
       end
       object lbl8: TLabel
         Left = 41
-        Top = 146
+        Top = 133
+        Width = 122
+        Height = 52
+        Caption = #1055#1088#1086#1075#1088#1072#1084#1084#1072' '#1080#1089#1087#1086#1083#1100#1079#1091#1077#1090': '#13#10'AlphaSkins '#13#10'JEDI VCL'#13#10'SynEdit'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblLicense: TLabel
+        Left = 41
+        Top = 218
         Width = 304
-        Height = 91
+        Height = 26
         Caption = 
-          #1055#1088#1086#1075#1088#1072#1084#1084#1072' '#1080#1089#1087#1086#1083#1100#1079#1091#1077#1090': '#13#10'AlphaSkins ( http://alphaskins.com/ ), '#13 +
-          #10'JEDI VCL ( http://jvcl.delphi-jedi.org/ ),'#13#10'SynEdit ( http://sy' +
-          'nedit.svn.sourceforge.net/ ).'#13#10#13#10#1055#1088#1086#1075#1088#1072#1084#1084#1072' '#1073#1077#1089#1087#1083#1072#1090#1085#1072' '#1080' '#1088#1072#1089#1087#1088#1086#1089#1090#1088 +
-          #1072#1085#1103#1077#1090#1089#1103' '#1087#1086#1076' GNU General '#13#10'Public License.'
+          #1055#1088#1086#1075#1088#1072#1084#1084#1072' '#1073#1077#1089#1087#1083#1072#1090#1085#1072' '#1080' '#1088#1072#1089#1087#1088#1086#1089#1090#1088#1072#1085#1103#1077#1090#1089#1103' '#1087#1086#1076' GNU General '#13#10'Public ' +
+          'License.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblAlphaSkins: TLabel
+        Left = 108
+        Top = 146
+        Width = 174
+        Height = 39
+        Caption = 
+          'http://alphaskins.com/'#13#10'http://jvcl.delphi-jedi.org/'#13#10'http://syn' +
+          'edit.svn.sourceforge.net/'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        ParentFont = False
+      end
+      object lblThanks: TLabel
+        Left = 41
+        Top = 188
+        Width = 274
+        Height = 26
+        Caption = 
+          #1054#1090#1076#1077#1083#1100#1085#1072#1103' '#1073#1083#1072#1075#1086#1076#1072#1088#1085#1086#1089#1090#1100' '#1072#1076#1084#1080#1085#1080#1089#1090#1088#1072#1094#1080#1080' zhyk.ru '#1079#1072' '#13#10#1087#1086#1076#1076#1077#1088#1078#1082#1091' '#1087#1088#1086 +
+          #1075#1088#1072#1084#1084#1099'.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsUnderline]
+        ParentFont = False
       end
       object edt_version: TEdit
         Left = 205
         Top = 53
         Width = 136
-        Height = 21
+        Height = 19
         Alignment = taCenter
         Color = clBtnFace
         ReadOnly = True
@@ -3620,9 +3704,9 @@ object FAbout: TFAbout
       end
       object edt_mail: TEdit
         Left = 205
-        Top = 80
+        Top = 76
         Width = 136
-        Height = 21
+        Height = 20
         Alignment = taCenter
         Color = clBtnFace
         ReadOnly = True
@@ -3633,31 +3717,111 @@ object FAbout: TFAbout
     object ts_logs: TTabSheet
       Caption = 'Changelog.txt'
       ImageIndex = 1
+      ExplicitHeight = 242
       object mmo_logs: TMemo
         Left = 0
         Top = 0
         Width = 354
-        Height = 242
+        Height = 246
         Align = alClient
         Color = clBtnFace
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
+        ExplicitHeight = 242
       end
     end
     object ts_plugins: TTabSheet
-      Caption = 'Plugins'
+      Caption = #1052#1086#1076#1091#1083#1080
       ImageIndex = 2
+      ExplicitHeight = 242
       object mmo_modules: TMemo
         Left = 0
         Top = 0
         Width = 354
-        Height = 242
+        Height = 246
         Align = alClient
         Color = clBtnFace
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Consolas'
+        Font.Style = []
+        Lines.Strings = (
+          'TEST'
+          'Test Test 123')
+        ParentFont = False
         ReadOnly = True
-        ScrollBars = ssVertical
         TabOrder = 0
+        ExplicitHeight = 242
+      end
+    end
+    object ts_help: TTabSheet
+      Caption = #1055#1086#1084#1086#1097#1100
+      ImageIndex = 3
+      ExplicitHeight = 242
+      object Lbl_help_main: TLabel
+        Left = 3
+        Top = 3
+        Width = 330
+        Height = 104
+        Caption = 
+          #1055#1086#1084#1086#1095#1100' '#1075#1086#1083#1086#1076#1085#1086#1084#1091' '#1087#1088#1086#1075#1088#1072#1084#1084#1080#1089#1090#1091' '#1084#1086#1078#1085#1086' '#1089#1083#1077#1076#1091#1102#1097#1080#1084#1080' '#1089#1087#1086#1089#1086#1073#1072#1084#1080':'#13#10#13#10'1. ' +
+          #1055#1077#1088#1077#1074#1077#1089#1090#1080' '#1087#1072#1088#1091' '#1088#1091#1073#1083#1077#1081' '#1085#1072' WebMoney '#1080#1083#1080' Yandex.Money '#1085#1072' '#13#10#1091#1082#1072#1079#1072#1085#1085#1099 +
+          #1077' '#1085#1080#1078#1077' '#1082#1086#1096#1077#1083#1100#1082#1080'.'#13#10#13#10'2. '#1045#1089#1083#1080' '#1077#1089#1090#1100' '#1078#1077#1083#1072#1085#1080#1077' '#1087#1086#1084#1086#1095#1100' '#1073#1086#1083#1077#1077' '#1082#1088#1091#1087#1085#1086#1081' '#1089#1091 +
+          #1084#1084#1086#1081', '#1084#1086#1078#1085#1086' '#13#10#1087#1077#1088#1077#1074#1077#1089#1090#1080' '#1076#1077#1085#1100#1075#1080' '#1085#1072' '#1082#1072#1088#1090#1091' VISA, '#1076#1083#1103' '#1101#1090#1086#1075#1086' '#1085#1091#1078#1085#1086' '#1089#1074 +
+          #1103#1079#1072#1090#1100#1089#1103' '#13#10#1089#1086' '#1084#1085#1086#1081' '#1087#1086' '#1087#1086#1095#1090#1077': exp.razor@gmail.com'
+      end
+      object Lbl_wmr: TLabel
+        Left = 123
+        Top = 119
+        Width = 29
+        Height = 13
+        Caption = 'WMR:'
+      end
+      object Lbl_wmz: TLabel
+        Left = 123
+        Top = 146
+        Width = 28
+        Height = 13
+        Caption = 'WMZ:'
+      end
+      object Lbl_yad: TLabel
+        Left = 123
+        Top = 173
+        Width = 76
+        Height = 13
+        Caption = 'Yandex.Money:'
+      end
+      object Edt_wmr: TEdit
+        Left = 205
+        Top = 116
+        Width = 136
+        Height = 21
+        Alignment = taCenter
+        ReadOnly = True
+        TabOrder = 0
+        Text = 'R150825807089'
+      end
+      object Edt_wmz: TEdit
+        Left = 205
+        Top = 143
+        Width = 136
+        Height = 21
+        Alignment = taCenter
+        ReadOnly = True
+        TabOrder = 1
+        Text = 'Z275432590299'
+      end
+      object Edt_yad: TEdit
+        Left = 205
+        Top = 170
+        Width = 136
+        Height = 21
+        Alignment = taCenter
+        ReadOnly = True
+        TabOrder = 2
+        Text = '41001832239211'
       end
     end
   end
@@ -3687,8 +3851,8 @@ object FAbout: TFAbout
           6910FEC500F23410C00C0039811D8839A034333457FC83E23F50FC1789FE0737
           801200106000BB1C04DA4E75922D0000000049454E44AE426082}
       end>
-    Left = 264
-    Top = 48
+    Left = 312
+    Top = 32
     Bitmap = {}
   end
 end

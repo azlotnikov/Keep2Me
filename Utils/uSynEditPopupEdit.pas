@@ -11,7 +11,7 @@ uses
 type
   TSynEdit = class(SynEdit.TSynEdit)
   private
-    FActnList: TActionList;
+    FActnList : TActionList;
     FPopupMenu: TPopupMenu;
     procedure CreateActns;
     procedure FillPopupMenu(APopupMenu: TPopupMenu);
@@ -35,7 +35,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property PopupMenu: TPopupMenu read GetPopupMenu_ write SetPopupMenu_;
+    property PopupMenu: TPopupMenu
+      read   GetPopupMenu_
+      write  SetPopupMenu_;
   end;
 
 implementation
@@ -119,8 +121,8 @@ end;
 constructor TSynEdit.Create(AOwner: TComponent);
 begin
   inherited;
-  FActnList := TActionList.Create(Self);
-  FPopupMenu := TPopupMenu.Create(Self);
+  FActnList       := TActionList.Create(Self);
+  FPopupMenu      := TPopupMenu.Create(Self);
   FPopupMenu.Name := MenuName;
   CreateActns;
   FillPopupMenu(FPopupMenu);
@@ -130,16 +132,16 @@ end;
 procedure TSynEdit.CreateActns;
 
   procedure AddActItem(const AText: string; AShortCut: TShortCut; AEnabled: Boolean; OnExecute, OnUpdate: TNotifyEvent);
-  Var
+  var
     ActionItem: TAction;
   begin
-    ActionItem := TAction.Create(FActnList);
+    ActionItem            := TAction.Create(FActnList);
     ActionItem.ActionList := FActnList;
-    ActionItem.Caption := AText;
-    ActionItem.ShortCut := AShortCut;
-    ActionItem.Enabled := AEnabled;
-    ActionItem.OnExecute := OnExecute;
-    ActionItem.OnUpdate := OnUpdate;
+    ActionItem.Caption    := AText;
+    ActionItem.ShortCut   := AShortCut;
+    ActionItem.Enabled    := AEnabled;
+    ActionItem.OnExecute  := OnExecute;
+    ActionItem.OnUpdate   := OnUpdate;
   end;
 
 begin
@@ -155,12 +157,13 @@ begin
 end;
 
 procedure TSynEdit.SetPopupMenu_(const Value: TPopupMenu);
-Var
+var
   MenuItem: TMenuItem;
 begin
   SynEdit.TSynEdit(Self).PopupMenu := Value;
-  if CompareText(MenuName, Value.Name) <> 0 then begin
-    MenuItem := TMenuItem.Create(Value);
+  if CompareText(MenuName, Value.Name) <> 0 then
+  begin
+    MenuItem         := TMenuItem.Create(Value);
     MenuItem.Caption := '-';
     Value.Items.Add(MenuItem);
     FillPopupMenu(Value);
@@ -181,12 +184,13 @@ end;
 
 procedure TSynEdit.FillPopupMenu(APopupMenu: TPopupMenu);
 var
-  i: integer;
+  i       : integer;
   MenuItem: TMenuItem;
 begin
   if Assigned(FActnList) then
-    for i := 0 to FActnList.ActionCount - 1 do begin
-      MenuItem := TMenuItem.Create(APopupMenu);
+    for i := 0 to FActnList.ActionCount - 1 do
+    begin
+      MenuItem        := TMenuItem.Create(APopupMenu);
       MenuItem.Action := FActnList.Actions[i];
       APopupMenu.Items.Add(MenuItem);
     end;

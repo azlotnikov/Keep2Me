@@ -21,8 +21,9 @@ uses
 
 type
   TFPoints = class(TForm)
+  published
     img_staticfon: TImage;
-    tmr_hideform: TTimer;
+    tmr_hideform : TTimer;
     procedure FormShow(Sender: TObject);
     procedure FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -32,11 +33,11 @@ type
     procedure tmr_hideformTimer(Sender: TObject);
   private
     ActiveSelect: Boolean;
-    GLx, GLy: Integer;
-    Rx, Ry: Integer;
-    bx, by: Integer;
-    FSelField: TFSelField;
-    FFrameSize: TFFrameSize;
+    GLx, GLy    : Integer;
+    Rx, Ry      : Integer;
+    bx, by      : Integer;
+    FSelField   : TFSelField;
+    FFrameSize  : TFFrameSize;
   public
     procedure StartSelect;
   end;
@@ -54,31 +55,34 @@ end;
 
 procedure TFPoints.FormCreate(Sender: TObject);
 begin
-  FSelField := TFSelField.Create(nil);
+  FSelField  := TFSelField.Create(nil);
   FFrameSize := TFFrameSize.Create(nil);
 end;
 
 procedure TFPoints.FormMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if Button = mbLeft then begin
-    Rx := Mouse.CursorPos.X;
-    Ry := Mouse.CursorPos.Y;
+  if Button = mbLeft then
+  begin
+    Rx  := Mouse.CursorPos.X;
+    Ry  := Mouse.CursorPos.Y;
     GLx := X; // координаты начала (Х)
     GLy := Y; // координаты начала (У)
     FSelField.StartSelect;
-    with FSelField.shp_sel do begin
-      Top := Y; // устанавливаем нашу форму с шэйпом
-      Left := X; // в место нажатия мыши и с нулевым размером
-      Height := 0;
-      Width := 0;
+    with FSelField.shp_sel do
+    begin
+      Top     := Y; // устанавливаем нашу форму с шэйпом
+      Left    := X; // в место нажатия мыши и с нулевым размером
+      Height  := 0;
+      Width   := 0;
       Visible := true;
     end;
-    FFrameSize.Top := Mouse.CursorPos.Y - FFrameSize.Height;
+    FFrameSize.Top  := Mouse.CursorPos.Y - FFrameSize.Height;
     FFrameSize.Left := Mouse.CursorPos.X;
     FSelField.Show;
     FFrameSize.Show;
     ActiveSelect := true;
-  end else begin
+  end else if not ActiveSelect then
+  begin
     RestoreAllForms;
     Close;
   end;
@@ -86,48 +90,58 @@ end;
 
 procedure TFPoints.FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
-  if not ActiveSelect then exit;
-  if X > ClientWidth then X := ClientWidth;
-  if Y > ClientHeight then Y := ClientHeight;
-  if X < 0 then X := 0;
-  if Y < 0 then Y := 0;
-  if (X >= GLx) and (Y >= GLy) then begin
-    with FSelField.shp_sel do begin
-      Top := GLy;
-      Left := GLx;
-      Height := Y - GLy;
-      Width := X - GLx;
-      FFrameSize.Top := Ry - FFrameSize.Height;
+  if not ActiveSelect then
+    exit;
+  if X > ClientWidth then
+    X := ClientWidth;
+  if Y > ClientHeight then
+    Y := ClientHeight;
+  if X < 0 then
+    X := 0;
+  if Y < 0 then
+    Y := 0;
+  if (X >= GLx) and (Y >= GLy) then
+  begin
+    with FSelField.shp_sel do
+    begin
+      Top             := GLy;
+      Left            := GLx;
+      Height          := Y - GLy;
+      Width           := X - GLx;
+      FFrameSize.Top  := Ry - FFrameSize.Height;
       FFrameSize.Left := Rx;
     end;
-  end
-  else if (X > GLx) and (Y <= GLy) then begin
-    with FSelField.shp_sel do begin
-      Top := GLy - (GLy - Y);
-      Left := GLx;
-      Height := GLy - Y;
-      Width := X - GLx;
-      FFrameSize.Top := Ry;
+  end else if (X > GLx) and (Y <= GLy) then
+  begin
+    with FSelField.shp_sel do
+    begin
+      Top             := GLy - (GLy - Y);
+      Left            := GLx;
+      Height          := GLy - Y;
+      Width           := X - GLx;
+      FFrameSize.Top  := Ry;
       FFrameSize.Left := Rx;
     end;
-  end
-  else if (X <= GLx) and (Y <= GLy) then begin
-    with FSelField.shp_sel do begin
-      Top := Y;
-      Left := X;
-      Height := GLy - Y;
-      Width := GLx - X;
-      FFrameSize.Top := Ry;
+  end else if (X <= GLx) and (Y <= GLy) then
+  begin
+    with FSelField.shp_sel do
+    begin
+      Top             := Y;
+      Left            := X;
+      Height          := GLy - Y;
+      Width           := GLx - X;
+      FFrameSize.Top  := Ry;
       FFrameSize.Left := Rx - FFrameSize.Width;
     end;
-  end
-  else if (X <= GLx) and (Y > GLy) then begin
-    with FSelField.shp_sel do begin
-      Left := GLx - (GLx - X);
-      Top := GLy;
-      Width := GLx - X;
-      Height := Y - GLy;
-      FFrameSize.Top := Ry - FFrameSize.Height;
+  end else if (X <= GLx) and (Y > GLy) then
+  begin
+    with FSelField.shp_sel do
+    begin
+      Left            := GLx - (GLx - X);
+      Top             := GLy;
+      Width           := GLx - X;
+      Height          := Y - GLy;
+      FFrameSize.Top  := Ry - FFrameSize.Height;
       FFrameSize.Left := Rx - FFrameSize.Width;
     end;
   end;
@@ -140,30 +154,36 @@ var
   dc: HDC;
   bm: TBitMap;
 begin
+  if ActiveSelect and (Button = mbRight) then
+    exit;
   Rx := min(Mouse.CursorPos.X, Rx);
   Ry := min(Mouse.CursorPos.Y, Ry);
-  if GSettings.MonIndex > 0 then begin
+  if GSettings.MonIndex > 0 then
+  begin
     Rx := Max(Screen.Monitors[GSettings.MonIndex - 1].Left, Rx);
     Ry := Max(Screen.Monitors[GSettings.MonIndex - 1].Top, Ry);
   end;
-  ActiveSelect := false;
+  ActiveSelect              := false;
   FSelField.shp_sel.Visible := false;
   FSelField.Hide;
   FFrameSize.Hide;
   Hide;
-  if not(Button = mbLeft) then exit;
+  if not(Button = mbLeft) then
+    exit;
   // MinimizeAllForms; // !
-  bm := TBitMap.Create;
-  bm.Width := FSelField.shp_sel.Width;
+  bm        := TBitMap.Create;
+  bm.Width  := FSelField.shp_sel.Width;
   bm.Height := FSelField.shp_sel.Height;
-  if not GSettings.RealTimeSel then begin
+  if not GSettings.RealTimeSel then
+  begin
     BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, img_staticfon.Canvas.Handle, min(GLx, X), min(GLy, Y), SRCCOPY);
   end else begin
     dc := GetDC(0);
     BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, Rx, Ry, SRCCOPY);
   end;
   // RestoreAllForms; // !
-  with TFImage.Create(nil) do begin
+  with TFImage.Create(nil) do
+  begin
     img.Picture.Assign(bm);
     OriginImg.Assign(bm);
     bm.FreeImage;
@@ -187,9 +207,10 @@ var
   dc: HDC;
 begin
   BoundsRect := MonitorManager.GetRect(GSettings.MonIndex);
-  if not GSettings.RealTimeSel then begin
-    dc := GetDC(0);
-    AlphaBlend := false;
+  if not GSettings.RealTimeSel then
+  begin
+    dc                    := GetDC(0);
+    AlphaBlend            := false;
     img_staticfon.Visible := true;
     BitBlt(img_staticfon.Canvas.Handle, 0, 0, Width, Height, dc, Left, Top, SRCCOPY);
   end;
