@@ -48,7 +48,6 @@ type
     mmo_logs     : TMemo;
     mmo_modules  : TMemo;
     lbl5         : TLabel;
-    lbl6         : TLabel;
     lbl7         : TLabel;
     lbl8         : TLabel;
     images       : TsAlphaImageList;

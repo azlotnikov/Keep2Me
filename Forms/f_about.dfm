@@ -58,7 +58,8 @@ object FAbout: TFAbout
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      ExplicitHeight = 242
+      ExplicitLeft = -44
+      ExplicitTop = -29
       object img_logo: TImage
         Left = 3
         Top = 2
@@ -3590,23 +3591,8 @@ object FAbout: TFAbout
         ParentFont = False
       end
       object lbl5: TLabel
-        Left = 41
-        Top = 101
-        Width = 180
-        Height = 13
-        Cursor = crHandPoint
-        Caption = 'https://github.com/ZRazor/Keep2Me/'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clHotLight
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsUnderline]
-        ParentFont = False
-        OnClick = ClickLink
-      end
-      object lbl6: TLabel
-        Left = 41
-        Top = 116
+        Left = 249
+        Top = 227
         Width = 83
         Height = 13
         Cursor = crHandPoint
@@ -3636,7 +3622,7 @@ object FAbout: TFAbout
       end
       object lbl8: TLabel
         Left = 41
-        Top = 133
+        Top = 109
         Width = 122
         Height = 52
         Caption = #1055#1088#1086#1075#1088#1072#1084#1084#1072' '#1080#1089#1087#1086#1083#1100#1079#1091#1077#1090': '#13#10'AlphaSkins '#13#10'JEDI VCL'#13#10'SynEdit'
@@ -3649,7 +3635,7 @@ object FAbout: TFAbout
       end
       object lblLicense: TLabel
         Left = 41
-        Top = 218
+        Top = 194
         Width = 304
         Height = 26
         Caption = 
@@ -3663,8 +3649,8 @@ object FAbout: TFAbout
         ParentFont = False
       end
       object lblAlphaSkins: TLabel
-        Left = 108
-        Top = 146
+        Left = 100
+        Top = 122
         Width = 174
         Height = 39
         Caption = 
@@ -3679,7 +3665,7 @@ object FAbout: TFAbout
       end
       object lblThanks: TLabel
         Left = 41
-        Top = 188
+        Top = 164
         Width = 274
         Height = 26
         Caption = 
@@ -3696,7 +3682,7 @@ object FAbout: TFAbout
         Left = 205
         Top = 53
         Width = 136
-        Height = 19
+        Height = 21
         Alignment = taCenter
         Color = clBtnFace
         ReadOnly = True
@@ -3706,7 +3692,7 @@ object FAbout: TFAbout
         Left = 205
         Top = 76
         Width = 136
-        Height = 20
+        Height = 21
         Alignment = taCenter
         Color = clBtnFace
         ReadOnly = True
@@ -3717,7 +3703,6 @@ object FAbout: TFAbout
     object ts_logs: TTabSheet
       Caption = 'Changelog.txt'
       ImageIndex = 1
-      ExplicitHeight = 242
       object mmo_logs: TMemo
         Left = 0
         Top = 0
@@ -3728,13 +3713,11 @@ object FAbout: TFAbout
         ReadOnly = True
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitHeight = 242
       end
     end
     object ts_plugins: TTabSheet
       Caption = #1052#1086#1076#1091#1083#1080
       ImageIndex = 2
-      ExplicitHeight = 242
       object mmo_modules: TMemo
         Left = 0
         Top = 0
@@ -3753,13 +3736,11 @@ object FAbout: TFAbout
         ParentFont = False
         ReadOnly = True
         TabOrder = 0
-        ExplicitHeight = 242
       end
     end
     object ts_help: TTabSheet
       Caption = #1055#1086#1084#1086#1097#1100
       ImageIndex = 3
-      ExplicitHeight = 242
       object Lbl_help_main: TLabel
         Left = 3
         Top = 3
@@ -3851,8 +3832,8 @@ object FAbout: TFAbout
           6910FEC500F23410C00C0039811D8839A034333457FC83E23F50FC1789FE0737
           801200106000BB1C04DA4E75922D0000000049454E44AE426082}
       end>
-    Left = 312
-    Top = 32
+    Left = 232
+    Top = 16
     Bitmap = {}
   end
 end

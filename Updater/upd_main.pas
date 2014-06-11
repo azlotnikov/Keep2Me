@@ -13,13 +13,13 @@ uses
 type
   TFMain = class(TForm)
     pb: TProgressBar;
-    stat: TStatusBar;
     AntiFreeze: TIdAntiFreeze;
     HTTP: TIdHTTP;
     cb_close: TCheckBox;
     lbl_info: TLabel;
     btn_update: TButton;
     tmr_exit: TTimer;
+    mmo_log: TMemo;
     procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
     procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
     procedure btn_updateClick(Sender: TObject);
@@ -178,15 +178,15 @@ begin
   HTTP.ReadTimeout := 5000;
   HTTP.ConnectTimeout := 5000;
   btn_update.Enabled := false;
-  stat.Panels[0].Text := 'Получаем список файлов';
+  mmo_log.Lines.Add('Получаем список файлов');
   t := tstringlist.Create;
   try
     t.Text := HTTP.Get(SYS_UPDATE_FILE_LIST);
   except
   end;
   if t.Text = '' then begin
-    ShowMessage('Не удалось подключиться к серверу!');
-    stat.Panels[0].Text := 'Ошибка обновления!';
+    mmo_log.Lines.Add('Не удалось подключиться к серверу!');
+    mmo_log.Lines.Add('Ошибка обновления!');
     btn_update.Enabled := True;
     Exit;
   end;
@@ -196,7 +196,7 @@ begin
     s := GetCommand(t[i]);
 
     if s = 'download_file' then begin
-      stat.Panels[0].Text := 'Загружаем: ' + GetName(GetValue(t[i]));
+      mmo_log.Lines.Add('Загружаем: ' + GetName(GetValue(t[i])));
       LoadStream := TMemoryStream.Create;
       try
         HTTP.Get(t[i], LoadStream);
@@ -206,35 +206,35 @@ begin
       LoadStream.Free;
     end
     else if s = 'delete_file' then begin
-      stat.Panels[0].Text := 'Удаляем: ' + GetValue(t[i]);
+      mmo_log.Lines.Add('Удаляем: ' + GetValue(t[i]));
       try
         DeleteFile(Path + GetValue(t[i]));
       except
       end;
     end
     else if s = 'delete_dir' then begin
-      stat.Panels[0].Text := 'Удаляем: ' + GetValue(t[i]);
+      mmo_log.Lines.Add('Удаляем: ' + GetValue(t[i]));
       try
         FullRemoveDir(Path + GetValue(t[i]), True, false, True);
       except
       end;
     end
     else if s = 'create_dir' then begin
-      stat.Panels[0].Text := 'Создаем: ' + GetValue(t[i]);
+      mmo_log.Lines.Add('Создаем: ' + GetValue(t[i]));
       try
         ForceDirectories(Path + GetValue(t[i]));
       except
       end;
     end
     else if s = 'clear_dir' then begin
-      stat.Panels[0].Text := 'Очищаем: ' + GetValue(t[i]);
+      mmo_log.Lines.Add('Очищаем: ' + GetValue(t[i]));
       try
         ClearDir(Path + GetValue(t[i]));
       except
       end;
     end
     else if s = 'move_file' then begin
-      stat.Panels[0].Text := 'Перемещаем: ' + GetValue(t[i]);
+      mmo_log.Lines.Add('Перемещаем: ' + GetValue(t[i]));
       if FileExists(Path + GetValue(t[i])) then
         try
           MoveFile(PChar(Path + GetValue(t[i])), PChar(Path + GetValue(t[i], 2)));
@@ -242,7 +242,7 @@ begin
         end;
     end
     else if s = 'rename_file' then begin
-      stat.Panels[0].Text := 'Переименовываем: ' + GetValue(t[i]);
+      mmo_log.Lines.Add('Переименовываем: ' + GetValue(t[i]));
       if FileExists(Path + GetValue(t[i])) then
         try
           RenameFile(Path + GetValue(t[i]), Path + GetValue(t[i], 2));
@@ -250,7 +250,7 @@ begin
         end;
     end
     else if s = 'copy_file' then begin
-      stat.Panels[0].Text := 'Копируем: ' + GetValue(t[i]);
+      mmo_log.Lines.Add('Копируем: ' + GetValue(t[i]));
       if FileExists(Path + GetValue(t[i])) then
         try
           CopyFile(PChar(Path + GetValue(t[i])), PChar(Path + GetValue(t[i], 2)), false);
@@ -258,7 +258,7 @@ begin
         end;
     end;
   end;
-  stat.Panels[0].Text := 'Обновление завершено!';
+  mmo_log.Lines.Add('Обновление завершено!');
   // RunMeAsAdmin(GetDesktopWindow, PChar(ExtractFilePath(ParamStr(0)) + 'keep2me.exe'), PChar('SHOWSETTINGS'));
   ShellExecute(GetDesktopWindow, 'open', PChar(ExtractFilePath(ParamStr(0)) + 'keep2me.exe'), 'SHOWSETTINGS',
     nil, SW_SHOW);
@@ -268,10 +268,10 @@ end;
 procedure TFMain.FormCreate(Sender: TObject);
 begin
 {$IFDEF WIN32}
-  Caption := Caption + ' x86';
+  Caption := Caption + ' 32-bit';
 {$ENDIF}
 {$IFDEF WIN64}
-  Caption := Caption + ' x64';
+  Caption := Caption + ' 64-bit';
 {$ENDIF}
   Show;
   if ParamCount > 0 then

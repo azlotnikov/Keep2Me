@@ -124,8 +124,6 @@ begin
 end;
 
 procedure TFWindows.StartSelect;
-var
-  i, w, H: Integer;
 begin
   BoundsRect := MonitorManager.GetRect(GSettings.MonIndex);
   FSelField.StartSelect(true);
