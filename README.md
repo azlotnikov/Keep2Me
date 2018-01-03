@@ -1,9 +1,9 @@
-#Keep2Me
+# Keep2Me
 
-##Description
+## Description
 **Keep2Me** is a free uploader for your sceenshots, files and pastes with no ads and direct links.
 
-###Features
+### Features
 - Advanced image editor.
 - Popular sreenshot hostings (imgur.com and others).
 - Popular filehostings, including [sendspace.com](http://sendspace.com) and [rghost.ru](http://rghost.ru) with authtorization.
@@ -18,12 +18,11 @@
 - Auto update.
 - 64-bit Windows support.
 
-##Links
+## Links
 - [Keep2Me](http://keep2.me/)
 - [zhyk.ru](http://zhyk.ru/)
-- [zt.am](http://zt.am/)
 
-##Third-party
+## Third-party
 - AlphaSkins
 - JEDI
 - SynEdit
