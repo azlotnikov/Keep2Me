@@ -1,12 +1,18 @@
 # Keep2Me
 
+## This software is no longer maintained
+Visit [keep2.me](http://keep2.me/) to download the latest version.
+
+## Эта программа больше не поддерживается
+Последнюю версию можно скачать на [keep2.me](http://keep2.me/)
+
 ## Description
-**Keep2Me** is a free uploader for your sceenshots, files and pastes with no ads and direct links.
+**Keep2Me** is a free uploader for your sceenshots, files and pastes with direct links.
 
 ### Features
 - Advanced image editor.
 - Popular sreenshot hostings (imgur.com and others).
-- Popular filehostings, including [sendspace.com](http://sendspace.com) and [rghost.ru](http://rghost.ru) with authtorization.
+- Popular filehostings, including [sendspace.com](http://sendspace.com) with authtorization.
 - [Pastebin.com](http://pastebin.com/) paste uploader with authtorization and editor with syntax highlighting for all popular languages.
 - Multi-monitor support.
 - Real-time and static modes of making screenshots.

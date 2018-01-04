@@ -160,7 +160,8 @@ begin
   HTTP.ReadTimeout       := 12000;
   HTTP.ConnectTimeout    := 20000;
   HTTP.HandleRedirects   := true;
-  HTTP.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/9.0.1';
+  HTTP.Request.UserAgent := 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0';
+  HTTP.HTTPOptions       := [hoKeepOrigProtocol];
   COO                    := TIdCookieManager.Create(HTTP);
   HTTP.AllowCookies      := true;
   HTTP.CookieManager     := COO;
@@ -669,9 +670,9 @@ end;
 
 initialization
 
-AddFileLoader(TRgHostFileLoader, 'rghost.ru [API]', '0.2', true);
+//AddFileLoader(TRgHostFileLoader, 'rghost.ru [API]', '0.2', true);
 AddFileLoader(TSendSpaceFileLoader, 'sendspace.com [API]', '0.1', true);
-AddFileLoader(TGFileLoader, 'gfile.ru', '0.1', false);
-AddFileLoader(TDataFileHostLoader, 'datafilehost.com', '0.1', false);
+//AddFileLoader(TGFileLoader, 'gfile.ru', '0.1', false);
+//AddFileLoader(TDataFileHostLoader, 'datafilehost.com', '0.1', false);
 
 end.

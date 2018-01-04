@@ -30,7 +30,6 @@ uses
 
 type
   TFAbout = class(TForm)
-    lblLicense: TLabel;
     lblAlphaSkins: TLabel;
     lblThanks: TLabel;
   published

@@ -157,7 +157,7 @@ end;
 
 procedure TTinyUrlLoader.LoadFile(Url: string);
 const
-  Str = '</b><br><small>[<a href="';
+  Str = '<div id="copyinfo" data-clipboard-text="';
 var
   s: string;
 begin
@@ -250,8 +250,8 @@ end;
 initialization
 
 // AddShorter(TQikrLoader, 'qikr.co', '0.1');
-AddShorter(TIsGdLoader, 'is.gd', '0.1');
+//AddShorter(TIsGdLoader, 'is.gd', '0.1');
 // AddShorter(TZtAmLoader, 'zt.am', '0.1');
-AddShorter(TTinyUrlLoader, 'tinyurl.com', '0.1');
+AddShorter(TTinyUrlLoader, 'tinyurl.com', '0.2');
 
 end.

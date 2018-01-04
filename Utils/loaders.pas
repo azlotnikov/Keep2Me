@@ -7,6 +7,7 @@ uses
   System.Classes,
   System.SysUtils,
   System.StrUtils,
+  Soap.EncdDecd,
   Vcl.ComCtrls,
   IdHTTP,
   IdComponent,
@@ -18,7 +19,7 @@ uses
 type
   TLoader = class
   private
-    HTTP  : TidHTTP;
+    HTTP  : TIdHTTP;
     COO   : TIdCookieManager;
     PB    : TProgressBar;
     AError: Boolean;
@@ -27,8 +28,7 @@ type
     procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
     procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
   public
-    property Error: Boolean
-      read   GetError;
+    property Error: Boolean read   GetError;
     function GetLink: string; virtual;
     procedure SetLoadBar(sPB: TProgressBar); virtual;
     procedure LoadFile(FileName: string); virtual; abstract;
@@ -96,7 +96,7 @@ type
   end;
 
 type
-  TIceImgLoader = class(TLoader)
+  TBilbMeLoader = class(TLoader)
   public
     procedure LoadFile(FileName: string); override;
   end;
@@ -157,7 +157,8 @@ begin
   HTTP.ReadTimeout       := 30000;
   HTTP.ConnectTimeout    := 20000;
   HTTP.HandleRedirects   := true;
-  HTTP.Request.UserAgent := 'Mozilla/5.0 (Windows NT 6.1) Gecko/20100101 Firefox/9.0.1';
+  HTTP.Request.UserAgent := 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:57.0) Gecko/20100101 Firefox/57.0';
+  HTTP.HTTPOptions       := [hoKeepOrigProtocol];
   COO                    := TIdCookieManager.Create(HTTP);
   HTTP.AllowCookies      := true;
   HTTP.CookieManager     := COO;
@@ -201,21 +202,30 @@ end;
 
 procedure TZhykLoader.LoadFile(FileName: string);
 const
-  Str = '<img_url>';
+  Str = '"type":"path","chain":{"image":"\/www\/';
 var
+  MemoryStream: TMemoryStream;
   Stream: TIdMultipartFormDataStream;
   s     : string;
+  Size: Int64;
 begin
   try
     Link   := '';
     AError := false;
+    MemoryStream := TMemoryStream.Create;
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFormField('key', 'Jk8hh9L');
-    Stream.AddFile('upload', FileName, 'application/octet-stream');
-    Stream.AddFormField('format', 'xml');
+    try
+      MemoryStream.LoadFromFile(Filename);
+      with Stream.AddFormField('source', EncodeBase64(MemoryStream.Memory, MemoryStream.Size), 'text/plain') do
+      begin
+        ContentTransfer:= '8bit';
+      end;
+    finally
+      MemoryStream.Free;
+    end;
     PB.Max := Stream.Size div 1024;
     try
-      s := HTTP.Post('http://i.zhyk.ru/api', Stream);
+      s := HTTP.Post('http://i.zhyk.ru/api/1/upload/?key=719586cd4ca1bb94fe49d97111e7edc7', Stream);
     except
       AError := true;
       Exit;
@@ -225,7 +235,7 @@ begin
       AError := true;
       Exit;
     end;
-    Link := ParsSubString(s, Str, '<');
+    Link := 'http://' + StringReplace(ParsSubString(s, Str, '"'), '\', '', [rfReplaceAll]);
   finally
     Stream.Free;
   end;
@@ -253,7 +263,7 @@ begin
     Stream.AddFormField('resize_to', '500px');
     Stream.AddFormField('upload_type', 'standard');
     try
-      s := HTTP.Post('http://hostingkartinok.com/process.php', Stream);
+      s := HTTP.Post('https://hostingkartinok.com/process.php', Stream);
     except
     end;
     if (Length(s) = 0) or (Pos(Str, s) = 0) then
@@ -261,7 +271,7 @@ begin
       AError := true;
       Exit;
     end;
-    Link := 'http://s' + ParsSubString(s, Str, '.png') + ExtractFileExt(FileName);
+    Link := 'https://s' + ParsSubString(s, Str, '.png') + ExtractFileExt(FileName);
     Link := ReplaceStr(Link, '/thumbs/', '/images/');
   finally
     Stream.Free;
@@ -600,9 +610,9 @@ end;
 
 { TFastPicLoader }
 
-procedure TIceImgLoader.LoadFile(FileName: string);
+procedure TBilbMeLoader.LoadFile(FileName: string);
 const
-  Str = '{"full":"';
+  Str = '<a href="http://www.bild.me" target="_blank"><img src="';
 var
   Stream: TIdMultipartFormDataStream;
   s     : string;
@@ -612,15 +622,15 @@ begin
     AError               := false;
     HTTP.HandleRedirects := true;
     Stream               := TIdMultipartFormDataStream.Create;
-    with Stream.AddFile('img', FileName, 'application/octet-stream') do
+    with Stream.AddFile('F1', FileName, 'application/octet-stream') do
     begin
-      HeaderCharset  := 'utf-8';
-      HeaderEncoding := '8';
+//      HeaderCharset  := 'utf-8';
+//      HeaderEncoding := '8';
     end;
-    Stream.AddFormField('Upload', 'Submit Query');
-    Stream.AddFormField('Filename', ExtractFileName(FileName));
+    Stream.AddFormField('C1', 'ON');
+    Stream.AddFormField('upload', '         Upload!         ');
     try
-      s := HTTP.Post('http://iceimg.com/upload.php', Stream);
+      s := HTTP.Post('http://www.bild.me/index.php', Stream);
     except
     end;
     if (Pos(Str, s) = 0) then
@@ -628,7 +638,7 @@ begin
       AError := true;
       Exit;
     end;
-    Link := 'http://iceimg.com/' + ReplaceStr(ParsSubString(s, Str, '"'), '\', '');
+    Link := ParsSubString(s, Str, '"');
   finally
     Stream.Free;
   end;
@@ -746,17 +756,17 @@ end;
 
 initialization
 
-AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.4');
+//AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.4');
 // AddLoader(TQikrLoader, 'qikr.co', '0.1');
 AddLoader(THostThenPostLoader, 'hostthenpost.org', '0.1');
-AddLoader(TImgurLoader, 'imgur.com [API]', '0.1');
-AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.3');
+//AddLoader(TImgurLoader, 'imgur.com [API]', '0.1');
+AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.4');
 AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
-AddLoader(TTrollWsLoader, 'troll.ws', '0.3');
-AddLoader(TImgsSuLoader, 'imgs.su', '0.1');
-AddLoader(TFilezProLoader, 'filez.pro', '0.1');
-AddLoader(TIceImgLoader, 'iceimg.com', '0.1');
-AddLoader(TRImgLoader, 'rimg.ru', '0.1');
+//AddLoader(TTrollWsLoader, 'troll.ws', '0.3');
+//AddLoader(TImgsSuLoader, 'imgs.su', '0.1');
+//AddLoader(TFilezProLoader, 'filez.pro', '0.1');
+AddLoader(TBilbMeLoader, 'bild.me', '0.1');
+//AddLoader(TRImgLoader, 'rimg.ru', '0.1');
 // AddLoader(TLeprosoriumLoader, 'oppp.ru', '0.1');
 
 end.

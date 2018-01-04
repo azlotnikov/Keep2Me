@@ -12,7 +12,6 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  TStyleManager.TrySetStyle('Carbon');
   Application.Title := 'Keep2Me Updater';
   Application.CreateForm(TFMain, FMain);
   Application.Run;
