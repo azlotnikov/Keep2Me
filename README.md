@@ -1,10 +1,15 @@
 # Keep2Me
 
 ## This software is no longer maintained
-Visit [keep2.me](http://keep2.me/) to download the latest version.
+~~Visit [keep2.me](http://keep2.me/) to download the latest version.~~
+
+You can build it from source.
+
 
 ## Эта программа больше не поддерживается
-Последнюю версию можно скачать на [keep2.me](http://keep2.me/)
+~~Последнюю версию можно скачать на [keep2.me](http://keep2.me/)~~
+
+Можно собрать из исходников.
 
 ## Description
 **Keep2Me** is a free uploader for your sceenshots, files and pastes with direct links.
@@ -25,7 +30,7 @@ Visit [keep2.me](http://keep2.me/) to download the latest version.
 - 64-bit Windows support.
 
 ## Links
-- [Keep2Me](http://keep2.me/)
+- ~~[Keep2Me](http://keep2.me/)~~
 - [zhyk.ru](http://zhyk.ru/)
 
 ## Third-party
