@@ -32,9 +32,8 @@ object FMain: TFMain
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'C'#1086#1093#1088#1072#1085#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080
     OnClick = btn_ApplySettingsClick
-    SkinData.SkinSection = 'SPEEDBUTTON'
-    ImageIndex = 2
     Images = Images
+    ImageIndex = 2
   end
   object btn_Cancel: TsSpeedButton
     Left = 7
@@ -44,9 +43,8 @@ object FMain: TFMain
     Anchors = [akLeft, akBottom]
     Caption = #1054#1090#1084#1077#1085#1080#1090#1100
     OnClick = btn_CancelClick
-    SkinData.SkinSection = 'SPEEDBUTTON'
-    ImageIndex = 14
     Images = Images
+    ImageIndex = 14
   end
   object Pages: TsPageControl
     Left = 0
@@ -57,11 +55,8 @@ object FMain: TFMain
     Anchors = [akLeft, akTop, akRight, akBottom]
     Style = tsFlatButtons
     TabOrder = 0
-    SkinData.SkinSection = 'PAGECONTROL'
     object pg_main: TsTabSheet
       Caption = #1054#1089#1085#1086#1074#1085#1099#1077
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
       UseCloseBtn = False
       DesignSize = (
         382
@@ -83,9 +78,8 @@ object FMain: TFMain
           Width = 25
           Height = 23
           OnClick = btn_RefreshMonitorsClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 0
           Images = Images
+          ImageIndex = 0
         end
         object btn_GetCurrentMonitor: TsSpeedButton
           Left = 240
@@ -95,9 +89,8 @@ object FMain: TFMain
           Anchors = [akTop, akRight]
           Caption = #1058#1077#1082#1091#1097#1080#1081
           OnClick = btn_GetCurrentMonitorClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 1
           Images = Images
+          ImageIndex = 1
         end
         object cbb_Monitors: TComboBox
           Left = 40
@@ -128,9 +121,8 @@ object FMain: TFMain
           Anchors = [akLeft, akTop, akRight]
           Caption = #1055#1088#1086#1074#1077#1088#1080#1090#1100
           OnClick = btn_CheckHotKeyClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 16
           Images = Images
+          ImageIndex = 16
         end
         object cbb_HotKeysActions: TComboBox
           Left = 9
@@ -233,9 +225,8 @@ object FMain: TFMain
           Anchors = [akTop, akRight]
           Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072
           Enabled = False
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 15
           Images = Images
+          ImageIndex = 15
         end
         object lbl_ImgExt: TLabel
           Left = 9
@@ -281,9 +272,8 @@ object FMain: TFMain
           Anchors = [akTop, akRight]
           Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072
           Enabled = False
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 15
           Images = Images
+          ImageIndex = 15
         end
         object cbb_ShortLink: TComboBox
           Left = 9
@@ -331,9 +321,8 @@ object FMain: TFMain
           Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1072
           Enabled = False
           OnClick = btn_FilesSettingsClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 15
           Images = Images
+          ImageIndex = 15
         end
         object cbb_Files: TComboBox
           Left = 9
@@ -349,8 +338,6 @@ object FMain: TFMain
     end
     object pg_OtherSettings: TsTabSheet
       Caption = #1054#1089#1090#1072#1083#1100#1085#1099#1077
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
       DesignSize = (
         382
         405)
@@ -431,33 +418,9 @@ object FMain: TFMain
           Top = 155
           Width = 160
           Height = 22
-          BoundLabel.Indent = 0
-          BoundLabel.Font.Charset = DEFAULT_CHARSET
-          BoundLabel.Font.Color = clWindowText
-          BoundLabel.Font.Height = -11
-          BoundLabel.Font.Name = 'Tahoma'
-          BoundLabel.Font.Style = []
-          BoundLabel.Layout = sclLeft
-          BoundLabel.MaxWidth = 0
-          BoundLabel.UseSkinColor = True
-          SkinData.SkinSection = 'COMBOBOX'
           Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -11
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
           TabOrder = 7
           OnChange = cbb_SelColorChange
-        end
-        object cb_AutoCheckUpdate: TCheckBox
-          Left = 9
-          Top = 133
-          Width = 296
-          Height = 17
-          Caption = #1040#1074#1090#1086#1084#1072#1090#1080#1095#1077#1082#1072#1103' '#1087#1088#1086#1074#1077#1088#1082#1072' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1081' '#1087#1088#1080' '#1079#1072#1087#1091#1089#1082#1077
-          TabOrder = 8
         end
       end
       object Grp_SelType: TGroupBox
@@ -475,9 +438,8 @@ object FMain: TFMain
           Height = 22
           Flat = True
           OnClick = Btn_AboutSelClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 21
           Images = Images
+          ImageIndex = 21
         end
         object rb_staticsel: TRadioButton
           Left = 155
@@ -518,9 +480,8 @@ object FMain: TFMain
           Caption = #1059#1076#1072#1083#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1086#1083#1086#1078#1077#1085#1080#1103' '#1092#1086#1088#1084
           ParentBiDiMode = False
           OnClick = btn_ClearFormsSettingsClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 20
           Images = Images
+          ImageIndex = 20
         end
         object btn_ClearMainSettings: TsSpeedButton
           Left = 13
@@ -530,9 +491,8 @@ object FMain: TFMain
           Anchors = [akLeft, akTop, akRight]
           Caption = #1059#1076#1072#1083#1080#1090#1100' '#1086#1089#1085#1086#1074#1085#1099#1077' '#1085#1072#1089#1090#1088#1086#1081#1082#1080
           OnClick = btn_ClearMainSettingsClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 20
           Images = Images
+          ImageIndex = 20
         end
         object btn_ClearPluginsSettings: TsSpeedButton
           Left = 13
@@ -542,9 +502,8 @@ object FMain: TFMain
           Anchors = [akLeft, akTop, akRight]
           Caption = #1059#1076#1072#1083#1080#1090#1100' '#1085#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1083#1072#1075#1080#1085#1086#1074
           OnClick = btn_ClearPluginsSettingsClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 20
           Images = Images
+          ImageIndex = 20
         end
         object btn_ClearRecentFiles: TsSpeedButton
           Left = 13
@@ -554,16 +513,13 @@ object FMain: TFMain
           Anchors = [akLeft, akTop, akRight]
           Caption = #1054#1095#1080#1089#1090#1080#1090#1100' '#1087#1086#1089#1083#1077#1076#1085#1080#1077' '#1079#1072#1075#1088#1091#1079#1082#1080
           OnClick = btn_ClearRecentFilesClick
-          SkinData.SkinSection = 'SPEEDBUTTON'
-          ImageIndex = 20
           Images = Images
+          ImageIndex = 20
         end
       end
     end
     object pg_pastebin: TsTabSheet
       Caption = 'Pastebin.com'
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
       UseCloseBtn = False
       DesignSize = (
         382
@@ -725,8 +681,6 @@ object FMain: TFMain
     end
     object pg_FTP: TsTabSheet
       Caption = 'FTP'
-      SkinData.CustomColor = False
-      SkinData.CustomFont = False
       DesignSize = (
         382
         405)
@@ -1514,11 +1468,6 @@ object FMain: TFMain
     end
     object pm_Sep2: TMenuItem
       Caption = '-'
-    end
-    object pm_CheckUpdates: TMenuItem
-      Caption = #1055#1088#1086#1074#1077#1088#1080#1090#1100' '#1086#1073#1085#1086#1074#1083#1077#1085#1080#1103
-      ImageIndex = 7
-      OnClick = pm_CheckUpdatesClick
     end
     object pm_About: TMenuItem
       Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077

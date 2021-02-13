@@ -29,7 +29,7 @@ uses
   funcs,
   ConstStrings,
   fileuploaders,
-  shortlinks;
+  shortlinks, System.ImageList;
 
 type
   TFFiles = class(TForm)

@@ -35,9 +35,8 @@ object FFilesSettings: TFFilesSettings
       Anchors = [akTop, akRight]
       Caption = #1054#1090#1084#1077#1085#1080#1090#1100
       OnClick = btn_CancelClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 0
       Images = Images
+      ImageIndex = 0
       ExplicitLeft = 129
     end
     object btn_save: TsSpeedButton
@@ -48,9 +47,8 @@ object FFilesSettings: TFFilesSettings
       Anchors = [akTop, akRight]
       Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
       OnClick = btn_saveClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 1
       Images = Images
+      ImageIndex = 1
       ExplicitLeft = 239
     end
   end

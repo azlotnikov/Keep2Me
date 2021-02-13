@@ -14,12 +14,14 @@ uses
   IdMultipartFormData,
   IdCookieManager,
   IdFTP,
+  IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
   IdFTPCommon;
 
 type
   TLoader = class
   private
     HTTP  : TIdHTTP;
+    SSL   : TIdSSLIOHandlerSocketOpenSSL;
     COO   : TIdCookieManager;
     PB    : TProgressBar;
     AError: Boolean;
@@ -162,12 +164,15 @@ begin
   COO                    := TIdCookieManager.Create(HTTP);
   HTTP.AllowCookies      := true;
   HTTP.CookieManager     := COO;
+  SSL := TIdSSLIOHandlerSocketOpenSSL.Create( HTTP );
+  HTTP.IOHandler := SSL;
 end;
 
 procedure TLoader.Free;
 begin
   COO.Free;
   HTTP.Free;
+  SSL.Free;
 end;
 
 function TLoader.GetError: Boolean;
@@ -235,7 +240,7 @@ begin
       AError := true;
       Exit;
     end;
-    Link := 'http://' + StringReplace(ParsSubString(s, Str, '"'), '\', '', [rfReplaceAll]);
+    Link := 'https://' + StringReplace(ParsSubString(s, Str, '"'), '\', '', [rfReplaceAll]);
   finally
     Stream.Free;
   end;
@@ -318,8 +323,7 @@ end;
 
 procedure TImgurLoader.LoadFile(FileName: string);
 const
-  myAPI = '569c6f649f330f39b23b4612b83f9e3a';
-  Str   = '<original_image>';
+  Str   = '"link":"';
 var
   Stream: TIdMultipartFormDataStream;
   s     : string;
@@ -328,14 +332,13 @@ begin
     Link   := '';
     AError := false;
     Stream := TIdMultipartFormDataStream.Create;
-    Stream.AddFormField('key', myAPI);
     with Stream.AddFile('image', FileName, 'application/octet-stream') do
     begin
       HeaderCharset  := 'utf-8';
       HeaderEncoding := '8';
     end;
     try
-      s := HTTP.Post('http://imgur.com/api/upload.xml', Stream);
+      s := HTTP.Post('https://api.imgur.com/3/upload', Stream);
     except
     end;
     if (Pos(Str, s) = 0) then
@@ -343,7 +346,7 @@ begin
       AError := true;
       Exit;
     end;
-    Link := ParsSubString(s, Str, '<');
+    Link := ParsSubString(s, Str, '"');
   finally
     Stream.Free;
   end;
@@ -758,14 +761,14 @@ initialization
 
 //AddLoader(THostingKartinokLoader, 'hostingkartinok.com', '0.4');
 // AddLoader(TQikrLoader, 'qikr.co', '0.1');
+AddLoader(TImgurLoader, 'imgur.com [API]', '0.2');
+AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.5');
 AddLoader(THostThenPostLoader, 'hostthenpost.org', '0.1');
-//AddLoader(TImgurLoader, 'imgur.com [API]', '0.1');
-AddLoader(TZhykLoader, 'i.zhyk.ru [API]', '0.4');
 AddLoader(TImgLinkLoader, 'imglink.ru', '0.1');
 //AddLoader(TTrollWsLoader, 'troll.ws', '0.3');
 //AddLoader(TImgsSuLoader, 'imgs.su', '0.1');
 //AddLoader(TFilezProLoader, 'filez.pro', '0.1');
-AddLoader(TBilbMeLoader, 'bild.me', '0.1');
+//AddLoader(TBilbMeLoader, 'bild.me', '0.1');
 //AddLoader(TRImgLoader, 'rimg.ru', '0.1');
 // AddLoader(TLeprosoriumLoader, 'oppp.ru', '0.1');
 

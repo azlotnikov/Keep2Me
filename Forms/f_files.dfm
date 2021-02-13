@@ -82,9 +82,8 @@ object FFiles: TFFiles
       Anchors = [akTop, akRight]
       Caption = #1053#1072#1095#1072#1090#1100' '#1079#1072#1075#1088#1091#1079#1082#1091' (Alt + Enter)'
       OnClick = btn_StartLoadClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 5
       Images = Images
+      ImageIndex = 5
       ExplicitLeft = 352
     end
     object btn_Stop: TsSpeedButton
@@ -96,9 +95,8 @@ object FFiles: TFFiles
       Caption = #1054#1090#1084#1077#1085#1080#1090#1100
       Enabled = False
       OnClick = btn_StopClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 10
       Images = Images
+      ImageIndex = 10
     end
     object btn_settings: TsSpeedButton
       Left = 10
@@ -107,9 +105,8 @@ object FFiles: TFFiles
       Height = 25
       Caption = #1054#1087#1094#1080#1080
       Enabled = False
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 9
       Images = Images
+      ImageIndex = 9
     end
     object btn_copyall: TsSpeedButton
       Left = 103
@@ -117,9 +114,8 @@ object FFiles: TFFiles
       Width = 23
       Height = 25
       OnClick = btn_copyallClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 6
       Images = Images
+      ImageIndex = 6
     end
     object btn_openall: TsSpeedButton
       Left = 132
@@ -127,9 +123,8 @@ object FFiles: TFFiles
       Width = 23
       Height = 25
       OnClick = btn_openallClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 7
       Images = Images
+      ImageIndex = 7
     end
   end
   object stat_hint: TStatusBar

@@ -19,7 +19,7 @@ uses
   acAlphaImageList,
   fileuploaders,
   ConstStrings,
-  funcs;
+  funcs, System.ImageList;
 
 type
   TFFilesSettings = class(TForm)

@@ -26,39 +26,30 @@ uses
   ConstStrings,
   loaders,
   shortlinks,
-  fileuploaders;
+  fileuploaders, System.ImageList;
 
 type
   TFAbout = class(TForm)
+    pgc_tabs: TPageControl;
+    ts_info: TTabSheet;
+    img_logo: TImage;
+    lbl1: TLabel;
+    lbl2: TLabel;
+    lbl3: TLabel;
+    lbl4: TLabel;
+    lbl7: TLabel;
+    lbl8: TLabel;
     lblAlphaSkins: TLabel;
     lblThanks: TLabel;
+    edt_version: TEdit;
+    edt_mail: TEdit;
+    ts_logs: TTabSheet;
+    mmo_logs: TMemo;
+    ts_plugins: TTabSheet;
+    mmo_modules: TMemo;
   published
-    pgc_tabs     : TPageControl;
-    ts_info      : TTabSheet;
-    ts_logs      : TTabSheet;
-    ts_plugins   : TTabSheet;
-    img_logo     : TImage;
-    lbl1         : TLabel;
-    lbl2         : TLabel;
-    edt_version  : TEdit;
-    lbl3         : TLabel;
-    edt_mail     : TEdit;
-    lbl4         : TLabel;
-    mmo_logs     : TMemo;
-    mmo_modules  : TMemo;
-    lbl5         : TLabel;
-    lbl7         : TLabel;
-    lbl8         : TLabel;
     images       : TsAlphaImageList;
     BtnOk        : TsSpeedButton;
-    ts_help      : TTabSheet;
-    Lbl_help_main: TLabel;
-    Edt_wmr      : TEdit;
-    Edt_wmz      : TEdit;
-    Edt_yad      : TEdit;
-    Lbl_wmr      : TLabel;
-    Lbl_wmz      : TLabel;
-    Lbl_yad      : TLabel;
     procedure FormCreate(Sender: TObject);
     procedure btn_okClick(Sender: TObject);
     procedure ClickLink(Sender: TObject);

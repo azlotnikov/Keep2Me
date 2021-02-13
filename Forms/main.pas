@@ -66,7 +66,7 @@ uses
   pastebin_tools,
   cript,
   ConstStrings,
-  fileuploaders;
+  fileuploaders, System.ImageList;
 
 type
   TFMain = class(TForm)
@@ -115,7 +115,6 @@ type
     pm_RecentLoads          : TMenuItem;
     pm_Settings             : TMenuItem;
     pm_Sep2                 : TMenuItem;
-    pm_CheckUpdates         : TMenuItem;
     pm_About                : TMenuItem;
     pm_exit                 : TMenuItem;
     pm_pastebin             : TMenuItem;
@@ -179,7 +178,6 @@ type
     btn_ClearMainSettings   : TsSpeedButton;
     btn_ClearPluginsSettings: TsSpeedButton;
     btn_ClearRecentFiles    : TsSpeedButton;
-    cb_AutoCheckUpdate      : TCheckBox;
 
     procedure FormCreate(Sender: TObject);
     procedure btn_GetCurrentMonitorClick(Sender: TObject);
@@ -194,7 +192,6 @@ type
     procedure cb_WinKeyClick(Sender: TObject);
     procedure pm_SettingsClick(Sender: TObject);
     procedure pm_AboutClick(Sender: TObject);
-    procedure pm_CheckUpdatesClick(Sender: TObject);
     procedure pm_exitClick(Sender: TObject);
     procedure tmr_ExitFromThreadTimer(Sender: TObject);
     procedure rb_pb_accountClick(Sender: TObject);
@@ -278,7 +275,6 @@ begin
     rb_realtimesel.Checked       := RealTimeSel;
     rb_staticsel.Checked         := not RealTimeSel;
     cbb_SelColor.Selected        := SelColor;
-    cb_AutoCheckUpdate.Checked   := AutoCheckUpdate;
     SetLength(tmpHotKeys, Length(Actions));
     for i           := 0 to high(Actions) do
       tmpHotKeys[i] := Actions[i];
@@ -784,8 +780,6 @@ begin
   cbb_HotKeysActionsChange(self);
   cbb_FilesChange(self);
   UpdateRecentFiles(self);
-  if GSettings.AutoCheckUpdate then
-    beginthread(nil, 0, Addr(CheckUpdates), ptr(1), 0, id);
   // if (not GSettings.DontShowAdmin) and (not IsUserAnAdmin) then ShowMessage(RU_NOT_ADMIN);
   ForceDirectories(SYS_PATH + SYS_TMP_IMG_FOLDER);
   Visible := not(FileExists(SYS_PATH + SYS_SETTINGS_FILE_NAME) and
@@ -819,7 +813,6 @@ begin
     EditImageFromFile := cb_EditImageFromFile.Checked;
     RealTimeSel       := rb_realtimesel.Checked;
     SelColor          := cbb_SelColor.Selected;
-    AutoCheckUpdate   := cb_AutoCheckUpdate.Checked;
     SetLength(Actions, Length(tmpHotKeys));
     for i := 0 to high(tmpHotKeys) do
     begin
@@ -899,7 +892,6 @@ begin
     EditImageFromFile := ReadBool(INI_COMMON_SETTINGS, 'EditImageFromFile', false);
     RealTimeSel       := ReadBool(INI_COMMON_SETTINGS, 'RealTimeSel', true);
     SelColor          := StringToColor(ReadString(INI_COMMON_SETTINGS, 'SelColor', 'clHighlight'));
-    AutoCheckUpdate   := ReadBool(INI_COMMON_SETTINGS, 'AutoCheckUpdate', true);
     for i             := 0 to high(Actions) do
       with Actions[i] do
       begin
@@ -946,13 +938,6 @@ end;
 procedure TFMain.pm_AboutClick(Sender: TObject);
 begin
   FAbout.Show;
-end;
-
-procedure TFMain.pm_CheckUpdatesClick(Sender: TObject);
-var
-  id: longword;
-begin
-  beginthread(nil, 0, Addr(CheckUpdates), ptr(0), 0, id);
 end;
 
 procedure TFMain.pm_exitClick(Sender: TObject);
@@ -1003,7 +988,6 @@ begin
     WriteBool(INI_COMMON_SETTINGS, 'EditImageFromFile', EditImageFromFile);
     WriteBool(INI_COMMON_SETTINGS, 'RealTimeSel', RealTimeSel);
     WriteString(INI_COMMON_SETTINGS, 'SelColor', ColorToString(SelColor));
-    WriteBool(INI_COMMON_SETTINGS, 'AutoCheckUpdate', AutoCheckUpdate);
     for i := 0 to high(Actions) do
       with Actions[i] do
       begin

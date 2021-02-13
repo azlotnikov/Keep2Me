@@ -25,14 +25,7 @@ object FAbout: TFAbout
     Width = 344
     Height = 24
     Caption = 'OK'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Tahoma'
-    Font.Style = []
-    ParentFont = False
     OnClick = btn_okClick
-    SkinData.SkinSection = 'SPEEDBUTTON'
     Images = images
     ImageIndex = 0
   end
@@ -3552,9 +3545,9 @@ object FAbout: TFAbout
       object lbl2: TLabel
         Left = 41
         Top = 34
-        Width = 165
+        Width = 162
         Height = 13
-        Caption = 'Copyright '#169' Z.Razor 2011 - 2018 '
+        Caption = 'Copyright '#169' Z.Razor 2011 - 2021'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -3588,28 +3581,13 @@ object FAbout: TFAbout
         Font.Style = []
         ParentFont = False
       end
-      object lbl5: TLabel
-        Left = 249
-        Top = 227
-        Width = 83
-        Height = 13
-        Cursor = crHandPoint
-        Caption = 'http://keep2.me/'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clHotLight
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsUnderline]
-        ParentFont = False
-        OnClick = ClickLink
-      end
       object lbl7: TLabel
         Left = 41
         Top = 227
-        Width = 176
+        Width = 190
         Height = 13
         Cursor = crHandPoint
-        Caption = 'https://github.com/ZRazor/Keep2Me'
+        Caption = 'https://github.com/azlotnikov/Keep2Me'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clHotLight
         Font.Height = -11
@@ -3680,7 +3658,7 @@ object FAbout: TFAbout
         Color = clBtnFace
         ReadOnly = True
         TabOrder = 1
-        Text = 'exp.razor@gmail.com'
+        Text = 'a.zlotnikov@mayak.red'
       end
     end
     object ts_logs: TTabSheet
@@ -3701,6 +3679,10 @@ object FAbout: TFAbout
     object ts_plugins: TTabSheet
       Caption = #1052#1086#1076#1091#1083#1080
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object mmo_modules: TMemo
         Left = 0
         Top = 0
@@ -3719,73 +3701,6 @@ object FAbout: TFAbout
         ParentFont = False
         ReadOnly = True
         TabOrder = 0
-      end
-    end
-    object ts_help: TTabSheet
-      Caption = #1055#1086#1084#1086#1097#1100
-      ImageIndex = 3
-      object Lbl_help_main: TLabel
-        Left = 3
-        Top = 3
-        Width = 319
-        Height = 104
-        Caption = 
-          #1054#1090#1073#1083#1072#1075#1086#1076#1072#1088#1080#1090#1100' '#1084#1086#1078#1085#1086' '#1089#1083#1077#1076#1091#1102#1097#1080#1084#1080' '#1089#1087#1086#1089#1086#1073#1072#1084#1080':'#13#10#13#10'1. '#1055#1077#1088#1077#1074#1077#1089#1090#1080' '#1087#1072#1088#1091' '#1088 +
-          #1091#1073#1083#1077#1081' '#1085#1072' WebMoney '#1080#1083#1080' Yandex.Money '#1085#1072' '#13#10#1091#1082#1072#1079#1072#1085#1085#1099#1077' '#1085#1080#1078#1077' '#1082#1086#1096#1077#1083#1100#1082#1080'.' +
-          #13#10#13#10'2. '#1045#1089#1083#1080' '#1077#1089#1090#1100' '#1078#1077#1083#1072#1085#1080#1077' '#1087#1086#1084#1086#1095#1100' '#1073#1086#1083#1077#1077' '#1082#1088#1091#1087#1085#1086#1081' '#1089#1091#1084#1084#1086#1081', '#1084#1086#1078#1085#1086' '#13#10#1087#1077 +
-          #1088#1077#1074#1077#1089#1090#1080' '#1076#1077#1085#1100#1075#1080' '#1085#1072' '#1082#1072#1088#1090#1091' VISA, '#1076#1083#1103' '#1101#1090#1086#1075#1086' '#1085#1091#1078#1085#1086' '#1089#1074#1103#1079#1072#1090#1100#1089#1103' '#13#10#1089#1086' '#1084#1085#1086 +
-          #1081' '#1087#1086' '#1087#1086#1095#1090#1077': exp.razor@gmail.com'
-      end
-      object Lbl_wmr: TLabel
-        Left = 123
-        Top = 119
-        Width = 29
-        Height = 13
-        Caption = 'WMR:'
-      end
-      object Lbl_wmz: TLabel
-        Left = 123
-        Top = 146
-        Width = 28
-        Height = 13
-        Caption = 'WMZ:'
-      end
-      object Lbl_yad: TLabel
-        Left = 123
-        Top = 173
-        Width = 76
-        Height = 13
-        Caption = 'Yandex.Money:'
-      end
-      object Edt_wmr: TEdit
-        Left = 205
-        Top = 116
-        Width = 136
-        Height = 21
-        Alignment = taCenter
-        ReadOnly = True
-        TabOrder = 0
-        Text = 'R150825807089'
-      end
-      object Edt_wmz: TEdit
-        Left = 205
-        Top = 143
-        Width = 136
-        Height = 21
-        Alignment = taCenter
-        ReadOnly = True
-        TabOrder = 1
-        Text = 'Z275432590299'
-      end
-      object Edt_yad: TEdit
-        Left = 205
-        Top = 170
-        Width = 136
-        Height = 21
-        Alignment = taCenter
-        ReadOnly = True
-        TabOrder = 2
-        Text = '41001832239211'
       end
     end
   end

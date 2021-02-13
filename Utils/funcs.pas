@@ -81,7 +81,6 @@ type
 type
   TSettings = record
   public
-    AutoCheckUpdate  : Boolean;
     SelColor         : TColor;
     RealTimeSel      : Boolean;
     LastLink         : string;
