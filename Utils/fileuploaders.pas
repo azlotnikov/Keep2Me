@@ -21,6 +21,7 @@ uses
   IdHashMessageDigest,
   IdGlobal,
   IdCoderMIME,
+  IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL,
   Web.HTTPApp,
   ConstStrings,
   cript;
@@ -33,6 +34,7 @@ type
   private
     MaxWorkCount: Int64;
     HTTP        : TidHTTP;
+    SSL         : TIdSSLIOHandlerSocketOpenSSL;
     COO         : TIdCookieManager;
     AError      : Boolean;
     Link        : string;
@@ -83,6 +85,21 @@ type
 
 type
   TRgHostFileLoader = class(TFileLoader)
+  private
+    cb_Auth   : TCheckBox;
+    edt_apikey: TEdit;
+    ApiKey    : string;
+    Auth      : Boolean;
+  public
+    procedure InitControls(Control: TWinControl); override;
+    procedure SaveData; override;
+    procedure LoadData; override;
+    procedure LoadControls; override;
+    procedure LoadFile(FileName: string); override;
+  end;
+
+type
+  TAnonFileLoader = class(TFileLoader)
   private
     cb_Auth   : TCheckBox;
     edt_apikey: TEdit;
@@ -167,6 +184,10 @@ begin
   HTTP.CookieManager     := COO;
   HTTP.OnWork            := HTTPWork;
   HTTP.OnWorkBegin       := HTTPWorkBegin;
+  SSL                    := TIdSSLIOHandlerSocketOpenSSL.Create( HTTP );
+  HTTP.IOHandler         := SSL;
+  SSL.SSLOptions.Method := sslvSSLv23;
+  SSL.SSLOptions.SSLVersions := [sslvTLSv1_2];
 end;
 
 procedure TFileLoader.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
@@ -202,6 +223,7 @@ end;
 procedure TFileLoader.Free;
 begin
   COO.Free;
+  SSL.Free;
   HTTP.Free;
 end;
 
@@ -531,6 +553,101 @@ begin
   end;
 end;
 
+{ TAnonFileLoader }
+
+procedure TAnonFileLoader.InitControls(Control: TWinControl);
+begin
+  cb_Auth := TCheckBox.Create(Control);
+  with cb_Auth do
+  begin
+    Parent  := Control;
+    Caption := 'Использовать API ключ';
+    Width   := 150;
+    Top     := 8;
+    Left    := 8;
+  end;
+  edt_apikey := TEdit.Create(Control);
+  with edt_apikey do
+  begin
+    Parent       := Control;
+    Left         := 8;
+    Width        := Control.Width - 36;
+    PasswordChar := '*';
+    Anchors      := [akLeft, akTop, akRight];
+    Top          := cb_Auth.Top + cb_Auth.Height + 8;
+  end;
+  Control.Height := 80 + edt_apikey.Top + edt_apikey.Height + 8;
+  LoadControls;
+end;
+
+procedure TAnonFileLoader.LoadControls;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_FILELOADERS_SETTINGS_FILE_NAME);
+  with F do
+  begin
+    cb_Auth.Checked := ReadBool('AnonFileLoader', 'Auth', false);
+    edt_apikey.Text := MyDecrypt(ReadString('AnonFileLoader', 'ApiKey', ''), SYS_CRYPT_KEY);
+    Free;
+  end;
+end;
+
+procedure TAnonFileLoader.LoadData;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_FILELOADERS_SETTINGS_FILE_NAME);
+  with F do
+  begin
+    Auth   := ReadBool('AnonFileLoader', 'Auth', false);
+    ApiKey := MyDecrypt(ReadString('AnonFileLoader', 'ApiKey', ''), SYS_CRYPT_KEY);
+    Free;
+  end;
+end;
+
+procedure TAnonFileLoader.SaveData;
+var
+  F: TIniFile;
+begin
+  F := TIniFile.Create(ExtractFilePath(paramstr(0)) + SYS_FILELOADERS_SETTINGS_FILE_NAME);
+  with F do
+  begin
+    WriteBool('AnonFileLoader', 'Auth', cb_Auth.Checked);
+    WriteString('AnonFileLoader', 'ApiKey', MyEncrypt(edt_apikey.Text, SYS_CRYPT_KEY));
+    Free;
+  end;
+end;
+
+procedure TAnonFileLoader.LoadFile(FileName: string);
+const
+  Str     = 'https://anonfiles.com';
+var
+  Stream        : TIdMultipartFormDataStream;
+  s, token, Host: string;
+begin
+  try
+    Link   := '';
+    AError := false;
+    LoadData;
+    Stream               := TIdMultipartFormDataStream.Create;
+    with Stream.AddFile('file', FileName, 'multipart/form-data') do
+    begin
+      HeaderCharset  := 'utf-8';
+      HeaderEncoding := '8';
+    end;
+    if Auth then
+      token := '?token=' + ApiKey;
+    try
+      s := HTTP.Post('https://api.anonfiles.com/upload'+token, Stream);
+    except
+    end;
+    Link := Str + ParsSubString(s, Str, '"');
+  finally
+    Stream.Free;
+  end;
+end;
+
 procedure AddFileLoader(AObj: TFileLoaderClass; ACaption, AVersion: string; AHaveSettings: Boolean);
 begin
   SetLength(FileLoadersArray, Length(FileLoadersArray) + 1);
@@ -672,6 +789,7 @@ initialization
 
 //AddFileLoader(TRgHostFileLoader, 'rghost.ru [API]', '0.2', true);
 AddFileLoader(TSendSpaceFileLoader, 'sendspace.com [API]', '0.1', true);
+AddFileLoader(TAnonFileLoader, 'anonfiles.com [API]', '0.1', true);
 //AddFileLoader(TGFileLoader, 'gfile.ru', '0.1', false);
 //AddFileLoader(TDataFileHostLoader, 'datafilehost.com', '0.1', false);
 

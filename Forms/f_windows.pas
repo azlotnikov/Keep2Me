@@ -13,7 +13,7 @@ uses
   Vcl.Forms,
   Vcl.Dialogs,
   Vcl.StdCtrls,
-  // JclGraphics,
+   JclGraphics,
   f_selfield,
   f_image,
   funcs;
@@ -107,7 +107,7 @@ begin
     with TFImage.Create(nil) do
     begin
       WindowSnap(H, tBmp);
-      // JclGraphics.ScreenShot(tBmp, 0, 0, R.Right - R.Left, R.Bottom - R.Top, H);
+//      JclGraphics.ScreenShot(tBmp, 0, 0, R.Right - R.Left, R.Bottom - R.Top, H);
       tBmp.PixelFormat := pf24bit;
       img.Picture.Assign(tBmp);
       OriginImg.Assign(tBmp);

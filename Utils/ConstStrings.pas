@@ -7,10 +7,10 @@ uses System.SysUtils;
 const
 
 {$IFDEF WIN32}
-  SYS_KEEP_VERSION = '0.9.9.9';
+  SYS_KEEP_VERSION = '0.9.9.10';
 {$ENDIF}
 {$IFDEF WIN64}
-  SYS_KEEP_VERSION = '0.9.9.9';
+  SYS_KEEP_VERSION = '0.9.9.10';
 {$ENDIF}
 {$IFDEF WIN32}
   SYS_PLATFORM = '32 bit';

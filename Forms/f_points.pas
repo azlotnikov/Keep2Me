@@ -172,14 +172,14 @@ begin
     exit;
   // MinimizeAllForms; // !
   bm        := TBitMap.Create;
-  bm.Width  := FSelField.shp_sel.Width;
-  bm.Height := FSelField.shp_sel.Height;
+  bm.Width  := Trunc(FSelField.shp_sel.Width * 1.25);
+  bm.Height := Trunc(FSelField.shp_sel.Height * 1.25);
   if not GSettings.RealTimeSel then
   begin
-    BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, img_staticfon.Canvas.Handle, min(GLx, X), min(GLy, Y), SRCCOPY);
+    BitBlt(bm.Canvas.Handle, 0, 0, Trunc(bm.Width* 1.25), Trunc(bm.Height* 1.25), img_staticfon.Canvas.Handle, Trunc(min(GLx, X) * 1.25), Trunc(min(GLy, Y) * 1.25), SRCCOPY);
   end else begin
     dc := GetDC(0);
-    BitBlt(bm.Canvas.Handle, 0, 0, bm.Width, bm.Height, dc, Rx, Ry, SRCCOPY);
+    BitBlt(bm.Canvas.Handle, 0, 0, Trunc(bm.Width* 1.25), Trunc(bm.Height* 1.25), dc, Trunc(Rx * 1.25),  Trunc(Ry * 1.25), SRCCOPY);
   end;
   // RestoreAllForms; // !
   with TFImage.Create(nil) do

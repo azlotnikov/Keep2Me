@@ -3545,9 +3545,9 @@ object FAbout: TFAbout
       object lbl2: TLabel
         Left = 41
         Top = 34
-        Width = 162
+        Width = 108
         Height = 13
-        Caption = 'Copyright '#169' Z.Razor 2011 - 2021'
+        Caption = #169' '#1056#1101#1081#1079#1086#1088' 2011 - 2022'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -11
@@ -3679,10 +3679,6 @@ object FAbout: TFAbout
     object ts_plugins: TTabSheet
       Caption = #1052#1086#1076#1091#1083#1080
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object mmo_modules: TMemo
         Left = 0
         Top = 0

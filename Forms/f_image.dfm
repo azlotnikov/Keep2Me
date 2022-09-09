@@ -41,9 +41,8 @@ object FImage: TFImage
       Layout = blGlyphBottom
       ParentBiDiMode = False
       OnClick = mm_LoadClick
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 1
       Images = Images
+      ImageIndex = 1
     end
     object lbl_penwidth: TLabel
       Left = 6
@@ -158,9 +157,8 @@ object FImage: TFImage
       GroupIndex = 1
       Down = True
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 0
       Images = Images
+      ImageIndex = 0
     end
     object btn_line: TsSpeedButton
       Tag = 2
@@ -170,9 +168,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 7
       Images = Images
+      ImageIndex = 7
     end
     object btn_Rect: TsSpeedButton
       Tag = 3
@@ -182,9 +179,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 11
       Images = Images
+      ImageIndex = 11
     end
     object btn_Ellipse: TsSpeedButton
       Tag = 4
@@ -194,9 +190,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 16
       Images = Images
+      ImageIndex = 16
     end
     object btn_rectclear: TsSpeedButton
       Tag = 5
@@ -206,9 +201,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 18
       Images = Images
+      ImageIndex = 18
     end
     object btn_ellipseclear: TsSpeedButton
       Tag = 6
@@ -218,9 +212,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 19
       Images = Images
+      ImageIndex = 19
     end
     object btn_Text: TsSpeedButton
       Tag = 7
@@ -230,9 +223,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 17
       Images = Images
+      ImageIndex = 17
     end
     object btn_SelPen: TsSpeedButton
       Tag = 8
@@ -242,9 +234,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 12
       Images = Images
+      ImageIndex = 12
     end
     object btn_Blur: TsSpeedButton
       Tag = 9
@@ -254,9 +245,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 20
       Images = Images
+      ImageIndex = 20
     end
     object btn_cut: TsSpeedButton
       Tag = 10
@@ -266,9 +256,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 21
       Images = Images
+      ImageIndex = 21
     end
     object btn_Resize: TsSpeedButton
       Tag = 11
@@ -278,9 +267,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 22
       Images = Images
+      ImageIndex = 22
     end
     object btn_smile: TsSpeedButton
       Tag = 12
@@ -290,9 +278,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 23
       Images = Images
+      ImageIndex = 23
     end
     object btn_arrow: TsSpeedButton
       Tag = 13
@@ -302,9 +289,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 24
       Images = Images
+      ImageIndex = 24
     end
     object btn_pipet: TsSpeedButton
       Tag = 13
@@ -314,9 +300,8 @@ object FImage: TFImage
       Height = 25
       GroupIndex = 1
       Flat = True
-      SkinData.SkinSection = 'SPEEDBUTTON'
-      ImageIndex = 25
       Images = Images
+      ImageIndex = 25
     end
   end
   object mm: TMainMenu
@@ -1317,7 +1302,12 @@ object FImage: TFImage
       end>
     Left = 440
     Top = 8
-    Bitmap = {}
+    Bitmap = {
+      494C010100000800080001000100FFFFFFFF0400FFFFFFFFFFFFFFFF424D7600
+      0000000000007600000028000000040000000100000001000400000000000400
+      0000000000000000000000000000000000000000000000008000008000000080
+      8000800000008000800080800000C0C0C000808080000000FF0000FF000000FF
+      FF00FF000000FF00FF00FFFF0000FFFFFF0000000000}
   end
   object SavePictureDlg: TSavePictureDialog
     DefaultExt = '.jpg'

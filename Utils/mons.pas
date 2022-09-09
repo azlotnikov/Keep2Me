@@ -29,7 +29,7 @@ begin
   result := TStringList.Create;
   result.Add('0: Все мониторы');
   for i := 0 to Screen.MonitorCount - 1 do
-    result.Add(Format('%d: %d x %d', [i + 1, Screen.Monitors[i].Width, Screen.Monitors[i].Height]));
+    result.Add(Format('%d: %d x %d', [i + 1, Screen.Monitors[i].WorkareaRect.Width, Screen.Monitors[i].WorkareaRect.Height]));
 end;
 
 function TMonitorManager.GetMonitorByPoint(P: TPoint): Integer;
@@ -45,9 +45,11 @@ end;
 function TMonitorManager.GetRect(Index: Integer): TRect;
 begin
   if index > 0 then
-    result := Screen.Monitors[index - 1].BoundsRect
+    result := Screen.Monitors[index - 1].WorkareaRect
   else
-    result := Screen.DesktopRect
+    result := Screen.DesktopRect;
 end;
+
+initialization
 
 end.

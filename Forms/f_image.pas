@@ -45,7 +45,7 @@ uses
   funcs,
   imgtools,
   ConstStrings,
-  sListBox;
+  sListBox, System.ImageList;
 
 type
   TFImage = class(TForm)
